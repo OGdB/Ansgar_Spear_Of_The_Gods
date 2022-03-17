@@ -2,7 +2,7 @@ import pygame
 
 pygame.init()
 
-win = pygame.display.set_mode((800, 600))
+win = pygame.display.set_mode((960, 640), pygame.FULLSCREEN)
 clock = pygame.time.Clock()
 
 done = False
