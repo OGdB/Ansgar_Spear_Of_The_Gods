@@ -1,0 +1,10 @@
+import pygame
+
+class Platform(pygame.sprite.Sprite):  # Platform class is Sprite Class with extra attributes
+    def __init__(self, x, y, w, h):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface((w, h))
+        self.image.fill((50, 205, 50))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
