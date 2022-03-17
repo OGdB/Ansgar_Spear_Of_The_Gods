@@ -8,3 +8,6 @@ class Platform(pygame.sprite.Sprite):  # Platform class is Sprite Class with ext
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+
+    def draw(self, win):
+        pygame.draw.rect(win, (50, 205, 50), self.rect, self.rect.width)
