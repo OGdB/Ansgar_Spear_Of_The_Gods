@@ -105,16 +105,46 @@
  "tileheight":16,
  "tilesets":[
         {
+         "columns":12,
          "firstgid":1,
-         "source":"tileset forest.tsx"
+         "image":"..\/tileset forest.png",
+         "imageheight":96,
+         "imagewidth":192,
+         "margin":0,
+         "name":"tileset forest",
+         "spacing":0,
+         "tilecount":72,
+         "tileheight":16,
+         "tilewidth":16,
+         "transparentcolor":"#ffffff"
         }, 
         {
+         "columns":4,
          "firstgid":73,
-         "source":"spikes.tsx"
+         "image":"..\/spikes.png",
+         "imageheight":16,
+         "imagewidth":64,
+         "margin":0,
+         "name":"spikes",
+         "spacing":0,
+         "tilecount":4,
+         "tileheight":16,
+         "tilewidth":16,
+         "transparentcolor":"#ffffff"
         }, 
         {
+         "columns":4,
          "firstgid":77,
-         "source":"coin.tsx"
+         "image":"..\/coin.png",
+         "imageheight":16,
+         "imagewidth":64,
+         "margin":0,
+         "name":"coin",
+         "spacing":0,
+         "tilecount":4,
+         "tileheight":16,
+         "tilewidth":16,
+         "transparentcolor":"#ffffff"
         }],
  "tilewidth":16,
  "type":"map",
