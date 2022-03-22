@@ -17,9 +17,7 @@ class Enemy_Spawner:
         self.color = (self.Red, self.Blue,
                       self.Green)
         self.health = health
-
-    def draw(self, surf):
-        pygame.draw.rect(surf, self.color, (self.x, self.y, Enemy_Spawner.dim, Enemy_Spawner.dim))
+        self.dead = False
 
     def update(self, dt, left_x_border, right_x_border, screen_h):
         # self.vertical_speed += 100 * dt
@@ -46,3 +44,12 @@ class Enemy_Spawner:
             # We just went off the bottom-edge
         #    self.y = screen_h - Enemy_Spawner.dim
         #    self.vertical_speed *= -1
+
+    def enemy_hit_check(self, m_x, m_y):
+        if self.x <= m_x <= self.x+self.dim and self.y <= m_y <= self.y+self.dim:
+            return True
+        else:
+            return False
+
+    def draw(self, surf):
+        pygame.draw.rect(surf, self.color, (self.x, self.y, Enemy_Spawner.dim, Enemy_Spawner.dim))
