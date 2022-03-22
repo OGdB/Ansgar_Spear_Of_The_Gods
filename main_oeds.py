@@ -1,9 +1,12 @@
 import pygame
+import Classes.platform as plf
 
 pygame.init()
 
-win = pygame.display.set_mode((960, 640), pygame.FULLSCREEN)
+win = pygame.display.set_mode((960, 640))
 clock = pygame.time.Clock()
+
+t_f = plf.Platform(50, 50, 20, 20)
 
 done = False
 while not done:
@@ -19,6 +22,8 @@ while not done:
 
     # DRAWING
     win.fill((0, 0, 0))
+
+    t_f.draw(win)
 
     pygame.display.flip()
 
