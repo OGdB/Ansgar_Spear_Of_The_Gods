@@ -81,7 +81,7 @@ class Ansgar():
 
         if all_keys[pygame.K_w] or all_keys[pygame.K_UP]:
             if self.jump == False:
-                print(self.ansgar_accel * dt)
+
                 self.ansgar_v_speed += 100 * dt
                 if self.ansgar_v_speed >= 20 or self.position[1] <= 500:
                     self.jump = True
