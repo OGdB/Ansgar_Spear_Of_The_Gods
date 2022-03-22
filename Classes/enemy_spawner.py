@@ -1,6 +1,5 @@
 import random
 import pygame
-import Classes.health
 
 
 class Enemy_Spawner:
