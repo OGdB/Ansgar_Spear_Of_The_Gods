@@ -5,7 +5,8 @@ class Platform(pygame.sprite.Sprite):  # Platform class is Sprite Class with ext
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((w, h))
         self.image.fill((50, 205, 50))
-        self.rect = self.image.get_rect()
+
+        self.rect = self.image.get_rect()  # Get a rect with the sizes of the image.
         self.rect.x = x
         self.rect.y = y
 
