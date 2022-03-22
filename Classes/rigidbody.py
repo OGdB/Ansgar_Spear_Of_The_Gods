@@ -1,12 +1,13 @@
 import pygame
 
+
 class Rigidbody:
     def __init__(self):
         self.vel = (0, 0)
         self.grounded = False
 
-#TODO: Should probably call this gravity_update in Player class
-        # When not on the ground, constantly decrease vel.y as long as not grounded.
+    # TODO: Should probably call this gravity_update in Player class
+    # When not on the ground, constantly decrease vel.y as long as not grounded.
     def gravity(self, dt):
         if not self.grounded:  # could add a max falling speed here too
             vel[1] += dt * 100
@@ -20,4 +21,3 @@ class Rigidbody:
         # changing position with velocity
         pos += vel
         return pos
-    
