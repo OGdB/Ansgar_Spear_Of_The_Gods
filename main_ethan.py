@@ -1,12 +1,12 @@
 import pygame
-import 
+import Classes.enemy
 
 pygame.init()
 
 win = pygame.display.set_mode((960, 640))
 clock = pygame.time.Clock()
-enemy_group_one = enemy.Enemy(300, 300, 5, 100)  # The starting x and y value of the enemy, then how many, then the health
-enemy_group_two = enemy.Enemy(800, 500, 10, 100)
+enemy_group_one = Classes.enemy.EnemyGroups(300, 300, 5, 100)  # The starting x and y value of the enemy, then how many, then the health
+enemy_group_two = Classes.enemy.EnemyGroups(800, 500, 10, 100)
 done = False
 while not done:
     delta_time = clock.tick() / 1000

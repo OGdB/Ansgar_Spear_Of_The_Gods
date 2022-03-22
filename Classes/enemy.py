@@ -1,4 +1,4 @@
-import enemy_spawner
+import Classes.enemy_spawner
 
 
 class EnemyGroups:
@@ -10,12 +10,12 @@ class EnemyGroups:
         self.enemy_list = []
         self.num = num
         self.health = health
-        enemy_spawner.Enemy_Spawner.dim = 16
+        Classes.enemy_spawner.Enemy_Spawner.dim = 16
         i = 0
         while i <= self.num:
             new_x = self.position[0]
             new_y = self.position[1]
-            new_enemy = enemy_spawner.Enemy_Spawner(new_x, new_y, self.health)
+            new_enemy = Classes.enemy_spawner.Enemy_Spawner(new_x, new_y, self.health)
             self.enemy_list.append(new_enemy)
             i += 1
 
