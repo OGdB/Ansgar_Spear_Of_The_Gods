@@ -12,3 +12,12 @@ class Rigidbody:
             vel[1] += dt * 100
         if vel[1] > 1 and self.grounded:  # if falling downwards but on the ground, set vel.y to 0.
             vel[1] = 0
+
+    # Collision detection: https://www.pygame.org/docs/ref/rect.html#pygame.Rect.collidelist
+
+    def move(self, pos):
+        """Movement by the rigidbody, taking into account collision"""
+        # changing position with velocity
+        pos += vel
+        return pos
+    
