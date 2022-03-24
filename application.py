@@ -38,8 +38,6 @@ class Application:
             self.space.step(delta_time)
             self.handle_input(delta_time)
             self.render(self.win)
-            for body in self.ball_list:
-                body.position
 
         # Shut down pygame after we're done with our game loop (because the program is likely to shut down shortly after)
         pygame.quit()
@@ -72,19 +70,17 @@ class Application:
         self.ansgar.update(dt, evt, all_keys)
 
     def render(self, surf):
-        # Erase
+        # Clean up whatever is drawn and redraw
         surf.fill((0, 0, 0))
 
-        # Draw the map
+        # Drawing
         surf.blit(self.cur_map.rendered_img, (0, 0), (0, 0, self.win_w, self.win_h))
 
         self.ansgar.draw(surf)
+        self.enemy_group_one.draw(surf)
+        self.enemy_group_two.draw(surf)
 
         for body in self.ball_list:
             pygame.draw.circle(surf, (255, 0, 0), body.position, 10)
 
-        self.enemy_group_one.draw(surf)
-        self.enemy_group_two.draw(surf)
-
-        # Flip
         pygame.display.flip()
