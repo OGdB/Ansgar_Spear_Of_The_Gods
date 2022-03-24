@@ -39,14 +39,14 @@ class Spear():
                 self.position[0] -= 250 * dt  # this will let Ansgar run
             else:
                 self.position[0] -= 150 * dt
-            self.direction = "left"
+
         if all_keys[pygame.K_d] or all_keys[pygame.K_RIGHT]:
             self.direction = "right"
             if all_keys[pygame.K_LSHIFT]:
                 self.position[0] += 250 * dt
             else:
-                self.position[0] += 150 * dt 
-            self.direction = "right"
+                self.position[0] += 150 * dt
+
 
 
 
