@@ -106,28 +106,36 @@ class Map:
                     self.pickups.append((obj["x"], obj["y"]))
 
     def draw_colliders(self, space):
-        # for every 16x16 ground tile in layers[0].groundlayer
-            # if the data
-        for layer in self.tile_layers:
-            y = 0
-            row_num = 0
-            for row in layer:
-                x = 0
-                col_num = 0
-                for code in row:
-                    if code != 0:  # if there is a tile drawn on this row
-                        result = self.get_tile_data(code)  # get tile data of every individual tile
+        # VERSION 1
+        # for every 16x16 ground tile in the groundlayer
+            # if the data of tile X is ground, draw a collider on it.
 
-                        if result is not None:  # there's a tile
-                            seg = pymunk.Segment(space.static_body, (x, y), (x + self.tile_width, y), 0.0)
-                            seg.elasticity = 0.95
-                            seg.friction = 0.9
-                            space.add(seg)
-                    x += self.tile_width
-                    col_num += 1
+        # VERSION 2
+        # for every 16x16 ground tile in the groundlayer
+        # once a ground-tile is found..
+        # loop checking if the tile on its right is also ground, save the x on the top right of the last tile
+        # once end is found, draw collider from start to end
 
-                y += self.tile_height
-                row_num += 1
+        
+        y = 0
+        row_num = 0
+        for row in self.tile_layers[0]:
+            x = 0
+            col_num = 0
+            for code in row:
+                if code != 0:  # if there is a tile drawn on this row
+                    result = self.get_tile_data(code)  # get tile data of every individual tile
+
+                    if result is not None:  # there's a tile
+                        seg = pymunk.Segment(space.static_body, (x, y), (x + self.tile_width, y), 0.0)
+                        seg.elasticity = 0.95
+                        seg.friction = 0.9
+                        space.add(seg)
+                x += self.tile_width
+                col_num += 1
+
+            y += self.tile_height
+            row_num += 1
 
     def __str__(self):
         s = "Tilesets:\n"
