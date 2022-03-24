@@ -16,8 +16,9 @@ class Application:
         self.done = False  # Should we bail out of the game loop?
         self.clock = pygame.time.Clock()  # The pygame clock object used for delta-time
 
-        self.space = pymunk.Space()
+        self.space = pymunk.Space()  # Create a physics space
         self.space.gravity = (0, 100)  # Set its gravity
+
 
         self.font = pygame.font.SysFont("Courier New", 16)  # The font to use for rendering stats
 
@@ -28,6 +29,8 @@ class Application:
         self.ansgar = Classes.hero.Ansgar(240, 220)
 
         self.ball_list = []
+        self.ground_colliders = self.cur_map.draw_colliders(self.space)
+
 
     def run(self):
         while not self.done:
@@ -35,8 +38,10 @@ class Application:
             self.space.step(delta_time)
             self.handle_input(delta_time)
             self.render(self.win)
+            for body in self.ball_list:
+                body.position
 
-        # Shut down pyagme after we're done with our game loop (because the program is likely to shut down shortly after)
+        # Shut down pygame after we're done with our game loop (because the program is likely to shut down shortly after)
         pygame.quit()
 
     def handle_input(self, dt):
@@ -44,6 +49,7 @@ class Application:
         evt = pygame.event.poll()
         self.enemy_group_one.update(dt, 300, 900)  # Moves the enemy's with in the given range
         self.enemy_group_two.update(dt, 100, 600)
+
         # event-handling
         mouse_x, mouse_y = pygame.mouse.get_pos()
         all_keys = pygame.key.get_pressed()
@@ -52,8 +58,9 @@ class Application:
             self.enemy_group_two.enemy_hit_check(mouse_x, mouse_y, 100)
 
             body = pymunk.Body()  # Create a Body
-            body.position = evt.pos  # Set the position of the body
-            body_shape = pymunk.Circle(body, 30)
+            body.position = (mouse_x, mouse_y)  # Set the position of the body
+            body_shape = pymunk.Circle(body, 10)
+            body_shape.mass = 10
             self.space.add(body, body_shape)
             self.ball_list.append(body)
 
@@ -70,13 +77,11 @@ class Application:
 
         # Draw the map
         surf.blit(self.cur_map.rendered_img, (0, 0), (0, 0, self.win_w, self.win_h))
-        #self.cur_map.draw_colliders(self.space)
 
         self.ansgar.draw(surf)
 
         for body in self.ball_list:
-            #print(body.position)
-            pygame.draw.circle(surf, (255, 0, 0), body.position, 30)
+            pygame.draw.circle(surf, (255, 0, 0), body.position, 10)
 
         self.enemy_group_one.draw(surf)
         self.enemy_group_two.draw(surf)
