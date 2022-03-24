@@ -19,9 +19,9 @@ class Application:
 
         self.cur_map = map_data.Map("maps\\Map.json")               # The initial map to load
         self.total_time = 0                   # Total time the game's been running (used for player/coin color modulation)
-        self.enemy_group_one = Classes.enemy.EnemyGroups(300, 300, 5, 16)
-        self.enemy_group_two = Classes.enemy.EnemyGroups(800, 500, 10, 16)
-        self.a = Classes.hero.Ansgar(240, 220)
+        self.enemy_group_one = Classes.enemy.EnemyGroups(0, 150, 5, 16)
+        self.enemy_group_two = Classes.enemy.EnemyGroups(0, 300, 10, 16)
+        self.a = Classes.hero.Ansgar(240, 220, self.enemy_group_one, self.enemy_group_two)
 
     def run(self):
         while not self.done:
@@ -35,8 +35,8 @@ class Application:
     def handle_input(self, dt):
         # Process the event (make sure this is only once in your game loop!)
         evt = pygame.event.poll()
-        self.enemy_group_one.update(dt, 300, 900)  # Moves the enemy's with in the given range
-        self.enemy_group_two.update(dt, 100, 600)
+        self.enemy_group_one.update(dt, 0, self.win_w)  # Moves the enemy's with in the given range
+        self.enemy_group_two.update(dt, 0, self.win_w)
         # event-handling
         mouse_x, mouse_y = pygame.mouse.get_pos()
         all_keys = pygame.key.get_pressed()
@@ -52,7 +52,7 @@ class Application:
 
     def render(self, surf):
         # Erase
-        surf.fill((0,0,0))
+        surf.fill((0, 0, 0))
 
         # Draw the map
         surf.blit(self.cur_map.rendered_img, (0, 0), (0, 0, self.win_w, self.win_h))

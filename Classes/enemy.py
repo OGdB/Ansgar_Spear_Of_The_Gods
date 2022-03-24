@@ -29,15 +29,16 @@ class EnemyGroups:
                 self.enemy_list.remove(self.enemy_list[j])
             j += 1
 
-    def enemy_hit_check(self, mouse_x, mouse_y, dmg):
+    def enemy_hit_check(self, spear_x, spear_y_top, spear_y_bot, dmg):
+        """ Checks to see if the enemy has been hit. """
         i = 0
         while i < len(self.enemy_list):
-            hit = False
-            hit = self.enemy_list[i].enemy_hit_check(mouse_x, mouse_y)
+            hit = self.enemy_list[i].enemy_hit_check(spear_x, spear_y_top, spear_y_bot)
             if hit:
                 dead = self.enemy_list[i].health.take_damage(dmg)
                 if dead:
                     self.enemy_list[i].dead = True
+                return True
             i += 1
 
     def draw(self, win):
