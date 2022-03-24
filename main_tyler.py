@@ -8,7 +8,7 @@ class Spear():
         self.player_y = player_y
         self.position = [player_x,player_y]
         self.direction = direction
-        self.length = 64
+        self.length = 32
         self.height = 16
         self.spear_list = spear_list
         self.lifetime = 100
@@ -28,7 +28,7 @@ class Spear():
                 s[0] += s[6] * dt
             if s[0] <= 0:
                 s[6] = 0
-            if s[0] >= 960 - s[3]:
+            if s[0] >= 480 - s[3]:
                 s[6] = 0
             if s[5] <= 0:
                 self.spear_list.remove(s)
@@ -69,7 +69,7 @@ class Ansgar():
 
 
     def draw(self, surf):
-        pygame.draw.rect(surf,(255,255,0),(self.position[0],self.position[1],64,64))
+        pygame.draw.rect(surf,(255,255,0),(self.position[0],self.position[1],32,32))
         self.s.draw(surf)
 
     def update(self,dt,evt):
@@ -80,8 +80,8 @@ class Ansgar():
         if all_keys[pygame.K_w] or all_keys[pygame.K_UP]:
             if self.jump == False:
 
-                self.ansgar_v_speed += 100 * dt
-                if self.ansgar_v_speed >= 20 or self.position[1] <= 500:
+                self.ansgar_v_speed += 10 * dt
+                if self.ansgar_v_speed >= 20 or self.position[1] <= 250:
                     self.jump = True
                     self.ansgar_v_speed *= -1
 
@@ -91,9 +91,9 @@ class Ansgar():
             if self.ansgar_accel > self.ansgar_max_speed:
                 self.ansgar_accel = -self.ansgar_max_speed
                 self.s.position[1] = -self.ansgar_max_speed
-            if self.position[1] >= 580:
-                self.position[1] = 580
-                self.s.position[1] = 580
+            if self.position[1] >= 290:
+                self.position[1] = 290
+                self.s.position[1] = 290
                 self.jump = False
         else:
             self.ansgar_d_speed = 100000 * dt
@@ -102,12 +102,12 @@ class Ansgar():
 
                     # Decelerate
 
-            if self.position[1] < 580:
+            if self.position[1] < 290:
                 self.position[1] += self.ansgar_d_speed * delta_time
                 self.s.position[1] += self.ansgar_d_speed * delta_time
-                if self.position[1] >= 580:
-                    self.position[1] = 580
-                    self.s.position[1] = 580
+                if self.position[1] >= 290:
+                    self.position[1] = 290
+                    self.s.position[1] = 290
                     self.jump = False
 
         if all_keys[pygame.K_a] or all_keys[pygame.K_LEFT]:
@@ -124,7 +124,10 @@ class Ansgar():
             else:
                 self.position[0] += 150 * dt
             self.direction = "right"
-
+        if self.position[0] <=0:
+            self.position[0] = 0
+        if self.position[0] >= 480 - 32:
+            self.position[0] = 480 - 32
 
 
         if evt.type == pygame.KEYDOWN:
@@ -138,9 +141,9 @@ class Ansgar():
 
 pygame.init()
 
-win = pygame.display.set_mode((960, 640),pygame.RESIZABLE)
+win = pygame.display.set_mode((480, 320),pygame.RESIZABLE)
 clock = pygame.time.Clock()
-a = Ansgar(890,580)
+a = Ansgar(240,220)
 
 done = False
 while not done:
