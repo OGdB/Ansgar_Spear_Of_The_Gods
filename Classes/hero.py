@@ -65,9 +65,11 @@ class Ansgar():
         self.jump = False
         self.last_accel = self.ansgar_accel
         self.s = Spear(self.position[0], self.position[1], self.direction, spear_list)
+        self.img = pygame.image.load("image\\smile.png")
 
     def draw(self, surf):
-        pygame.draw.rect(surf, (255, 255, 0), (self.position[0], self.position[1], 32, 32))
+        surf.blit(self.img,(self.position[0],self.position[1]))
+        pygame.draw.rect(surf, (255, 255, 0), (self.position[0], self.position[1], 32, 32),1)
         self.s.draw(surf)
 
     def update(self, dt, evt, keys):
@@ -80,7 +82,7 @@ class Ansgar():
             if self.jump == False:
 
                 self.ansgar_v_speed += 10 * dt
-                if self.ansgar_v_speed >= 20 or self.position[1] <= 250:
+                if self.ansgar_v_speed >= 20 or self.position[1] <= 170:
                     self.jump = True
                     self.ansgar_v_speed *= -1
 
@@ -90,9 +92,9 @@ class Ansgar():
             if self.ansgar_accel > self.ansgar_max_speed:
                 self.ansgar_accel = -self.ansgar_max_speed
                 self.s.position[1] = -self.ansgar_max_speed
-            if self.position[1] >= 290:
-                self.position[1] = 290
-                self.s.position[1] = 290
+            if self.position[1] >= 210:
+                self.position[1] = 210
+                self.s.position[1] = 210
                 self.jump = False
         else:
             self.ansgar_d_speed = 100000 * dt
@@ -101,12 +103,12 @@ class Ansgar():
 
             # Decelerate
 
-            if self.position[1] < 290:
+            if self.position[1] < 210:
                 self.position[1] += self.ansgar_d_speed * dt
                 self.s.position[1] += self.ansgar_d_speed * dt
-                if self.position[1] >= 290:
-                    self.position[1] = 290
-                    self.s.position[1] = 290
+                if self.position[1] >= 210:
+                    self.position[1] = 210
+                    self.s.position[1] = 210
                     self.jump = False
 
         if all_keys[pygame.K_a] or all_keys[pygame.K_LEFT]:

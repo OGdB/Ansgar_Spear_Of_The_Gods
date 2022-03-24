@@ -21,7 +21,7 @@ class Application:
         self.total_time = 0                   # Total time the game's been running (used for player/coin color modulation)
         self.enemy_group_one = Classes.enemy.EnemyGroups(300, 300, 5, 16)
         self.enemy_group_two = Classes.enemy.EnemyGroups(800, 500, 10, 16)
-        self.a = Classes.hero.Ansgar(240, 220)
+        self.a = Classes.hero.Ansgar(240, 200)
 
     def run(self):
         while not self.done:
