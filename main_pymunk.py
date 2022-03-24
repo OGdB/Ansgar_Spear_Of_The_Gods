@@ -9,7 +9,7 @@ done = False
 clock = pygame.time.Clock()
 
 space = pymunk.Space()  # Create a Space which contain the simulation
-space.gravity = (0, 0.0005)  # Set its gravity
+space.gravity = (0, 200)  # Set its gravity
 
 ground_points = ((0, 550), (50, 600), (750, 500))
 
@@ -22,7 +22,7 @@ for i in range(len(ground_points) - 1):  # For loop creating and setting the att
 ball_list = []
 
 while not done:  # Infinite loop simulation
-    delta_time = clock.tick(60)
+    delta_time = clock.tick(60) / 1000
     space.step(delta_time)  # Step the simulation one step forward
 
     event = pygame.event.poll()
