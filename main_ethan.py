@@ -1,12 +1,14 @@
 import pygame
 import Classes.enemy
+import Classes.hero
 
 pygame.init()
 
-win = pygame.display.set_mode((960, 640))
+win = pygame.display.set_mode((480, 320),pygame.RESIZABLE)
 clock = pygame.time.Clock()
 enemy_group_one = Classes.enemy.EnemyGroups(300, 300, 5, 16)  # The starting x and y value of the enemy, then how many, then the health
 enemy_group_two = Classes.enemy.EnemyGroups(800, 500, 10, 16)
+a = Classes.hero.Ansgar(240, 220)
 done = False
 while not done:
     delta_time = clock.tick() / 1000
@@ -24,11 +26,13 @@ while not done:
     if event.type == pygame.QUIT:
         done = True
     all_keys = pygame.key.get_pressed()
+    a.update(delta_time, event, all_keys)
     if all_keys[pygame.K_ESCAPE]:
         done = True
 
     # DRAWING
     win.fill((0, 0, 0))
+    a.draw(win)
     enemy_group_one.draw(win)
     enemy_group_two.draw(win)
 

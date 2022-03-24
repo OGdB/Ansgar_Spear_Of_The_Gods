@@ -1,24 +1,27 @@
 import pygame
 import map_data
-import math
+import Classes.enemy
+import Classes.hero
 
 
 class Application:
     def __init__(self, screen_w, screen_h):
         pygame.init()
+        self.win_w = screen_w                                           # window width in pixels
+        self.win_h = screen_h                                           # window height in pixels
         self.half_w = self.win_w // 2                                   # half-window width in pixels
-        self.win_w = screen_w  # window width in pixels
-        self.win_h = screen_h  # window height in pixels
-        self.half_w = self.win_w // 2  # half-window width in pixels
-        self.half_h = self.win_h // 2  # half-window height in pixels
-        self.win = pygame.display.set_mode((self.win_w, self.win_h))  # The main window
-        self.done = False  # Should we bail out of the game loop?
-        self.clock = pygame.time.Clock()  # The pygame clock object used for delta-time
+        self.half_h = self.win_h // 2                                   # half-window height in pixels
+        self.win = pygame.display.set_mode((self.win_w, self.win_h))    # The main window
+        self.done = False                                               # Should we bail out of the game loop?
+        self.clock = pygame.time.Clock()                                # The pygame clock object used for delta-time
 
-        self.font = pygame.font.SysFont("Courier New", 16)  # The font to use for rendering stats
+        self.font = pygame.font.SysFont("Courier New", 16)              # The font to use for rendering stats
 
-        self.cur_map = map_data.Map("maps\\Map.json")  # The initial map to load
-        self.total_time = 0  # Total time the game's been running (used for player/coin color modulation)
+        self.cur_map = map_data.Map("maps\\Map.json")               # The initial map to load
+        self.total_time = 0                   # Total time the game's been running (used for player/coin color modulation)
+        self.enemy_group_one = Classes.enemy.EnemyGroups(300, 300, 5, 16)
+        self.enemy_group_two = Classes.enemy.EnemyGroups(800, 500, 10, 16)
+        self.a = Classes.hero.Ansgar(240, 220)
 
     def run(self):
         while not self.done:
@@ -32,20 +35,31 @@ class Application:
     def handle_input(self, dt):
         # Process the event (make sure this is only once in your game loop!)
         evt = pygame.event.poll()
-
+        self.enemy_group_one.update(dt, 300, 900)  # Moves the enemy's with in the given range
+        self.enemy_group_two.update(dt, 100, 600)
         # event-handling
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+        all_keys = pygame.key.get_pressed()
+        if evt.type == pygame.MOUSEBUTTONDOWN and evt.button == 1:
+            self.enemy_group_one.enemy_hit_check(mouse_x, mouse_y, 100)
+            self.enemy_group_two.enemy_hit_check(mouse_x, mouse_y, 100)
         if evt.type == pygame.QUIT:
             self.done = True
         elif evt.type == pygame.KEYDOWN:
             if evt.key == pygame.K_ESCAPE:
                 self.done = True
+        self.a.update(dt, evt, all_keys)
 
     def render(self, surf):
         # Erase
-        surf.fill((0, 0, 0))
+        surf.fill((0,0,0))
 
         # Draw the map
         surf.blit(self.cur_map.rendered_img, (0, 0), (0, 0, self.win_w, self.win_h))
+        self.a.draw(surf)
+        self.enemy_group_one.draw(surf)
+        self.enemy_group_two.draw(surf)
 
         # Flip
         pygame.display.flip()
+
