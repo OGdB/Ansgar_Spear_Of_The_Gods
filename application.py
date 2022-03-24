@@ -2,21 +2,23 @@ import pygame
 import map_data
 import math
 
+
 class Application:
     def __init__(self, screen_w, screen_h):
         pygame.init()
-        self.win_w = screen_w                                           # window width in pixels
-        self.win_h = screen_h                                           # window height in pixels
         self.half_w = self.win_w // 2                                   # half-window width in pixels
-        self.half_h = self.win_h // 2                                   # half-window height in pixels
-        self.win = pygame.display.set_mode((self.win_w, self.win_h))    # The main window
-        self.done = False                                               # Should we bail out of the game loop?
-        self.clock = pygame.time.Clock()                                # The pygame clock object used for delta-time
+        self.win_w = screen_w  # window width in pixels
+        self.win_h = screen_h  # window height in pixels
+        self.half_w = self.win_w // 2  # half-window width in pixels
+        self.half_h = self.win_h // 2  # half-window height in pixels
+        self.win = pygame.display.set_mode((self.win_w, self.win_h))  # The main window
+        self.done = False  # Should we bail out of the game loop?
+        self.clock = pygame.time.Clock()  # The pygame clock object used for delta-time
 
-        self.font = pygame.font.SysFont("Courier New", 16)              # The font to use for rendering stats
+        self.font = pygame.font.SysFont("Courier New", 16)  # The font to use for rendering stats
 
-        self.cur_map = map_data.Map("maps\\Map.json")               # The initial map to load
-        self.total_time = 0                   # Total time the game's been running (used for player/coin color modulation)
+        self.cur_map = map_data.Map("maps\\Map.json")  # The initial map to load
+        self.total_time = 0  # Total time the game's been running (used for player/coin color modulation)
 
     def run(self):
         while not self.done:
@@ -40,7 +42,7 @@ class Application:
 
     def render(self, surf):
         # Erase
-        surf.fill((0,0,0))
+        surf.fill((0, 0, 0))
 
         # Draw the map
         surf.blit(self.cur_map.rendered_img, (0, 0), (0, 0, self.win_w, self.win_h))
