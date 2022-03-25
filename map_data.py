@@ -49,6 +49,7 @@ class Map:
         self.tile_layers = []                   # stores all the tile layers in the map
         self.pickups = []                       # a list of 2d points from the object layers of the map.  As the player
                                                 #   collects these, the contents will change
+        self.floor_points = []
 
         # Get some information about where the map file is located
         map_dir = os.path.dirname(fname)
@@ -115,22 +116,26 @@ class Map:
         # once a ground-tile is found..
         # loop checking if the tile on its right is also ground, save the x on the top right of the last tile
         # once end is found, draw collider from start to end
-
-        
         y = 0
         row_num = 0
         for row in self.tile_layers[0]:
             x = 0
-            col_num = 0
-            for code in row:
-                if code != 0:  # if there is a tile drawn on this row
-                    result = self.get_tile_data(code)  # get tile data of every individual tile
 
-                    if result is not None:  # there's a tile
-                        seg = pymunk.Segment(space.static_body, (x, y), (x + self.tile_width, y), 0.0)
-                        seg.elasticity = 0.95
-                        seg.friction = 0.9
-                        space.add(seg)
+            col_num = 0
+            for code_i in range(len(row)):
+                if row[code_i] != 0:  # if there is a tile drawn on this row
+                    # is the next tile also ground?
+                    start_x = x
+                    end_x = start_x + 16
+                    end_i = code_i
+                    while end_i + 1 < len(row) and row[end_i + 1] != 0:
+                        end_x += 16  # The next tile is also ground, so make the end_x a tile wider
+                        end_i += 1
+                    seg = pymunk.Segment(space.static_body, (start_x, y), (end_x, y), 0.0)
+                    seg.elasticity = 0.95
+                    seg.friction = 0.9
+                    self.floor_points.append([start_x, end_x, y])
+                    space.add(seg)
                 x += self.tile_width
                 col_num += 1
 

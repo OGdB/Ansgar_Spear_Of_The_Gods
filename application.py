@@ -17,7 +17,7 @@ class Application:
         self.clock = pygame.time.Clock()  # The pygame clock object used for delta-time
 
         self.space = pymunk.Space()  # Create a physics space
-        self.space.gravity = (0, 100)  # Set its gravity
+        self.space.gravity = (0, 250)  # Set its gravity
 
 
         self.font = pygame.font.SysFont("Courier New", 16)  # The font to use for rendering stats
@@ -82,5 +82,7 @@ class Application:
 
         for body in self.ball_list:
             pygame.draw.circle(surf, (255, 0, 0), body.position, 10)
+        for array_info in self.cur_map.floor_points:
+            pygame.draw.line(surf, (255, 255, 0), (array_info[0], array_info[2]), (array_info[1], array_info[2]))
 
         pygame.display.flip()
