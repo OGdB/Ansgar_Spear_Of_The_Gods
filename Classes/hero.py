@@ -1,8 +1,9 @@
 import pygame
+import Classes.enemy
 
 
-class Spear():
-    def __init__(self, player_x, player_y, direction, spear_list):
+class Spear:
+    def __init__(self, player_x, player_y, direction, spear_list, e_one, e_two):
         self.player_x = player_x
         self.player_y = player_y
         self.position = [player_x, player_y]
@@ -12,6 +13,8 @@ class Spear():
         self.spear_list = spear_list
         self.lifetime = 100
         self.speed = 275
+        self.enemy_one = e_one
+        self.enemy_two = e_two
 
     def make_spear(self):
         new_spear = [self.position[0], self.position[1], self.direction, self.length, self.height, self.lifetime,
@@ -34,6 +37,13 @@ class Spear():
             if s[5] <= 0:
                 self.spear_list.remove(s)
 
+            hit_check = self.enemy_one.enemy_hit_check(s[0], s[1], s[1]+s[4], 100)
+            if hit_check:
+                self.spear_list.remove(s)
+            hit_check = self.enemy_two.enemy_hit_check(s[0], s[1], s[1]+s[4], 100)
+            if hit_check:
+                self.spear_list.remove(s)
+
         if all_keys[pygame.K_a] or all_keys[pygame.K_LEFT]:
             self.direction = "left"
             if all_keys[pygame.K_LSHIFT]:
@@ -53,8 +63,8 @@ class Spear():
             pygame.draw.rect(surf, (100, 100, 100), (new_spear[0], new_spear[1], new_spear[3], new_spear[4]))
 
 
-class Ansgar():
-    def __init__(self, player_x, player_y):
+class Ansgar:
+    def __init__(self, player_x, player_y, e_one, e_two):
         self.position = [player_x, player_y]
         self.direction = "right"
         spear_list = []
@@ -64,7 +74,7 @@ class Ansgar():
         self.ansgar_d_speed = 0
         self.jump = False
         self.last_accel = self.ansgar_accel
-        self.s = Spear(self.position[0], self.position[1], self.direction, spear_list)
+        self.s = Spear(self.position[0], self.position[1], self.direction, spear_list, e_one, e_two)
 
     def draw(self, surf):
         pygame.draw.rect(surf, (255, 255, 0), (self.position[0], self.position[1], 32, 32))
