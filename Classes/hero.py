@@ -16,6 +16,7 @@ class Spear:
         self.enemy_one = e_one
         self.enemy_two = e_two
 
+
     def make_spear(self):
         new_spear = [self.position[0], self.position[1], self.direction, self.length, self.height, self.lifetime,
                      self.speed]
@@ -75,9 +76,11 @@ class Ansgar:
         self.jump = False
         self.last_accel = self.ansgar_accel
         self.s = Spear(self.position[0], self.position[1], self.direction, spear_list, e_one, e_two)
+        self.ansgar_img = pygame.image.load("image\\smile.png")
 
     def draw(self, surf):
-        pygame.draw.rect(surf, (255, 255, 0), (self.position[0], self.position[1], 32, 32))
+        pygame.draw.rect(surf, (255, 255, 0), (self.position[0], self.position[1], 32, 32),1)
+        surf.blit(self.ansgar_img,(self.position[0],self.position)[1])
         self.s.draw(surf)
 
     def update(self, dt, evt, keys):
