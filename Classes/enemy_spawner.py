@@ -31,14 +31,14 @@ class Enemy_Spawner:
         self.x += self.horizontal_speed * dt
         # self.y += self.vertical_speed * dt
 
-        if self.x < right_x_border:
+        if self.x < left_x_border:
             # We just went off the left-edge
-            self.x = right_x_border
+            self.x = left_x_border
             self.horizontal_speed *= -1
             self.flipped = not self.flipped
-        if self.x > left_x_border - Enemy_Spawner.dim:
+        if self.x > right_x_border - Enemy_Spawner.dim:
             # We just went off the right-edge
-            self.x = left_x_border - Enemy_Spawner.dim
+            self.x = right_x_border - Enemy_Spawner.dim
             self.horizontal_speed *= -1
             self.flipped = not self.flipped
 
