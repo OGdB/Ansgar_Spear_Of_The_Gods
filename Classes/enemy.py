@@ -26,7 +26,7 @@ class EnemyGroups:
         """ Move's the enemy's within the provided limits. Calls the update in the enemy_spawner class. """
         j = 0
         while j < len(self.enemy_list):
-            self.enemy_list[j].update(dt, r_border_x, l_border_x, False)
+            self.enemy_list[j].update(dt, l_border_x,r_border_x, False)
             if self.enemy_list[j].dead:
                 self.enemy_list.remove(self.enemy_list[j])
             j += 1
