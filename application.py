@@ -50,9 +50,6 @@ class Application:
         mouse_x, mouse_y = pygame.mouse.get_pos()
         all_keys = pygame.key.get_pressed()
         if evt.type == pygame.MOUSEBUTTONDOWN and evt.button == 1:
-            self.enemy_group_one.enemy_hit_check(mouse_x, mouse_y, 100)
-            self.enemy_group_two.enemy_hit_check(mouse_x, mouse_y, 100)
-
             body = pymunk.Body()  # Create a Body
             body.position = (mouse_x, mouse_y)  # Set the position of the body
             body_shape = pymunk.Circle(body, 10)

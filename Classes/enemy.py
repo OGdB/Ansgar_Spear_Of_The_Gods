@@ -15,7 +15,6 @@ class EnemyGroups:
         self.image = pygame.image.load(img)
         Classes.enemy_spawner.Enemy_Spawner.dim = size
         i = 0
-        print(self.position[0])
         while i <= self.num:
             new_x = self.position[0]
             new_y = self.position[1]
