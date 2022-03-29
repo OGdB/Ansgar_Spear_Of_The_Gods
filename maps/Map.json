@@ -48,20 +48,6 @@
          "tileheight":16,
          "tilewidth":16,
          "transparentcolor":"#ffffff"
-        }, 
-        {
-         "columns":4,
-         "firstgid":77,
-         "image":"..\/image\/coin.png",
-         "imageheight":16,
-         "imagewidth":64,
-         "margin":0,
-         "name":"coin",
-         "spacing":0,
-         "tilecount":4,
-         "tileheight":16,
-         "tilewidth":16,
-         "transparentcolor":"#ffffff"
         }],
  "tilewidth":16,
  "type":"map",
