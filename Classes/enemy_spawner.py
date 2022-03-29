@@ -21,6 +21,7 @@ class Enemy_Spawner:
                       self.Green)
         self.health = Classes.health.Health()
         self.dead = False
+        self.flipped = True
 
     def update(self, dt, left_x_border, right_x_border, screen_h):
         # self.vertical_speed += 100 * dt
@@ -34,10 +35,12 @@ class Enemy_Spawner:
             # We just went off the left-edge
             self.x = left_x_border
             self.horizontal_speed *= -1
+            self.flipped = not self.flipped
         if self.x > right_x_border - Enemy_Spawner.dim:
             # We just went off the right-edge
             self.x = right_x_border - Enemy_Spawner.dim
             self.horizontal_speed *= -1
+            self.flipped = not self.flipped
 
         # if self.y < Enemy_Spawner.dim:
             # We just went off the top-edge
@@ -55,7 +58,11 @@ class Enemy_Spawner:
             return False
 
     def draw(self, surf, img):
-        surf.blit(img, (self.x, self.y))
+        if self.flipped:
+            flipped_img = pygame.transform.flip(img, True, False)
+            surf.blit(flipped_img, (self.x, self.y))
+        else:
+            surf.blit(img, (self.x, self.y))
         health_bar = self.health.cur_health / self.health.max_health
         health_bar_w = health_bar * 20
         pygame.draw.rect(surf, (255, 0, 0), (self.x - 2, self.y - 7, health_bar_w, 5))

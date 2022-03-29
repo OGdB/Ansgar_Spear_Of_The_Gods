@@ -23,7 +23,7 @@ class Application:
 
         self.cur_map = map_data.Map("maps\\Map.json")  # The initial map to load
         self.total_time = 0  # Total time the game's been running (used for player/coin color modulation)
-        self.enemy_group_one = Classes.enemy.EnemyGroups(-100, 150, 5, 16, "image\\Bear.png")
+        self.enemy_group_one = Classes.enemy.EnemyGroups(0, 150, 5, 16, "image\\Bear.png")
         self.enemy_group_two = Classes.enemy.EnemyGroups(0, 300, 10, 16, "image\\Bear.png")
         self.ansgar = Classes.hero.Ansgar((240, 100), self.space)
 
@@ -50,8 +50,8 @@ class Application:
         mouse_x, mouse_y = pygame.mouse.get_pos()
         all_keys = pygame.key.get_pressed()
         if evt.type == pygame.MOUSEBUTTONDOWN and evt.button == 1:
-            self.enemy_group_one.enemy_hit_check(mouse_x, mouse_y, 100, 50)
-            self.enemy_group_two.enemy_hit_check(mouse_x, mouse_y, 100, 50)
+            self.enemy_group_one.enemy_hit_check(mouse_x, mouse_y, 100)
+            self.enemy_group_two.enemy_hit_check(mouse_x, mouse_y, 100)
 
             body = pymunk.Body()  # Create a Body
             body.position = (mouse_x, mouse_y)  # Set the position of the body
@@ -79,8 +79,6 @@ class Application:
 
         for body in self.ball_list:
             pygame.draw.circle(surf, (255, 0, 0), body.position, 10)
-
-            # debug lines
         for array_info in self.cur_map.floor_points:
             pygame.draw.line(surf, (255, 255, 0), (array_info[0], array_info[2]), (array_info[1], array_info[2]))
 
