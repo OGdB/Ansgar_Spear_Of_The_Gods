@@ -7,7 +7,7 @@ class Health:
         """Returns true if entity died"""
         self.cur_health -= amount
 
-        if self.cur_health < 0:  # cannot have lower health than 0
+        if self.cur_health <= 0:  # cannot have lower health than 0
             self.cur_health = 0
             return True  # entity died
 
