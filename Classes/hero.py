@@ -69,6 +69,7 @@ class Ansgar:
         self.dim_radius = 15
         poly_dims = [(-self.dim_radius, -self.dim_radius), (self.dim_radius, -self.dim_radius), (self.dim_radius, self.dim_radius), (-self.dim_radius, self.dim_radius)]
         self.shape = pymunk.Poly(self.body, poly_dims)
+        self.shape.friction = 0.25
         space.add(self.body, self.shape)
 
         self.direction = "right"
@@ -83,22 +84,9 @@ class Ansgar:
 
         top_left = (self.body.position.x - self.dim_radius, self.body.position.y - self.dim_radius)
         top_right = (self.body.position.x + self.dim_radius, self.body.position.y - self.dim_radius)
-
-        middle_left = (self.body.position.x - self.dim_radius, self.body.position.y)
-        middle_right = (self.body.position.x + self.dim_radius, self.body.position.y)
-
         bottom_left = (self.body.position.x - self.dim_radius, self.body.position.y + self.dim_radius)
         bottom_right = (self.body.position.x + self.dim_radius, self.body.position.y + self.dim_radius)
 
-        pygame.draw.circle(surf, (255, 0, 0), top_left, 3)
-        pygame.draw.circle(surf, (255, 0, 0), top_right, 3)
-        pygame.draw.circle(surf, (255, 0, 0), middle_left, 3)
-        pygame.draw.circle(surf, (255, 0, 0), middle_right, 3)
-        pygame.draw.circle(surf, (255, 0, 0), bottom_left, 3)
-        pygame.draw.circle(surf, (255, 0, 0), bottom_right, 3)
-
-        center_x = (self.body.position.x, self.body.position.y)
-        pygame.draw.circle(surf, (255, 255, 0), center_x, 5)
         pygame.draw.polygon(surf, (255, 255, 0), [top_left, top_right, bottom_right, bottom_left])
 
     def update(self, dt, evt, keys):
