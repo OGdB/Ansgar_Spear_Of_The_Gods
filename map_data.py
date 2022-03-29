@@ -1,5 +1,6 @@
 import json
 import pygame
+import pymunk
 import os
 
 class Tileset:
@@ -104,8 +105,32 @@ class Map:
                 if "x" in obj and "y" in obj:
                     self.pickups.append((obj["x"], obj["y"]))
 
+    def draw_colliders(self, space):
+        # for every 16x16 ground tile in layers[0].groundlayer
+            # if the data
+        for layer in self.tile_layers:
+            y = 0
+            row_num = 0
+            for row in layer:
+                x = 0
+                col_num = 0
+                for code in row:
+                    if code != 0:  # if there is a tile drawn on this row
+                        result = self.get_tile_data(code)  # get tile data of every individual tile
+
+                        if result is not None:  # there's a tile
+                            seg = pymunk.Segment(space.static_body, (x, y), (x + self.tile_width, y), 0.0)
+                            seg.elasticity = 0.95
+                            seg.friction = 0.9
+                            space.add(seg)
+                    x += self.tile_width
+                    col_num += 1
+
+                y += self.tile_height
+                row_num += 1
+
     def __str__(self):
-        s += "Tilesets:\n"
+        s = "Tilesets:\n"
         for i in range(len(self.tile_sets)):
             tset = self.tile_sets[i]
             s += "\tTileset" + str(i) + "(" + str(tset.name) + "):\n"
@@ -144,7 +169,6 @@ class Map:
                 break
         return result
 
-
     def render_to_image(self):
         surf = pygame.Surface((self.map_width * self.tile_width, self.map_height * self.tile_height))
 
@@ -155,7 +179,7 @@ class Map:
                 x = 0
                 col_num = 0
                 for code in row:
-                    if code != 0:
+                    if code != 0:  # if there is a tile drawn on this row
                         result = self.get_tile_data(code)
                         if result is not None:
                             img, area = result
