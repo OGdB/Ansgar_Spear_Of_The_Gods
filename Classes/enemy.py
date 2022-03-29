@@ -1,16 +1,19 @@
+import pygame.image
+
 import Classes.enemy_spawner
 import Classes.health
 
 
 class EnemyGroups:
 
-    def __init__(self, x, y, num, size):
+    def __init__(self, x, y, num, size, img):
         """ Creates the group of enemy's based on the information provided. THe starting x and y, how many in this
             group, then how much the enemy's have. """
         self.position = [x, y]
         self.enemy_list = []
         self.num = num
         self.health = Classes.health.Health()
+        self.image = pygame.image.load(img)
         Classes.enemy_spawner.Enemy_Spawner.dim = size
         i = 0
         while i <= self.num:
@@ -44,4 +47,4 @@ class EnemyGroups:
     def draw(self, win):
         """ Draw's the enemy's. Calls the draw in the enemy_spawner class. """
         for cur_enemy in self.enemy_list:
-            cur_enemy.draw(win)
+            cur_enemy.draw(win, self.image)

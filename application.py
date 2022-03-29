@@ -2,6 +2,7 @@ import pygame
 import map_data
 import Classes.enemy
 import Classes.hero
+import image
 
 
 class Application:
@@ -19,8 +20,8 @@ class Application:
 
         self.cur_map = map_data.Map("maps\\Map.json")               # The initial map to load
         self.total_time = 0                   # Total time the game's been running (used for player/coin color modulation)
-        self.enemy_group_one = Classes.enemy.EnemyGroups(0, 150, 5, 16)
-        self.enemy_group_two = Classes.enemy.EnemyGroups(0, 300, 10, 16)
+        self.enemy_group_one = Classes.enemy.EnemyGroups(0, 150, 5, 16, "image\\Skeleton head.png")
+        self.enemy_group_two = Classes.enemy.EnemyGroups(0, 300, 10, 16, "image\\Skeleton head.png")
         self.a = Classes.hero.Ansgar(240, 220, self.enemy_group_one, self.enemy_group_two)
 
     def run(self):

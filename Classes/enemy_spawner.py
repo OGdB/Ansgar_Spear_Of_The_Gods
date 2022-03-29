@@ -51,5 +51,6 @@ class Enemy_Spawner:
         else:
             return False
 
-    def draw(self, surf):
-        pygame.draw.rect(surf, self.color, (self.x, self.y, Enemy_Spawner.dim, Enemy_Spawner.dim))
+    def draw(self, surf, img):
+        surf.blit(img, (self.x, self.y))
+        #pygame.draw.rect(surf, self.color, (self.x, self.y, Enemy_Spawner.dim, Enemy_Spawner.dim))
