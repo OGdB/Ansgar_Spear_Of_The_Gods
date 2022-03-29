@@ -45,11 +45,12 @@ class Enemy_Spawner:
         #    self.y = screen_h - Enemy_Spawner.dim
         #    self.vertical_speed *= -1
 
-    def enemy_hit_check(self, m_x, m_y):
-        if self.x <= m_x <= self.x+self.dim and self.y <= m_y <= self.y+self.dim:
+    def enemy_hit_check(self, s_x, s_y_t, s_y_b):
+        if self.x <= s_x <= self.x+self.dim and s_y_t <= self.y <= s_y_b:
             return True
         else:
             return False
 
-    def draw(self, surf):
-        pygame.draw.rect(surf, self.color, (self.x, self.y, Enemy_Spawner.dim, Enemy_Spawner.dim))
+    def draw(self, surf, img):
+        surf.blit(img, (self.x, self.y))
+        #pygame.draw.rect(surf, self.color, (self.x, self.y, Enemy_Spawner.dim, Enemy_Spawner.dim))

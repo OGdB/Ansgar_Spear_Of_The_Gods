@@ -1,9 +1,9 @@
 import pygame
-import pymunk
+import Classes.enemy
 
 
-class Spear():
-    def __init__(self, player_x, player_y, direction, spear_list):
+class Spear:
+    def __init__(self, player_x, player_y, direction, spear_list, e_one, e_two):
         self.player_x = player_x
         self.player_y = player_y
         self.position = [player_x, player_y]
@@ -13,6 +13,8 @@ class Spear():
         self.spear_list = spear_list
         self.lifetime = 100
         self.speed = 275
+        self.enemy_one = e_one
+        self.enemy_two = e_two
 
     def make_spear(self):
         new_spear = [self.position[0], self.position[1], self.direction, self.length, self.height, self.lifetime,
@@ -35,6 +37,13 @@ class Spear():
             if s[5] <= 0:
                 self.spear_list.remove(s)
 
+            hit_check = self.enemy_one.enemy_hit_check(s[0], s[1], s[1]+s[4], 100)
+            if hit_check:
+                self.spear_list.remove(s)
+            hit_check = self.enemy_two.enemy_hit_check(s[0], s[1], s[1]+s[4], 100)
+            if hit_check:
+                self.spear_list.remove(s)
+
         if all_keys[pygame.K_a] or all_keys[pygame.K_LEFT]:
             self.direction = "left"
             if all_keys[pygame.K_LSHIFT]:
@@ -54,8 +63,8 @@ class Spear():
             pygame.draw.rect(surf, (100, 100, 100), (new_spear[0], new_spear[1], new_spear[3], new_spear[4]))
 
 
-class Ansgar():
-    def __init__(self, player_x, player_y):
+class Ansgar:
+    def __init__(self, player_x, player_y, e_one, e_two):
         self.position = [player_x, player_y]
         self.direction = "right"
         spear_list = []
@@ -65,12 +74,10 @@ class Ansgar():
         self.ansgar_d_speed = 0
         self.jump = False
         self.last_accel = self.ansgar_accel
-        self.s = Spear(self.position[0], self.position[1], self.direction, spear_list)
-        self.img = pygame.image.load("image\\smile.png")
+        self.s = Spear(self.position[0], self.position[1], self.direction, spear_list, e_one, e_two)
 
     def draw(self, surf):
-        surf.blit(self.img,(self.position[0],self.position[1]))
-        pygame.draw.rect(surf, (255, 255, 0), (self.position[0], self.position[1], 32, 32),1)
+        pygame.draw.rect(surf, (255, 255, 0), (self.position[0], self.position[1], 32, 32))
         self.s.draw(surf)
 
     def update(self, dt, evt, keys):
@@ -83,7 +90,7 @@ class Ansgar():
             if self.jump == False:
 
                 self.ansgar_v_speed += 10 * dt
-                if self.ansgar_v_speed >= 20 or self.position[1] <= 170:
+                if self.ansgar_v_speed >= 20 or self.position[1] <= 250:
                     self.jump = True
                     self.ansgar_v_speed *= -1
 
@@ -93,9 +100,9 @@ class Ansgar():
             if self.ansgar_accel > self.ansgar_max_speed:
                 self.ansgar_accel = -self.ansgar_max_speed
                 self.s.position[1] = -self.ansgar_max_speed
-            if self.position[1] >= 210:
-                self.position[1] = 210
-                self.s.position[1] = 210
+            if self.position[1] >= 290:
+                self.position[1] = 290
+                self.s.position[1] = 290
                 self.jump = False
         else:
             self.ansgar_d_speed = 100000 * dt
@@ -104,12 +111,12 @@ class Ansgar():
 
             # Decelerate
 
-            if self.position[1] < 210:
+            if self.position[1] < 290:
                 self.position[1] += self.ansgar_d_speed * dt
                 self.s.position[1] += self.ansgar_d_speed * dt
-                if self.position[1] >= 210:
-                    self.position[1] = 210
-                    self.s.position[1] = 210
+                if self.position[1] >= 290:
+                    self.position[1] = 290
+                    self.s.position[1] = 290
                     self.jump = False
 
         if all_keys[pygame.K_a] or all_keys[pygame.K_LEFT]:
