@@ -1,12 +1,15 @@
 import random
-import pygame
+
+import pygame.draw
+
+import Classes
 
 
 class Enemy_Spawner:
 
     dim = 0
 
-    def __init__(self, starting_x, starting_y, health):
+    def __init__(self, starting_x, starting_y):
         self.Red = random.randint(0, 255)
         self.Blue = random.randint(0, 255)
         self.Green = random.randint(0, 255)
@@ -16,7 +19,7 @@ class Enemy_Spawner:
         # self.vertical_speed = random.randint(0, 100)  # pixels / second
         self.color = (self.Red, self.Blue,
                       self.Green)
-        self.health = health
+        self.health = Classes.health.Health()
         self.dead = False
 
     def update(self, dt, left_x_border, right_x_border, screen_h):
@@ -53,4 +56,7 @@ class Enemy_Spawner:
 
     def draw(self, surf, img):
         surf.blit(img, (self.x, self.y))
-        #pygame.draw.rect(surf, self.color, (self.x, self.y, Enemy_Spawner.dim, Enemy_Spawner.dim))
+        health_bar = self.health.cur_health / self.health.max_health
+        health_bar_w = health_bar * 20
+        pygame.draw.rect(surf, (255, 0, 0), (self.x - 2, self.y - 7, health_bar_w, 5))
+        # pygame.draw.rect(surf, self.color, (self.x, self.y, Enemy_Spawner.dim, Enemy_Spawner.dim))

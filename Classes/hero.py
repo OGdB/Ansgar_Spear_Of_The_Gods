@@ -37,10 +37,10 @@ class Spear:
             if s[5] <= 0:
                 self.spear_list.remove(s)
 
-            hit_check = self.enemy_one.enemy_hit_check(s[0], s[1], s[1]+s[4], 100)
+            hit_check = self.enemy_one.enemy_hit_check(s[0], s[1], s[1]+s[4], 50)
             if hit_check:
                 self.spear_list.remove(s)
-            hit_check = self.enemy_two.enemy_hit_check(s[0], s[1], s[1]+s[4], 100)
+            hit_check = self.enemy_two.enemy_hit_check(s[0], s[1], s[1]+s[4], 50)
             if hit_check:
                 self.spear_list.remove(s)
 
