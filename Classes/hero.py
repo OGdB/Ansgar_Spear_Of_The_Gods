@@ -21,7 +21,7 @@ class Spear:
 
     def make_spear(self):
         new_spear = [self.position[0], self.position[1], self.direction, self.length, self.height, self.lifetime,
-                     self.speed]
+                     self.speed,self.direction]
         self.spear_list.append(new_spear)
 
     def update(self, dt):
@@ -64,7 +64,7 @@ class Spear:
     def draw(self, surf):
         for new_spear in self.spear_list:
             pygame.draw.rect(surf, (100, 100, 100), (new_spear[0], new_spear[1], new_spear[3], new_spear[4]),1)
-            if self.direction == "right":
+            if new_spear[7] == "right":
                 surf.blit(self.spear_img,(new_spear[0],new_spear[1]))
             else:
                 surf.blit(self.rotated_spear,(new_spear[0],new_spear[1]))
