@@ -131,11 +131,19 @@ class Map:
                     while end_i + 1 < len(row) and row[end_i + 1] != 0:
                         end_x += 16  # The next tile is also ground, so make the end_x a tile wider
                         end_i += 1
-                    seg = pymunk.Segment(space.static_body, (start_x, y), (end_x, y), 0.0)
-                    seg.elasticity = 0.95
-                    seg.friction = 0.9
+                    seg_up = pymunk.Segment(space.static_body, (start_x, y), (end_x, y), 0.0)
+                    seg_up.elasticity = 0.95
+                    seg_up.friction = 0.9
+
+                    seg_bot = pymunk.Segment(space.static_body, (start_x, y + self.tile_height), (end_x, y + self.tile_height), 0.0)
+                    seg_bot.elasticity = 0.95
+                    seg_bot.friction = 0.9
+
                     self.floor_points.append([start_x, end_x, y])
-                    space.add(seg)
+                    self.floor_points.append([start_x, end_x, y+self.tile_height])
+                    space.add(seg_up)
+                    space.add(seg_bot)
+
                 x += self.tile_width
                 col_num += 1
 

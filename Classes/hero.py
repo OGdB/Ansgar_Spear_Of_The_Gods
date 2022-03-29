@@ -81,14 +81,14 @@ class Ansgar:
         # position of drawing vertices is body position + dimensions.
         # got to do something regarding rotations as well (on collision)
 
-        top_left = (self.body.position.x - 15, self.body.position.y - 15)
-        top_right = (self.body.position.x + 15, self.body.position.y - 15)
+        top_left = (self.body.position.x - self.dim_radius, self.body.position.y - self.dim_radius)
+        top_right = (self.body.position.x + self.dim_radius, self.body.position.y - self.dim_radius)
 
-        middle_left = (self.body.position.x - 15, self.body.position.y)
-        middle_right = (self.body.position.x + 15, self.body.position.y)
+        middle_left = (self.body.position.x - self.dim_radius, self.body.position.y)
+        middle_right = (self.body.position.x + self.dim_radius, self.body.position.y)
 
-        bottom_left = (self.body.position.x - 15, self.body.position.y + 15)
-        bottom_right = (self.body.position.x + 15, self.body.position.y + 15)
+        bottom_left = (self.body.position.x - self.dim_radius, self.body.position.y + self.dim_radius)
+        bottom_right = (self.body.position.x + self.dim_radius, self.body.position.y + self.dim_radius)
 
         pygame.draw.circle(surf, (255, 0, 0), top_left, 3)
         pygame.draw.circle(surf, (255, 0, 0), top_right, 3)
@@ -117,7 +117,7 @@ class Ansgar:
                 self.body.force = (800, 0)
             else:
                 self.body.force = (1000, 0)
-        
+
         #     if self.jump == False:
         #
         #         self.ansgar_v_speed += 10 * dt

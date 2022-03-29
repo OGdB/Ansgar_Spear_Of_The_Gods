@@ -79,8 +79,10 @@ class Application:
 
         for body in self.ball_list:
             pygame.draw.circle(surf, (255, 0, 0), body.position, 10)
-        for array_info in self.cur_map.floor_points:
-            pygame.draw.line(surf, (255, 255, 0), (array_info[0], array_info[2]), (array_info[1], array_info[2]))
+            
+        # Debug drawing
+        # for array_info in self.cur_map.floor_points:
+        #     pygame.draw.line(surf, (255, 255, 0), (array_info[0], array_info[2]), (array_info[1], array_info[2]))
 
         self.ansgar.draw(surf)
 
