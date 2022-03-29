@@ -19,18 +19,16 @@ class Application:
         self.space = pymunk.Space()  # Create a physics space
         self.space.gravity = (0, 250)  # Set its gravity
 
-
         self.font = pygame.font.SysFont("Courier New", 16)  # The font to use for rendering stats
 
         self.cur_map = map_data.Map("maps\\Map.json")  # The initial map to load
         self.total_time = 0  # Total time the game's been running (used for player/coin color modulation)
         self.enemy_group_one = Classes.enemy.EnemyGroups(300, 300, 5, 16)
         self.enemy_group_two = Classes.enemy.EnemyGroups(800, 500, 10, 16)
-        self.ansgar = Classes.hero.Ansgar(240, 220)
+        self.ansgar = Classes.hero.Ansgar((240, 100), self.space)
 
         self.ball_list = []
         self.ground_colliders = self.cur_map.draw_colliders(self.space)
-
 
     def run(self):
         while not self.done:
@@ -76,7 +74,6 @@ class Application:
         # Drawing
         surf.blit(self.cur_map.rendered_img, (0, 0), (0, 0, self.win_w, self.win_h))
 
-        self.ansgar.draw(surf)
         self.enemy_group_one.draw(surf)
         self.enemy_group_two.draw(surf)
 
@@ -84,5 +81,7 @@ class Application:
             pygame.draw.circle(surf, (255, 0, 0), body.position, 10)
         for array_info in self.cur_map.floor_points:
             pygame.draw.line(surf, (255, 255, 0), (array_info[0], array_info[2]), (array_info[1], array_info[2]))
+
+        self.ansgar.draw(surf)
 
         pygame.display.flip()
