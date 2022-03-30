@@ -49,7 +49,7 @@ class Map:
         self.tile_layers = []                   # stores all the tile layers in the map
         self.pickups = []                       # a list of 2d points from the object layers of the map.  As the player
                                                 #   collects these, the contents will change
-        self.floor_points = []
+        self.floor_points = []                  # Begin- and start positions of each platform.
 
         # Get some information about where the map file is located
         map_dir = os.path.dirname(fname)
@@ -139,8 +139,8 @@ class Map:
                     seg_bot.elasticity = 0.95
                     seg_bot.friction = 0.9
 
-                    self.floor_points.append([start_x, end_x, y])
-                    self.floor_points.append([start_x, end_x, y+self.tile_height])
+                    # Top- and bottom lines of each platform in that order.
+                    self.floor_points.append([[start_x, end_x, y], [start_x, end_x, y+self.tile_height]])
                     space.add(seg_up)
                     space.add(seg_bot)
 

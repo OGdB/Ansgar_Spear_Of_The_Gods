@@ -78,8 +78,9 @@ class Application:
             pygame.draw.circle(surf, (255, 0, 0), body.position, 10)
             
         # Debug drawing
-        # for array_info in self.cur_map.floor_points:
-        #     pygame.draw.line(surf, (255, 255, 0), (array_info[0], array_info[2]), (array_info[1], array_info[2]))
+        for platform_coordinates in self.cur_map.floor_points:
+            for vertice_pairs in platform_coordinates:
+                pygame.draw.line(surf, (255, 255, 0), (vertice_pairs[0], vertice_pairs[2]), (vertice_pairs[1], vertice_pairs[2]))
 
         self.ansgar.draw(surf)
 
