@@ -36,7 +36,6 @@ class Enemy_Spawner:
         if self.type == "melee":
             distance_x = abs(hero_x - self.x)
             distance_y = abs(hero_y - self.y)
-
             if distance_x <= 30 and distance_y <= 16:
                 if self.x > hero_x:
                     self.horizontal_speed = -(abs(self.horizontal_speed))
@@ -90,4 +89,5 @@ class Enemy_Spawner:
         health_bar = self.health.cur_health / self.health.max_health
         health_bar_w = health_bar * 20
         pygame.draw.rect(surf, (255, 0, 0), (self.x - 2, self.y - 7, health_bar_w, 5))
+        pygame.draw.circle(surf, (255, 0, 0), (self.x, self.y), 5)
         # pygame.draw.rect(surf, self.color, (self.x, self.y, Enemy_Spawner.dim, Enemy_Spawner.dim))

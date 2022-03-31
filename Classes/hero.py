@@ -1,9 +1,10 @@
 import pygame
 import pymunk
+import Classes.enemy
 
 
 class Spear:
-    def __init__(self, player_x, player_y, direction, spear_list):
+    def __init__(self, player_x, player_y, direction, spear_list, e_one, e_two):
         self.player_x = player_x
         self.player_y = player_y
         self.position = [self.player_x, self.player_y]
@@ -13,9 +14,10 @@ class Spear:
         self.spear_list = spear_list
         self.lifetime = 100
         self.speed = 275
+        self.enemy_one = e_one
+        self.enemy_two = e_two
         self.spear_img = pygame.image.load("image\\temp_spear.png")
-        self.rotated_spear = pygame.transform.rotate(self.spear_img,180)
-
+        self.rotated_spear = pygame.transform.rotate(self.spear_img, 180)
 
     def update(self, dt):
         all_keys = pygame.key.get_pressed()
@@ -30,31 +32,37 @@ class Spear:
             if s[5] <= 0:
                 self.spear_list.remove(s)
 
+            hit_check = self.enemy_one.enemy_hit_check(s[0], s[1], s[1] + s[4], 50)
+            if hit_check:
+                self.spear_list.remove(s)
+            hit_check = self.enemy_two.enemy_hit_check(s[0], s[1], s[1] + s[4], 50)
+            if hit_check:
+                self.spear_list.remove(s)
+
         if all_keys[pygame.K_a] or all_keys[pygame.K_LEFT]:
             self.direction = "left"
-
 
         if all_keys[pygame.K_d] or all_keys[pygame.K_RIGHT]:
             self.direction = "right"
 
-
     def draw(self, surf):
         for new_spear in self.spear_list:
             if new_spear[7] == "right":
-                surf.blit(self.spear_img,(new_spear[0],new_spear[1]))
-                pygame.draw.rect(surf, (100, 100, 100), (new_spear[0], new_spear[1], new_spear[3], new_spear[4]),1)
+                surf.blit(self.spear_img, (new_spear[0], new_spear[1]))
+                pygame.draw.rect(surf, (100, 100, 100), (new_spear[0], new_spear[1], new_spear[3], new_spear[4]), 1)
             else:
-                surf.blit(self.rotated_spear,(new_spear[0],new_spear[1]))
+                surf.blit(self.rotated_spear, (new_spear[0], new_spear[1]))
 
 
 class Ansgar:
-    def __init__(self, pos, space,e_one,e_two):
+    def __init__(self, pos, space, e_one, e_two):
         self.body = pymunk.Body(1, 100, body_type=pymunk.Body.DYNAMIC)
         self.body.position = pos
         self.body.angle = 0
         self.body.mass = 5
         self.dim_radius = 15
-        poly_dims = [(-self.dim_radius, -self.dim_radius), (self.dim_radius, -self.dim_radius), (self.dim_radius, self.dim_radius), (-self.dim_radius, self.dim_radius)]
+        poly_dims = [(-self.dim_radius, -self.dim_radius), (self.dim_radius, -self.dim_radius),
+                     (self.dim_radius, self.dim_radius), (-self.dim_radius, self.dim_radius)]
         self.shape = pymunk.Poly(self.body, poly_dims)
         self.shape.friction = 0.25
         space.add(self.body, self.shape)
@@ -65,11 +73,12 @@ class Ansgar:
         self.direction = "right"
         self.spear_list = []
 
-        self.s = Spear(self.body.position.x, self.body.position.y, self.direction, self.spear_list)
+        self.s = Spear(self.body.position.x, self.body.position.y, self.direction, self.spear_list, e_one, e_two)
 
     def make_spear(self):
-        #this should make it to where ansgar looks like he's throwing the spear
-        new_spear = [self.body.position[0], self.body.position[1]-15, self.direction, self.length, self.height, self.lifetime,
+        # this should make it to where ansgar looks like he's throwing the spear
+        new_spear = [self.body.position[0], self.body.position[1] - 15, self.direction, self.length, self.height,
+                     self.lifetime,
                      self.speed, self.direction]
         self.spear_list.append(new_spear)
 
@@ -137,16 +146,16 @@ class Ansgar:
         #             self.jump = False
 
         if keys[pygame.K_a] or keys[pygame.K_LEFT]:
-             self.direction = "left"
+            self.direction = "left"
         if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
-             self.direction = "right"
+            self.direction = "right"
         # if self.position[0] <= 0:
         #     self.position[0] = 0
         # if self.position[0] >= 480 - 32:
         #     self.position[0] = 480 - 32
         #
         if evt.type == pygame.KEYDOWN:
-             if evt.key == pygame.K_SPACE:
-                #self.s.make_spear()
+            if evt.key == pygame.K_SPACE:
+                # self.s.make_spear()
                 self.make_spear()
         self.s.update(dt)
