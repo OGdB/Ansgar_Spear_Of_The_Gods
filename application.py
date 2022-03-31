@@ -12,7 +12,7 @@ class Application:
         self.win_h = screen_h  # window height in pixels
         self.half_w = self.win_w // 2  # half-window width in pixels
         self.half_h = self.win_h // 2  # half-window height in pixels
-        self.win = pygame.display.set_mode((self.win_w, self.win_h))  # The main window
+        self.win = pygame.display.set_mode((self.win_w, self.win_h),pygame.FULLSCREEN)  # The main window
         self.done = False  # Should we bail out of the game loop?
         self.clock = pygame.time.Clock()  # The pygame clock object used for delta-time
 
@@ -29,6 +29,8 @@ class Application:
 
         self.ball_list = []
         self.ground_colliders = self.cur_map.draw_colliders(self.space)
+
+        
 
     def run(self):
         while not self.done:
