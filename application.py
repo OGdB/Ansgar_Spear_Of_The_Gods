@@ -27,7 +27,7 @@ class Application:
         self.ground_colliders = self.cur_map.draw_colliders(self.space)
         self.enemy_group_one = Classes.enemy.EnemyGroups(0, self.cur_map.floor_points[0][0][2] + 16, 5, 16, 1,
                                                          "image\\Bear.png")
-        self.enemy_group_two = Classes.enemy.EnemyGroups(0, self.cur_map.floor_points[10][0][2] - 16, 10, 16, 1,
+        self.enemy_group_two = Classes.enemy.EnemyGroups(0, self.cur_map.floor_points[10][0][2] - 16, 3, 16, 1,
                                                          "image\\Bear.png")
         self.ansgar = Classes.hero.Ansgar((240, 100), self.space, self.enemy_group_one, self.enemy_group_two)
 
