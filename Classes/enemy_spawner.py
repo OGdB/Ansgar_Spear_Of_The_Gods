@@ -43,6 +43,7 @@ class Enemy_Spawner:
                 elif self.x < hero_x:
                     self.horizontal_speed = abs(self.horizontal_speed)
                 #Move towards the hero
+
             if self.x < left_x_border:
                 # We just went off the left-edge
                 self.x = left_x_border
