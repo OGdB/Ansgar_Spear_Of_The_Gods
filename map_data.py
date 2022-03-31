@@ -140,6 +140,7 @@ class Map:
                     seg_bot.friction = 0.9
 
                     # Top- and bottom lines of each platform in that order.
+                    # floor_points[0][0] = start_x of a platform
                     self.floor_points.append([[start_x, end_x, y], [start_x, end_x, y+self.tile_height]])
                     space.add(seg_up)
                     space.add(seg_bot)
