@@ -43,16 +43,13 @@ class Application:
     def handle_input(self, dt):
         # Process the event (make sure this is only once in your game loop!)
         evt = pygame.event.poll()
-        self.enemy_group_one.update(dt, 300, 900)  # Moves the enemy's with in the given range
-        self.enemy_group_two.update(dt, 100, 600)
+        self.enemy_group_one.update(dt, 0, self.win_w - 32)  # Moves the enemy's with in the given range
+        self.enemy_group_two.update(dt, 0, self.win_w - 32)
 
         # event-handling
         mouse_x, mouse_y = pygame.mouse.get_pos()
         all_keys = pygame.key.get_pressed()
         if evt.type == pygame.MOUSEBUTTONDOWN and evt.button == 1:
-            self.enemy_group_one.enemy_hit_check(mouse_x, mouse_y, 100)
-            self.enemy_group_two.enemy_hit_check(mouse_x, mouse_y, 100)
-
             body = pymunk.Body()  # Create a Body
             body.position = (mouse_x, mouse_y)  # Set the position of the body
             body_shape = pymunk.Circle(body, 10)
