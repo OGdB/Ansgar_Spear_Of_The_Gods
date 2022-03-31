@@ -68,7 +68,7 @@ class Ansgar:
         self.s = Spear(self.body.position.x, self.body.position.y, self.direction, self.spear_list)
 
     def make_spear(self):
-
+        #this should make it to where ansgar looks like he's throwing the spear
         new_spear = [self.body.position[0], self.body.position[1]-15, self.direction, self.length, self.height, self.lifetime,
                      self.speed, self.direction]
         self.spear_list.append(new_spear)
