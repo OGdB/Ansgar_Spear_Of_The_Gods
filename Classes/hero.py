@@ -48,7 +48,7 @@ class Spear:
 
 
 class Ansgar:
-    def __init__(self, pos, space):
+    def __init__(self, pos, space,e_one,e_two):
         self.body = pymunk.Body(1, 100, body_type=pymunk.Body.DYNAMIC)
         self.body.position = pos
         self.body.angle = 0
