@@ -1,9 +1,10 @@
 import pygame
 import pymunk
+import Classes.enemy
 
 
 class Spear:
-    def __init__(self, player_x, player_y, direction, spear_list):
+    def __init__(self, player_x, player_y, direction, spear_list, e_one, e_two):
         self.player_x = player_x
         self.player_y = player_y
         self.position = [player_x, player_y]
@@ -15,6 +16,8 @@ class Spear:
         self.speed = 275
         self.spear_img = pygame.image.load("image\\Spear.png")
         self.rotated_spear = pygame.transform.rotate(self.spear_img,180)
+        self.enemy_one = e_one
+        self.enemy_two = e_two
 
     def make_spear(self):
         new_spear = [self.position[0], self.position[1], self.direction, self.length, self.height, self.lifetime,
@@ -35,6 +38,13 @@ class Spear:
             if s[0] >= 480 - s[3]:
                 s[6] = 0
             if s[5] <= 0:
+                self.spear_list.remove(s)
+
+            hit_check = self.enemy_one.enemy_hit_check(s[0], s[1], s[1] + s[4], 100)
+            if hit_check:
+                self.spear_list.remove(s)
+            hit_check = self.enemy_two.enemy_hit_check(s[0], s[1], s[1] + s[4], 100)
+            if hit_check:
                 self.spear_list.remove(s)
 
         if all_keys[pygame.K_a] or all_keys[pygame.K_LEFT]:
@@ -61,7 +71,7 @@ class Spear:
 
 
 class Ansgar:
-    def __init__(self, pos, space):
+    def __init__(self, pos, space, e_one, e_two):
         self.body = pymunk.Body(1, 100, body_type=pymunk.Body.DYNAMIC)
         self.body.position = pos
         self.body.angle = 0
@@ -75,7 +85,7 @@ class Ansgar:
         self.direction = "right"
         spear_list = []
 
-        self.s = Spear(self.body.position.x, self.body.position.y, self.direction, spear_list)
+        self.s = Spear(self.body.position.x, self.body.position.y, self.direction, spear_list, e_one, e_two)
 
     def draw(self, surf):
         self.body.angle = 0

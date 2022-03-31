@@ -9,7 +9,7 @@ class Enemy_Spawner:
 
     dim = 0
 
-    def __init__(self, starting_x, starting_y):
+    def __init__(self, starting_x, starting_y, type):
         self.Red = random.randint(0, 255)
         self.Blue = random.randint(0, 255)
         self.Green = random.randint(0, 255)
@@ -22,14 +22,32 @@ class Enemy_Spawner:
         self.health = Classes.health.Health()
         self.dead = False
         self.flipped = True
+        if type == 1:  # A Melee enemy
+            self.type = "melee"
+        elif type == 2:  # A shooting enemy
+            self.type = "range"
 
-    def update(self, dt, left_x_border, right_x_border, screen_h):
+    def update(self, dt, left_x_border, right_x_border, hero_x, screen_h):
         # self.vertical_speed += 100 * dt
         # self.horizontal_speed += 100 * dt
-        # self.life_time -= 50 * dt
 
         self.x += self.horizontal_speed * dt
         # self.y += self.vertical_speed * dt
+        if self.type == "melee":
+            distance = hero_x - self.x
+            if distance <= 30:
+                pass
+                #Move towards the hero
+            if self.x < left_x_border:
+                # We just went off the left-edge
+                self.x = left_x_border
+                self.horizontal_speed *= -1
+                self.flipped = not self.flipped
+            if self.x > right_x_border - Enemy_Spawner.dim:
+                # We just went off the right-edge
+                self.x = right_x_border - Enemy_Spawner.dim
+                self.horizontal_speed *= -1
+                self.flipped = not self.flipped
 
         if self.x < left_x_border:
             # We just went off the left-edge
