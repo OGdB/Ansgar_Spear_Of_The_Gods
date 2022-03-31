@@ -27,17 +27,23 @@ class Enemy_Spawner:
         elif type == 2:  # A shooting enemy
             self.type = "range"
 
-    def update(self, dt, left_x_border, right_x_border, hero_x, screen_h):
+    def update(self, dt, left_x_border, right_x_border, hero_x, hero_y, screen_h):
         # self.vertical_speed += 100 * dt
         # self.horizontal_speed += 100 * dt
 
         self.x += self.horizontal_speed * dt
         # self.y += self.vertical_speed * dt
         if self.type == "melee":
-            distance = hero_x - self.x
-            if distance <= 30:
-                pass
+            distance_x = abs(hero_x - self.x)
+            distance_y = abs(hero_y - self.y)
+
+            if distance_x <= 30 and distance_y <= 16:
+                if self.x > hero_x:
+                    self.horizontal_speed = -(abs(self.horizontal_speed))
+                elif self.x < hero_x:
+                    self.horizontal_speed = abs(self.horizontal_speed)
                 #Move towards the hero
+
             if self.x < left_x_border:
                 # We just went off the left-edge
                 self.x = left_x_border

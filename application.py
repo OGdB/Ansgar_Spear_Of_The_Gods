@@ -12,7 +12,7 @@ class Application:
         self.win_h = screen_h  # window height in pixels
         self.half_w = self.win_w // 2  # half-window width in pixels
         self.half_h = self.win_h // 2  # half-window height in pixels
-        self.win = pygame.display.set_mode((self.win_w, self.win_h),pygame.FULLSCREEN)  # The main window
+        self.win = pygame.display.set_mode((self.win_w, self.win_h), pygame.RESIZABLE)  # The main window
         self.done = False  # Should we bail out of the game loop?
         self.clock = pygame.time.Clock()  # The pygame clock object used for delta-time
 
@@ -23,14 +23,14 @@ class Application:
 
         self.cur_map = map_data.Map("maps\\Map.json")  # The initial map to load
         self.total_time = 0  # Total time the game's been running (used for player/coin color modulation)
-        self.enemy_group_one = Classes.enemy.EnemyGroups(0, 150, 5, 16, "image\\Bear.png")
-        self.enemy_group_two = Classes.enemy.EnemyGroups(0, 300, 10, 16, "image\\Bear.png")
-        self.ansgar = Classes.hero.Ansgar((240, 100), self.space)
-
         self.ball_list = []
         self.ground_colliders = self.cur_map.draw_colliders(self.space)
-
-        
+        self.enemy_group_one = Classes.enemy.EnemyGroups(0, self.cur_map.floor_points[0][0][2] - 16, 5, 16, 1,
+                                                         "image\\Bear.png")
+        self.enemy_group_two = Classes.enemy.EnemyGroups(0, self.cur_map.floor_points[10][0][2] - 16, 10, 16, 2,
+                                                         "image\\Bear.png")
+        self.ansgar = Classes.hero.Ansgar((240, 100), self.space, self.enemy_group_one, self.enemy_group_two)
+        print(self.cur_map.floor_points)
 
     def run(self):
         while not self.done:
@@ -45,8 +45,14 @@ class Application:
     def handle_input(self, dt):
         # Process the event (make sure this is only once in your game loop!)
         evt = pygame.event.poll()
-        self.enemy_group_one.update(dt, 0, self.win_w - 32)  # Moves the enemy's with in the given range
-        self.enemy_group_two.update(dt, 0, self.win_w - 32)
+        self.enemy_group_one.update(
+            dt, self.cur_map.floor_points[2][0][0], self.cur_map.floor_points[2][0][1],
+            self.ansgar.body.position[0], self.ansgar.body.position[1]
+            )  # Moves the enemy's with in the given range
+        self.enemy_group_two.update(
+            dt, self.cur_map.floor_points[10][0][0], self.cur_map.floor_points[10][0][1],
+            self.ansgar.body.position[0], self.ansgar.body.position[1]
+            )
 
         # event-handling
         mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -83,6 +89,11 @@ class Application:
         for platform_coordinates in self.cur_map.floor_points:
             for vertice_pairs in platform_coordinates:
                 pygame.draw.line(surf, (255, 255, 0), (vertice_pairs[0], vertice_pairs[2]), (vertice_pairs[1], vertice_pairs[2]))
+
+        for platform_coordinates in self.cur_map.floor_points:
+            start_x = platform_coordinates[0][0]
+            y = platform_coordinates[0][2]
+            pygame.draw.circle(surf, (255, 0, 0), [start_x, y], 3)
 
         self.ansgar.draw(surf)
 
