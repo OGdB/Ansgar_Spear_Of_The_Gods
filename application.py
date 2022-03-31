@@ -12,7 +12,7 @@ class Application:
         self.win_h = screen_h  # window height in pixels
         self.half_w = self.win_w // 2  # half-window width in pixels
         self.half_h = self.win_h // 2  # half-window height in pixels
-        self.win = pygame.display.set_mode((self.win_w, self.win_h))  # The main window
+        self.win = pygame.display.set_mode((self.win_w, self.win_h), pygame.RESIZABLE)  # The main window
         self.done = False  # Should we bail out of the game loop?
         self.clock = pygame.time.Clock()  # The pygame clock object used for delta-time
 
@@ -84,6 +84,11 @@ class Application:
         for platform_coordinates in self.cur_map.floor_points:
             for vertice_pairs in platform_coordinates:
                 pygame.draw.line(surf, (255, 255, 0), (vertice_pairs[0], vertice_pairs[2]), (vertice_pairs[1], vertice_pairs[2]))
+
+        for platform_coordinates in self.cur_map.floor_points:
+            start_x = platform_coordinates[0][0]
+            y = platform_coordinates[0][2]
+            pygame.draw.circle(surf, (255, 0, 0), [start_x, y], 3)
 
         self.ansgar.draw(surf)
 
