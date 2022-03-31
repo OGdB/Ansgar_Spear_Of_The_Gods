@@ -12,7 +12,7 @@ class Application:
         self.win_h = screen_h  # window height in pixels
         self.half_w = self.win_w // 2  # half-window width in pixels
         self.half_h = self.win_h // 2  # half-window height in pixels
-        self.win = pygame.display.set_mode((self.win_w, self.win_h))  # The main window
+        self.win = pygame.display.set_mode((self.win_w, self.win_h), pygame.RESIZABLE)  # The main window
         self.done = False  # Should we bail out of the game loop?
         self.clock = pygame.time.Clock()  # The pygame clock object used for delta-time
 
@@ -45,9 +45,14 @@ class Application:
     def handle_input(self, dt):
         # Process the event (make sure this is only once in your game loop!)
         evt = pygame.event.poll()
-        self.enemy_group_one.update(dt, self.cur_map.floor_points[2][0][0], self.cur_map.floor_points[2][0][1], 1)  # Moves the enemy's with in the given range
-        #print(self.cur_map.floor_points[2][0][0], self.cur_map.floor_points[2][0][1])
-        self.enemy_group_two.update(dt, self.cur_map.floor_points[10][0][0], self.cur_map.floor_points[10][0][1], 1)
+        self.enemy_group_one.update(
+            dt, self.cur_map.floor_points[2][0][0], self.cur_map.floor_points[2][0][1],
+            self.ansgar.body.position[0], self.ansgar.body.position[1]
+            )  # Moves the enemy's with in the given range
+        self.enemy_group_two.update(
+            dt, self.cur_map.floor_points[10][0][0], self.cur_map.floor_points[10][0][1],
+            self.ansgar.body.position[0], self.ansgar.body.position[1]
+            )
 
         # event-handling
         mouse_x, mouse_y = pygame.mouse.get_pos()
