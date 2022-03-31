@@ -45,9 +45,14 @@ class Application:
     def handle_input(self, dt):
         # Process the event (make sure this is only once in your game loop!)
         evt = pygame.event.poll()
-        self.enemy_group_one.update(dt, self.cur_map.floor_points[2][0][0], self.cur_map.floor_points[2][0][1], 1)  # Moves the enemy's with in the given range
-        #print(self.cur_map.floor_points[2][0][0], self.cur_map.floor_points[2][0][1])
-        self.enemy_group_two.update(dt, self.cur_map.floor_points[10][0][0], self.cur_map.floor_points[10][0][1], 1)
+        self.enemy_group_one.update(
+            dt, self.cur_map.floor_points[2][0][0], self.cur_map.floor_points[2][0][1],
+            self.ansgar.body.position[0], self.ansgar.body.position[1]
+            )  # Moves the enemy's with in the given range
+        self.enemy_group_two.update(
+            dt, self.cur_map.floor_points[10][0][0], self.cur_map.floor_points[10][0][1],
+            self.ansgar.body.position[0], self.ansgar.body.position[1]
+            )
 
         # event-handling
         mouse_x, mouse_y = pygame.mouse.get_pos()
