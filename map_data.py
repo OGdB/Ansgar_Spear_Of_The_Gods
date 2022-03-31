@@ -118,19 +118,20 @@ class Map:
         # once end is found, draw collider from start to end
         y = 0
         row_num = 0
-        for row in self.tile_layers[0]:
+        for row in self.tile_layers[1]:
             x = 0
-
             col_num = 0
             for code_i in range(len(row)):
-                if row[code_i] != 0:  # if there is a tile drawn on this row
+                if row[code_i] != 0 and code_i * 16 >= x:  # if there is a tile drawn on this row
                     # is the next tile also ground?
                     start_x = x
-                    end_x = start_x + 16
+                    end_x = start_x + 16  # end x of this tile
                     end_i = code_i
-                    while end_i + 1 < len(row) and row[end_i + 1] != 0:
+
+                    while end_i + 1 < len(row) and row[end_i + 1] != 0:  # if the next tile also is ground
                         end_x += 16  # The next tile is also ground, so make the end_x a tile wider
                         end_i += 1
+                        x = end_x
                     seg_up = pymunk.Segment(space.static_body, (start_x, y), (end_x, y), 0.0)
                     seg_up.elasticity = 0.95
                     seg_up.friction = 0.9
@@ -138,6 +139,7 @@ class Map:
                     seg_bot = pymunk.Segment(space.static_body, (start_x, y + self.tile_height), (end_x, y + self.tile_height), 0.0)
                     seg_bot.elasticity = 0.95
                     seg_bot.friction = 0.9
+
 
                     # Top- and bottom lines of each platform in that order.
                     # floor_points[0][0] = start_x of a platform
