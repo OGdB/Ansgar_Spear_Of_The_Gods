@@ -1,9 +1,13 @@
+import math
+
 import pygame
 import pymunk
 import map_data
 import Classes.enemy
 import Classes.hero
 
+# Set to true to see a bunch of debug stuff.
+debug = True
 
 class Application:
     def __init__(self, screen_w, screen_h):
@@ -85,19 +89,35 @@ class Application:
             pygame.draw.circle(surf, (255, 0, 0), body.position, 10)
             
         # Debug drawing
-        for platform_coordinates in self.cur_map.floor_points:
-            for vertice_pairs in platform_coordinates:
-                pygame.draw.line(surf, (255, 255, 0), (vertice_pairs[0], vertice_pairs[2]), (vertice_pairs[1], vertice_pairs[2]))
+        if debug:
+            for platform_coordinates in self.cur_map.floor_points:
+                for vertice_pairs in platform_coordinates:
+                    pygame.draw.line(surf, (255, 255, 0), (vertice_pairs[0], vertice_pairs[2]), (vertice_pairs[1], vertice_pairs[2]))
 
-        # Draw red dot on start_x of colliders
-        for platform_coordinates in self.cur_map.floor_points:
-            start_x = platform_coordinates[0][0]
-            end_x = platform_coordinates[0][1]
-            y = platform_coordinates[0][2]
-            pygame.draw.circle(surf, (255, 0, 0), [start_x, y], 3)
-            pygame.draw.circle(surf, (255, 255, 0), [end_x, y], 3)
+            # Draw red dot on start_x of colliders
+            for platform_coordinates in self.cur_map.floor_points:
+                start_x = platform_coordinates[0][0]
+                end_x = platform_coordinates[0][1]
+                y = platform_coordinates[0][2]
+                pygame.draw.circle(surf, (255, 0, 0), [start_x, y], 3)
+                pygame.draw.circle(surf, (255, 255, 0), [end_x, y], 3)
+
+            # Debug text telling you which tile-row and column is hovered over with the mouse
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            x = math.floor(mouse_x / 16 % self.cur_map.map_width)
+            y = math.floor(mouse_y / 16 % self.cur_map.map_height)
+            text = f"[{x}, {y}]"
+
+            pygame.draw.circle(surf, (0, 255, 0), [x * 16, y * 16], 4)
+            pygame.draw.rect(surf, (255, 255, 0), pygame.Rect(x * 16, y * 16, 16, 16), True)
+            # Text
+            white = (255, 255, 255)
+            font = pygame.font.Font('freesansbold.ttf', 32)
+            text_render = font.render(text, True, white)
+            surf.blit(text_render, (1400, 10))
+
+            pygame.draw.circle(surf, (255, 0, 0), self.ansgar.body.position, 5)
 
         self.ansgar.draw(surf)
-        pygame.draw.circle(surf, (255, 0, 0), self.ansgar.body.position, 5)
 
         pygame.display.flip()
