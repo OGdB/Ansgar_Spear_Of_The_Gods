@@ -1,22 +1,24 @@
 import pygame.image
-
 import Classes.enemy_spawner
 import Classes.health
 
 
 class EnemyGroups:
 
-    def __init__(self, x, y, num, size, enemy_type, img):
+    def __init__(self, x, y, num, size, enemy_type):
         """ Creates the group of enemy's based on the information provided. THe starting x and y, how many in this
             group, then how much the enemy's have. """
         self.position = [x, y]
         self.enemy_list = []
         self.num = num
-        self.image = pygame.image.load(img)
         Classes.enemy_spawner.Enemy_Spawner.dim = size
         self.type = enemy_type
+        if self.type == 1:
+            self.image = pygame.image.load("image\\Bear.png")
+        elif self.type == 2:
+            self.image = pygame.image.load("image\\Skeleton head.png")
         i = 0
-        while i <= self.num:
+        while i < self.num:
             new_x = self.position[0]
             new_y = self.position[1]
             new_enemy = Classes.enemy_spawner.Enemy_Spawner(new_x, new_y, self.type)
@@ -42,8 +44,15 @@ class EnemyGroups:
                 dead = self.enemy_list[i].health.take_damage(dmg)
                 if dead:
                     self.enemy_list[i].dead = True
-                return True
+                    return True
             i += 1
+
+    def enemy_attack_check(self, hero_rect):
+        i = 0
+        while i < len(self.enemy_list):
+            i += 1
+            dmg = self.enemy_list[i].enemy_attack_check(hero_rect)
+            return dmg
 
     def draw(self, win):
         """ Draw's the enemy's. Calls the draw in the enemy_spawner class. """
