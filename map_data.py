@@ -46,7 +46,7 @@ class Map:
         self.nextLayerID = None                 # The next layer id -- this value - 1 is the number of layers total
         self.nextObjectID = None                # The next object id -- this value - 1 is the number of objects total
         self.tile_sets = []
-        self.tile_layers = []                   # stores all the tile layers in the map
+        self.tile_layers = []                   # stores all the tile layers in the map (in rows)
         self.pickups = []                       # a list of 2d points from the object layers of the map.  As the player
                                                 #   collects these, the contents will change
         self.floor_points = []                  # Begin- and start positions of each platform.
@@ -106,52 +106,47 @@ class Map:
                 if "x" in obj and "y" in obj:
                     self.pickups.append((obj["x"], obj["y"]))
 
-    def draw_colliders(self, space):
-        # VERSION 1
-        # for every 16x16 ground tile in the groundlayer
-            # if the data of tile X is ground, draw a collider on it.
-
-        # VERSION 2
-        # for every 16x16 ground tile in the groundlayer
-        # once a ground-tile is found..
-        # loop checking if the tile on its right is also ground, save the x on the top right of the last tile
-        # once end is found, draw collider from start to end
+    def collider_on_platform(self, space, layer):
         y = 0
-        row_num = 0
-        for row in self.tile_layers[1]:
-            x = 0
-            col_num = 0
-            for code_i in range(len(row)):
-                if row[code_i] != 0 and code_i * 16 >= x:  # if there is a tile drawn on this row
-                    # is the next tile also ground?
-                    start_x = x
-                    end_x = start_x + 16  # end x of this tile
-                    end_i = code_i
 
-                    while end_i + 1 < len(row) and row[end_i + 1] != 0:  # if the next tile also is ground
-                        end_x += 16  # The next tile is also ground, so make the end_x a tile wider
-                        end_i += 1
-                        x = end_x
+        for row in layer:
+            x = 0
+            last_placed_index = 0
+
+            for tile_index in range(len(row)):  # for every tile in this row
+                if tile_index <= last_placed_index and tile_index != 0:
+                    continue
+
+                tile_code = row[tile_index]
+                if tile_code != 0:  # if there is a tile drawn on this row
+                    start_x = tile_index * self.tile_width
+                    end_x = start_x + self.tile_width
+
+                    next_tile_index = tile_index + 1
+                    while next_tile_index < len(row) and row[
+                        next_tile_index] != 0:  # if there is ground on the next tile
+                        end_x += self.tile_width
+                        last_placed_index = next_tile_index
+                        next_tile_index += 1
+
                     seg_up = pymunk.Segment(space.static_body, (start_x, y), (end_x, y), 0.0)
                     seg_up.elasticity = 0.95
                     seg_up.friction = 0.9
-
-                    seg_bot = pymunk.Segment(space.static_body, (start_x, y + self.tile_height), (end_x, y + self.tile_height), 0.0)
+                    seg_bot = pymunk.Segment(space.static_body, (start_x, y + self.tile_height),
+                                             (end_x, y + self.tile_height), 0.0)
                     seg_bot.elasticity = 0.95
                     seg_bot.friction = 0.9
 
-
-                    # Top- and bottom lines of each platform in that order.
-                    # floor_points[0][0] = start_x of a platform
-                    self.floor_points.append([[start_x, end_x, y], [start_x, end_x, y+self.tile_height]])
-                    space.add(seg_up)
+                    self.floor_points.append([[start_x, end_x, y], [start_x, end_x, y + self.tile_height]])
                     space.add(seg_bot)
+                    space.add(seg_up)
 
                 x += self.tile_width
-                col_num += 1
-
             y += self.tile_height
-            row_num += 1
+
+    def draw_colliders(self, space):
+        self.collider_on_platform(space, self.tile_layers[0])
+        self.collider_on_platform(space, self.tile_layers[1])
 
     def __str__(self):
         s = "Tilesets:\n"
