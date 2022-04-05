@@ -8,7 +8,7 @@ import Classes.hero
 import Classes.health
 
 # Set to true to see a bunch of debug stuff.
-debug = True
+debug = False
 
 class Application:
     def __init__(self, screen_w, screen_h):
@@ -72,6 +72,9 @@ class Application:
         elif evt.type == pygame.KEYDOWN:
             if evt.key == pygame.K_ESCAPE:
                 self.done = True
+            if evt.key == pygame.K_F11:
+                global debug
+                debug = not debug
         self.ansgar.update(dt, evt, all_keys)
 
     def render(self, surf):
