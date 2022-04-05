@@ -103,6 +103,7 @@ class Ansgar:
         if keys[pygame.K_a] or keys[pygame.K_LEFT]:
             if keys[pygame.K_LSHIFT]:
                 # this will let Ansgar run
+
                 self.body.force = (-800, 0)
             else:
                 self.body.force = (-1000, 0)
@@ -113,49 +114,14 @@ class Ansgar:
             else:
                 self.body.force = (1000, 0)
 
-        #     if self.jump == False:
-        #
-        #         self.ansgar_v_speed += 10 * dt
-        #         if self.ansgar_v_speed >= 20 or self.position[1] <= 250:
-        #             self.jump = True
-        #             self.ansgar_v_speed *= -1
-        #
-        #     self.ansgar_accel += self.ansgar_v_speed
-        #     self.position[1] -= self.ansgar_accel * dt
-        #     self.s.position[1] -= self.ansgar_accel * dt
-        #     if self.ansgar_accel > self.ansgar_max_speed:
-        #         self.ansgar_accel = -self.ansgar_max_speed
-        #         self.s.position[1] = -self.ansgar_max_speed
-        #     if self.position[1] >= 290:
-        #         self.position[1] = 290
-        #         self.s.position[1] = 290
-        #         self.jump = False
-        # else:
-        #     self.ansgar_d_speed = 100000 * dt
-        #     self.ansgar_accel = 0
-        #     self.ansgar_v_speed = 0
-        #
-        #     # Decelerate
-        #
-        #     if self.position[1] < 290:
-        #         self.position[1] += self.ansgar_d_speed * dt
-        #         self.s.position[1] += self.ansgar_d_speed * dt
-        #         if self.position[1] >= 290:
-        #             self.position[1] = 290
-        #             self.s.position[1] = 290
-        #             self.jump = False
+
 
         if keys[pygame.K_a] or keys[pygame.K_LEFT]:
             self.direction = "left"
         if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
             self.direction = "right"
-        # if self.position[0] <= 0:
-        #     self.position[0] = 0
-        # if self.position[0] >= 480 - 32:
-        #     self.position[0] = 480 - 32
-        #
+
         if evt.type == pygame.KEYDOWN:
             if evt.key == pygame.K_SPACE:
-                # self.s.make_spear()
                 self.make_spear()
         self.s.update(dt)
