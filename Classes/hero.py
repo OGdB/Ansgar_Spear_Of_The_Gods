@@ -115,6 +115,8 @@ class Ansgar:
             self.body.position.x - self.dim_radius, self.body.position.y - self.dim_radius,
             self.dim_radius * 2, self.dim_radius * 2)
         dmg = self.e_one.enemy_attack_check(self.rect)
+        if dmg > 0:
+            self.health.take_damage(dmg)
         dmg = self.e_two.enemy_attack_check(self.rect)
         if dmg > 0:
             self.health.take_damage(dmg)
