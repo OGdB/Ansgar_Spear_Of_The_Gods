@@ -1,9 +1,11 @@
 import pygame
 import application
+import main_menu
 
 pygame.init()
 
 screen_w = 1920
 screen_h =1080
-App = application.Application(screen_w, screen_h)
-App.run()
+
+start = main_menu.Start_screen(screen_w,screen_h)
+start.run()
