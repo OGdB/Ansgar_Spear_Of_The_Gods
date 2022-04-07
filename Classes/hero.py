@@ -100,6 +100,7 @@ class Ansgar:
         if evt.type == pygame.KEYDOWN and evt.key == pygame.K_w:
             self.body.apply_impulse_at_local_point((0, -700), (0, 8))
 
+
         if keys[pygame.K_a] or keys[pygame.K_LEFT]:
             if keys[pygame.K_LSHIFT]:
                 # this will let Ansgar run
