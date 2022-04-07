@@ -16,7 +16,7 @@ class EnemyGroups:
         if self.type == 1:
             self.image = pygame.image.load("image\\Bear.png")
         elif self.type == 2:
-            self.image = pygame.image.load("image\\Skeleton head.png")
+            self.image = pygame.image.load("image\\Fire_Bear.png")
         i = 0
         while i < self.num:
             new_x = self.position[0]
