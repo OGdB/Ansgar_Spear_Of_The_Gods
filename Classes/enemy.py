@@ -49,10 +49,11 @@ class EnemyGroups:
 
     def enemy_attack_check(self, hero_rect):
         i = 0
+        dmg = 0
         while i < len(self.enemy_list):
+            dmg += self.enemy_list[i].enemy_attack_check(hero_rect)
             i += 1
-            dmg = self.enemy_list[i].enemy_attack_check(hero_rect)
-            return dmg
+        return dmg
 
     def draw(self, win):
         """ Draw's the enemy's. Calls the draw in the enemy_spawner class. """
