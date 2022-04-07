@@ -82,6 +82,7 @@ class Application:
         surf.fill((0, 0, 0))
 
         # Drawing
+        # Draw the whole map
         surf.blit(self.cur_map.rendered_img, (0, 0), (0, 0, self.win_w, self.win_h))
 
         self.enemy_group_one.draw(surf)
@@ -109,7 +110,7 @@ class Application:
             mouse_x, mouse_y = pygame.mouse.get_pos()
             x = math.floor(mouse_x / self.cur_map.tile_width % self.cur_map.map_width)
             y = math.floor(mouse_y / self.cur_map.tile_height % self.cur_map.map_height)
-            mouse_pos_text = f"[{x}, {y}]"
+            mouse_pos_text = f"[{x * self.cur_map.tile_width}, {y * self.cur_map.tile_height}]"
 
             # Velocity
             player_vel_text = f"[{math.floor(self.ansgar.body.velocity.x)}, {math.floor(self.ansgar.body.velocity.y)}]"
@@ -118,7 +119,7 @@ class Application:
             font = pygame.font.Font('freesansbold.ttf', 32)
             mouse_text_render = font.render(mouse_pos_text, True, white)
             vel_text_render = font.render(player_vel_text, True, white)
-            surf.blit(mouse_text_render, (1400, 10))
+            surf.blit(mouse_text_render, (1300, 10))
             surf.blit(vel_text_render, (1400, 50))
             pygame.draw.circle(surf, (0, 255, 0), [x * 16, y * 16], 4)
             pygame.draw.rect(surf, (255, 255, 0), pygame.Rect(x * 16, y * 16, 16, 16), True)
