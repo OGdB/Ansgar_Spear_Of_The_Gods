@@ -12,3 +12,7 @@ pygame.mixer.music.play(-1)
 
 start = main_menu.Start_screen(screen_w,screen_h)
 start.run()
+App = application.Application(screen_w, screen_h)
+if start.done == True:
+    App.clock.tick()
+    App.run()
