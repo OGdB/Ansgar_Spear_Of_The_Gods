@@ -52,8 +52,7 @@ class Start_screen():
         count = 0
         if self.half_h+150 <= mouse_y <= self.half_h+185 and self.half_w-50 <= mouse_x <= self.half_w-50+self.pw+5:
             if evt.type == pygame.MOUSEBUTTONDOWN and evt.button == 1:
-                self.App.clock.tick() # This will keep Ansgar from plummeting down if the player is on the start screen for too long
-                self.App.run()
+                self.done = True
                 self.playing = True
 
         if self.half_h + 150 <= mouse_y <= self.half_h + 185 and self.half_w - 410 <= mouse_x <= self.half_w - 410 + self.cw + 5:
