@@ -16,7 +16,7 @@ class Spear:
         self.speed = 275
         self.enemy_one = e_one
         self.enemy_two = e_two
-        self.spear_img = pygame.image.load("image\\temp_spear.png")
+        self.spear_img = pygame.image.load("image\\Spear.png")
         self.rotated_spear = pygame.transform.rotate(self.spear_img, 180)
 
     def update(self, dt):

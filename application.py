@@ -20,7 +20,8 @@ class Application:
         self.win = pygame.display.set_mode((0,0), pygame.FULLSCREEN)  # The main window
         self.done = False  # Should we bail out of the game loop?
         self.clock = pygame.time.Clock()  # The pygame clock object used for delta-time
-
+        self.background = pygame.image.load("image\\Background.png")
+        self.background = pygame.transform.scale(self.background, (screen_w, screen_h))
         self.space = pymunk.Space()  # Create a physics space
         self.space.gravity = (0, 250)  # Set its gravity
 
@@ -78,10 +79,9 @@ class Application:
         self.ansgar.update(dt, evt, all_keys)
 
     def render(self, surf):
-        # Clean up whatever is drawn and redraw
-        surf.fill((0, 0, 0))
-
         # Drawing
+        surf.fill((0,0,0))
+        surf.blit(self.background, (0,0))
         surf.blit(self.cur_map.rendered_img, (0, 0), (0, 0, self.win_w, self.win_h))
 
         self.enemy_group_one.draw(surf)

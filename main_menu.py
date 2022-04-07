@@ -18,13 +18,13 @@ class Start_screen():
         self.credits_surf = self.font.render("Credits", False,(0,255,255))
         self.pw = self.play_surf.get_width()
         self.cw = self.credits_surf.get_width()
-        self.start_img = pygame.image.load("image\\start_screenfn.png")
+        self.start_img = pygame.image.load("image\\Main_Background.png")
         self.scaled_img = pygame.transform.scale(self.start_img, (screen_w, screen_h))
         self.App = application.Application(screen_w, screen_h)
         self.credits = False
         self.crdfont = pygame.font.SysFont("Courier New", 50)  # The font to use for rendering stats
-        self.credits1 = self.crdfont.render("Oeds deBoer", False, (0, 255, 255))
-        self.credits2 = self.crdfont.render("Stan Van den Akker", False, (0, 255, 255))
+        self.credits1 = self.crdfont.render("Oeds de Boer", False, (0, 255, 255))
+        self.credits2 = self.crdfont.render("Stan van den Akker", False, (0, 255, 255))
         self.credits3 = self.crdfont.render("Ethan Knowles", False, (0, 255, 255))
         self.credits4 = self.crdfont.render("Tyler Howard", False, (0, 255, 255))
 
@@ -65,7 +65,7 @@ class Start_screen():
     def render(self, surf):
         # Clean up whatever is drawn and redraw
         surf.fill((0, 0, 0))
-        surf.blit(self.scaled_img,(-175,0))
+        surf.blit(self.scaled_img,(0,0))
         pygame.draw.rect(surf,(0,0,0),(self.half_w-50,self.half_h+150,self.pw+5,35))
         pygame.draw.rect(surf, (0, 0, 0), (self.half_w - 410, self.half_h + 150, self.cw + 5, 35))
         surf.blit(self.play_surf,(self.half_w-50,self.half_h+150))
