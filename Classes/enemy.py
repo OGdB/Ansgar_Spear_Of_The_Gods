@@ -5,7 +5,7 @@ import Classes.health
 
 class EnemyGroups:
 
-    def __init__(self, x, y, num, size, enemy_type):
+    def __init__(self, x, y, num, size, enemy_type, r_b, l_b):
         """ Creates the group of enemy's based on the information provided. THe starting x and y, how many in this
             group, then how much the enemy's have. """
         self.position = [x, y]
@@ -13,6 +13,8 @@ class EnemyGroups:
         self.num = num
         Classes.enemy_spawner.Enemy_Spawner.dim = size
         self.type = enemy_type
+        self.r_border = r_b
+        self.l_border = l_b
         if self.type == 1:
             self.image = pygame.image.load("image\\Bear.png")
         elif self.type == 2:
@@ -25,12 +27,12 @@ class EnemyGroups:
             self.enemy_list.append(new_enemy)
             i += 1
 
-    def update(self, dt, r_border_x, l_border_x, hero_x, hero_y):
+    def update(self, dt, hero_x, hero_y):
         """ Move's the enemy's within the provided limits. Calls the update in the enemy_spawner class. """
         j = 0
         while j < len(self.enemy_list):
 
-            self.enemy_list[j].update(dt, r_border_x, l_border_x, hero_x, hero_y, False)
+            self.enemy_list[j].update(dt, self.r_border, self.l_border, hero_x, hero_y, False)
             if self.enemy_list[j].dead:
                 self.enemy_list.remove(self.enemy_list[j])
             j += 1

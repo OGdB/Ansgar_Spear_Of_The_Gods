@@ -4,7 +4,7 @@ import Classes.health
 
 
 class Spear:
-    def __init__(self, player_x, player_y, direction, spear_list, e_one, e_two):
+    def __init__(self, player_x, player_y, direction, spear_list, e_list):
         self.player_x = player_x
         self.player_y = player_y
         self.position = [self.player_x, self.player_y]
@@ -14,8 +14,7 @@ class Spear:
         self.spear_list = spear_list
         self.lifetime = 100
         self.speed = 275
-        self.enemy_one = e_one
-        self.enemy_two = e_two
+        self.e_list = e_list
         self.spear_img = pygame.image.load("image\\temp_spear.png")
         self.rotated_spear = pygame.transform.rotate(self.spear_img, 180)
 
@@ -32,12 +31,10 @@ class Spear:
             if s[5] <= 0:
                 self.spear_list.remove(s)
 
-            hit_check = self.enemy_one.enemy_hit_check(s[0], s[1], s[1] + s[4], 50)
-            if hit_check:
-                self.spear_list.remove(s)
-            hit_check = self.enemy_two.enemy_hit_check(s[0], s[1], s[1] + s[4], 50)
-            if hit_check:
-                self.spear_list.remove(s)
+            for i in range(len(self.e_list)):
+                hit_check = self.e_list[i].enemy_hit_check(s[0], s[1], s[1] + s[4], 50)
+                if hit_check:
+                    self.spear_list.remove(s)
 
         if all_keys[pygame.K_a] or all_keys[pygame.K_LEFT]:
             self.direction = "left"
@@ -54,7 +51,7 @@ class Spear:
                 surf.blit(self.rotated_spear, (new_spear[0], new_spear[1]))
 
 class Ansgar:
-    def __init__(self, pos, space, e_one, e_two):
+    def __init__(self, pos, space, enemy_list):
         self.body = pymunk.Body(1, 100, body_type=pymunk.Body.DYNAMIC)
         self.body.position = pos
         self.body.angle = 0
@@ -75,10 +72,9 @@ class Ansgar:
         self.direction = "right"
         self.spear_list = []
         self.health = Classes.health.Health()
-        self.e_one = e_one
-        self.e_two = e_two
+        self.e_list = enemy_list
 
-        self.s = Spear(self.body.position.x, self.body.position.y, self.direction, self.spear_list, e_one, e_two)
+        self.s = Spear(self.body.position.x, self.body.position.y, self.direction, self.spear_list, self.e_list)
 
     def make_spear(self):
         # this should make it to where ansgar looks like he's throwing the spear
@@ -113,12 +109,10 @@ class Ansgar:
         self.rect = pygame.Rect(
             self.body.position.x - self.dim_radius, self.body.position.y - self.dim_radius,
             self.dim_radius * 2, self.dim_radius * 2)
-        dmg = self.e_one.enemy_attack_check(self.rect)
-        if dmg > 0:
-            self.health.take_damage(dmg)
-        dmg = self.e_two.enemy_attack_check(self.rect)
-        if dmg > 0:
-            self.health.take_damage(dmg)
+        for i in range(len(self.e_list)):
+            dmg = self.e_list[i].enemy_attack_check(self.rect)
+            if dmg > 0:
+                self.health.take_damage(dmg)
 
         if evt.type == pygame.KEYDOWN and evt.key == pygame.K_w:
                 self.body.apply_impulse_at_local_point((0, -700), (0, 8))

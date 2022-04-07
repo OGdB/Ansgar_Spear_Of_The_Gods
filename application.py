@@ -30,9 +30,13 @@ class Application:
         self.total_time = 0  # Total time the game's been running (used for player/coin color modulation)
         self.ball_list = []
         self.ground_colliders = self.cur_map.draw_colliders(self.space)
-        self.enemy_group_one = Classes.enemy.EnemyGroups(0, self.cur_map.floor_points[0][0][2] + 16, 2, 16, 2)
-        self.enemy_group_two = Classes.enemy.EnemyGroups(0, self.cur_map.floor_points[10][0][2] - 16, 3, 16, 1)
-        self.ansgar = Classes.hero.Ansgar((240, 100), self.space, self.enemy_group_one, self.enemy_group_two)
+        self.enemy_group_list = [
+            Classes.enemy.EnemyGroups(0, self.cur_map.floor_points[0][0][2] + 16, 2, 16, 2,
+                                      self.cur_map.floor_points[2][0][0], self.cur_map.floor_points[2][0][1]),
+            Classes.enemy.EnemyGroups(0, self.cur_map.floor_points[10][0][2] - 16, 3, 16, 1,
+                                      self.cur_map.floor_points[10][0][0], self.cur_map.floor_points[10][0][1],)
+                                 ]
+        self.ansgar = Classes.hero.Ansgar((240, 100), self.space, self.enemy_group_list)
 
     def run(self):
         while not self.done:
@@ -47,14 +51,8 @@ class Application:
     def handle_input(self, dt):
         # Process the event (make sure this is only once in your game loop!)
         evt = pygame.event.poll()
-        self.enemy_group_one.update(
-            dt, self.cur_map.floor_points[2][0][0], self.cur_map.floor_points[2][0][1],
-            self.ansgar.body.position.x, self.ansgar.body.position.y
-            )  # Moves the enemy's with in the given range
-        self.enemy_group_two.update(
-            dt, self.cur_map.floor_points[10][0][0], self.cur_map.floor_points[10][0][1],
-            self.ansgar.body.position.x, self.ansgar.body.position.y
-            )
+        for i in range(len(self.enemy_group_list)):
+            self.enemy_group_list[i].update(dt, self.ansgar.body.position.x, self.ansgar.body.position.y)
 
         # event-handling
         mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -85,8 +83,8 @@ class Application:
         # Draw the whole map
         surf.blit(self.cur_map.rendered_img, (0, 0), (0, 0, self.win_w, self.win_h))
 
-        self.enemy_group_one.draw(surf)
-        self.enemy_group_two.draw(surf)
+        for i in range(len(self.enemy_group_list)):
+            self.enemy_group_list[i].draw(self.win)
 
         for body in self.ball_list:
             pygame.draw.circle(surf, (255, 0, 0), body.position, 10)
