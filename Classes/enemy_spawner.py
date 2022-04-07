@@ -12,11 +12,12 @@ def draw_all_arrows(arrow_list, surf):
         pygame.draw.rect(surf, color, (x, y, size, size))
 
 
-def spawn_new_arrow(arrow_list, enemy_x, enemy_y, enemy_length, speed):
+def spawn_new_arrow(arrow_list, enemy_x, enemy_y, enemy_length):
     size = 5
     x = enemy_x + enemy_length
     y = enemy_y + (enemy_length / 2)
     color = (150, 150, 150)
+    speed = 100
 
     new_box = [x, y, size, color, speed]
     arrow_list.append(new_box)
@@ -44,11 +45,12 @@ class Enemy_Spawner:
         elif type == 2:  # A shooting enemy
             self.horizontal_speed = random.randint(10, 50)  # pixels / second
             self.type = "range"
-            self.flipped = True
+            self.arrow_list = []
+            self.flipped = False
             self.cooldown = 0
             self.shoot = 30
 
-    def update(self, dt, left_x_border, right_x_border, hero_x, hero_y, arrow_list, screen_h):
+    def update(self, dt, left_x_border, right_x_border, hero_x, hero_y, screen_h):
         # self.vertical_speed += 100 * dt
         # self.horizontal_speed += 100 * dt
 
@@ -71,24 +73,21 @@ class Enemy_Spawner:
             distance_x = abs(hero_x - self.x)
             distance_y = abs(hero_y - self.y)
             if distance_x <= 200 and distance_y <= 16:
-                fired_x = self.x
-                fired_y = self.y
-                enemy_dim = self.dim
                 if self.x > hero_x:
                     self.horizontal_speed = (abs(self.horizontal_speed))
                     if self.shoot == self.cooldown:
-                        spawn_new_arrow(arrow_list, fired_x, fired_y, enemy_dim, -100)
+                        spawn_new_arrow(self.arrow_list, self.x, self.y, self.dim)
                         self.cooldown = 5
                     else:
                         self.cooldown += 1
                 elif self.x < hero_x:
                     self.horizontal_speed = -(abs(self.horizontal_speed))
                     if self.shoot == self.cooldown:
-                        spawn_new_arrow(arrow_list, fired_x, fired_y, enemy_dim, 100)
+                        spawn_new_arrow(self.arrow_list, self.x, self.y, self.dim)
                         self.cooldown = 0
                     else:
                         self.cooldown += 1
-            for a in arrow_list:
+            for a in self.arrow_list:
                 a[0] += a[4] * dt
 
         if self.x < left_x_border:
@@ -128,21 +127,20 @@ class Enemy_Spawner:
         else:
             return False
 
-    def enemy_attack_check(self, hero_r, arrow_list):
+    def enemy_attack_check(self, hero_r):
         if self.type == "melee":
             if hero_r.colliderect(self.rect):
-                return 5
+                return 25
             else:
                 return 0
         if self.type == "range":
-            for arrow in arrow_list:
-                temp_rect = (arrow[0], arrow[1], arrow[2], arrow[2])
+            for i in range(len(self.arrow_list)):
+                temp_rect = (self.arrow_list[i][0], self.arrow_list[i][1], self.arrow_list[i][2], self.arrow_list[i][2])
                 if hero_r.colliderect(temp_rect):
-                    #arrow_list.remove(arrow)
-                    return 10
+                    return 50
             return 0
 
-    def draw(self, surf, arrow_list, img):
+    def draw(self, surf, img):
         if self.flipped:
             flipped_img = pygame.transform.flip(img, True, False)
             surf.blit(flipped_img, (self.x, self.y))
@@ -154,4 +152,4 @@ class Enemy_Spawner:
         pygame.draw.rect(surf, (255, 0, 255),
                          self.rect, 1)
         if self.type == "range":
-            draw_all_arrows(arrow_list, surf)
+            draw_all_arrows(self.arrow_list, surf)
