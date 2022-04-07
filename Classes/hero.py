@@ -50,6 +50,7 @@ class Spear:
             else:
                 surf.blit(self.rotated_spear, (new_spear[0], new_spear[1]))
 
+
 class Ansgar:
     def __init__(self, pos, space, enemy_list):
         self.body = pymunk.Body(1, 100, body_type=pymunk.Body.DYNAMIC)

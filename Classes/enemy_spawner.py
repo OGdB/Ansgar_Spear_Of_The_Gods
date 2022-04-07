@@ -38,6 +38,7 @@ class Enemy_Spawner:
         self.health = Classes.health.Health()
         self.rect = pygame.Rect(self.x, self.y, self.dim, self.dim)
         self.dead = False
+        self.arrow_list = []
         if type == 1:  # A Melee enemy
             self.horizontal_speed = random.randint(50, 100)  # pixels / second
             self.type = "melee"
@@ -45,8 +46,7 @@ class Enemy_Spawner:
         elif type == 2:  # A shooting enemy
             self.horizontal_speed = random.randint(10, 50)  # pixels / second
             self.type = "range"
-            self.arrow_list = []
-            self.flipped = False
+            self.flipped = True
             self.cooldown = 0
             self.shoot = 30
 
