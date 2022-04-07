@@ -104,8 +104,8 @@ class Ansgar:
         pygame.draw.rect(surf, (255, 0, 0),
                          (self.body.position.x - self.dim_radius + 1, self.body.position.y - self.dim_radius - 7,
                           health_bar_w, 5))
-        pygame.draw.rect(surf, (255, 0, 255),
-                         self.rect, 1)
+        # pygame.draw.rect(surf, (255, 0, 255),
+        #                 self.rect, 1)
 
         self.s.draw(surf)
 
