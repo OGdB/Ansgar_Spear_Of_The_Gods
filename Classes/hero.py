@@ -53,7 +53,6 @@ class Spear:
             else:
                 surf.blit(self.rotated_spear, (new_spear[0], new_spear[1]))
 
-
 class Ansgar:
     def __init__(self, pos, space, e_one, e_two):
         self.body = pymunk.Body(1, 100, body_type=pymunk.Body.DYNAMIC)
@@ -125,7 +124,6 @@ class Ansgar:
         if keys[pygame.K_a] or keys[pygame.K_LEFT]:
             if keys[pygame.K_LSHIFT]:
                 # this will let Ansgar run
-
                 self.body.force = (-800, 0)
             else:
                 self.body.force = (-1000, 0)

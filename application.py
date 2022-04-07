@@ -105,18 +105,23 @@ class Application:
                 pygame.draw.circle(surf, (255, 255, 0), [end_x, y], 3)
 
             # Debug text telling you which tile-row and column is hovered over with the mouse
+            # MousePos
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            x = math.floor(mouse_x / 16 % self.cur_map.map_width)
-            y = math.floor(mouse_y / 16 % self.cur_map.map_height)
-            text = f"[{x}, {y}]"
+            x = math.floor(mouse_x / self.cur_map.tile_width % self.cur_map.map_width)
+            y = math.floor(mouse_y / self.cur_map.tile_height % self.cur_map.map_height)
+            mouse_pos_text = f"[{x}, {y}]"
 
-            pygame.draw.circle(surf, (0, 255, 0), [x * 16, y * 16], 4)
-            pygame.draw.rect(surf, (255, 255, 0), pygame.Rect(x * 16, y * 16, 16, 16), True)
-            # Text
+            # Velocity
+            player_vel_text = f"[{math.floor(self.ansgar.body.velocity.x)}, {math.floor(self.ansgar.body.velocity.y)}]"
+
             white = (255, 255, 255)
             font = pygame.font.Font('freesansbold.ttf', 32)
-            text_render = font.render(text, True, white)
-            surf.blit(text_render, (1400, 10))
+            mouse_text_render = font.render(mouse_pos_text, True, white)
+            vel_text_render = font.render(player_vel_text, True, white)
+            surf.blit(mouse_text_render, (1400, 10))
+            surf.blit(vel_text_render, (1400, 50))
+            pygame.draw.circle(surf, (0, 255, 0), [x * 16, y * 16], 4)
+            pygame.draw.rect(surf, (255, 255, 0), pygame.Rect(x * 16, y * 16, 16, 16), True)
 
             pygame.draw.circle(surf, (255, 0, 0), self.ansgar.body.position, 5)
 
