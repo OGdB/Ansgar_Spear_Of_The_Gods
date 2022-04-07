@@ -5,15 +5,15 @@ import Classes.health
 
 class EnemyGroups:
 
-    def __init__(self, x, y, num, size, enemy_type, r_b, l_b):
+    def __init__(self, x, y, num, size, l_b, enemy_type):
         """ Creates the group of enemy's based on the information provided. THe starting x and y, how many in this
             group, then how much the enemy's have. """
         self.position = [x, y]
         self.enemy_list = []
+        self.arrow_list = []
         self.num = num
         Classes.enemy_spawner.Enemy_Spawner.dim = size
         self.type = enemy_type
-        self.r_border = r_b
         self.l_border = l_b
         if self.type == 1:
             self.image = pygame.image.load("image\\Bear.png")
@@ -32,7 +32,7 @@ class EnemyGroups:
         j = 0
         while j < len(self.enemy_list):
 
-            self.enemy_list[j].update(dt, self.r_border, self.l_border, hero_x, hero_y, False)
+            self.enemy_list[j].update(dt, self.position[0], self.l_border, hero_x, hero_y, self.arrow_list, False)
             if self.enemy_list[j].dead:
                 self.enemy_list.remove(self.enemy_list[j])
             j += 1
@@ -53,11 +53,11 @@ class EnemyGroups:
         i = 0
         dmg = 0
         while i < len(self.enemy_list):
-            dmg += self.enemy_list[i].enemy_attack_check(hero_rect)
+            dmg += self.enemy_list[i].enemy_attack_check(hero_rect, self.arrow_list)
             i += 1
         return dmg
 
     def draw(self, win):
         """ Draw's the enemy's. Calls the draw in the enemy_spawner class. """
         for cur_enemy in self.enemy_list:
-            cur_enemy.draw(win, self.image)
+            cur_enemy.draw(win, self.arrow_list, self.image)
