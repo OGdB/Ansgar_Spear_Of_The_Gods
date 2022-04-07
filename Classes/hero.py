@@ -49,7 +49,7 @@ class Spear:
         for new_spear in self.spear_list:
             if new_spear[7] == "right":
                 surf.blit(self.spear_img, (new_spear[0], new_spear[1]))
-                pygame.draw.rect(surf, (100, 100, 100), (new_spear[0], new_spear[1], new_spear[3], new_spear[4]), 1)
+                #pygame.draw.rect(surf, (100, 100, 100), (new_spear[0], new_spear[1], new_spear[3], new_spear[4]), 1)
             else:
                 surf.blit(self.rotated_spear, (new_spear[0], new_spear[1]))
 
@@ -119,8 +119,8 @@ class Ansgar:
         if dmg > 0:
             self.health.take_damage(dmg)
 
-        if evt.type == pygame.KEYDOWN and evt.key == pygame.K_w:
-            self.body.apply_impulse_at_local_point((0, -700), (0, 8))
+        if evt.type == pygame.KEYUP and             evt.key == pygame.K_w:
+                self.body.apply_impulse_at_local_point((0, -700), (0, 8))
 
 
         if keys[pygame.K_a] or keys[pygame.K_LEFT]:
@@ -144,7 +144,6 @@ class Ansgar:
         if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
             self.direction = "right"
 
-        if evt.type == pygame.KEYDOWN:
-            if evt.key == pygame.K_SPACE:
+        if evt.type == pygame.KEYUP and evt.key == pygame.K_SPACE:
                 self.make_spear()
         self.s.update(dt)
