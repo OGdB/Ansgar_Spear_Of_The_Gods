@@ -3,19 +3,18 @@ import pygame
 import pymunk
 import os
 
-
 class Tileset:
     def __init__(self, raw_dict, directory):
-        self.columns = None  # The number of columns in the sprite-sheet
-        self.first_gid = None  # The id number of the first tile (top-left).  Each tile after this
-        #   is one larger, continuing with the rows below
-        self.image = None  # A pygame Surface
-        self.margin = None  # Not sure what this is -- perhaps a border around the tile data?
-        self.spacing = None  # The spacing (in pixels) between each tile
-        self.tile_count = None  # How many total tiles are there in this tileset?
-        self.tile_height = None  # The height (in pixels) of each tile in the image
-        self.tile_width = None  # The width (in pixels) of each tile in the image
-        self.name = None  # The name of the tileset (as it was labelled in tiled)
+        self.columns = None                     # The number of columns in the sprite-sheet
+        self.first_gid = None                   # The id number of the first tile (top-left).  Each tile after this
+                                                #   is one larger, continuing with the rows below
+        self.image = None                       # A pygame Surface
+        self.margin = None                      # Not sure what this is -- perhaps a border around the tile data?
+        self.spacing = None                     # The spacing (in pixels) between each tile
+        self.tile_count = None                  # How many total tiles are there in this tileset?
+        self.tile_height = None                 # The height (in pixels) of each tile in the image
+        self.tile_width = None                  # The width (in pixels) of each tile in the image
+        self.name = None                        # The name of the tileset (as it was labelled in tiled)
 
         if "columns" in raw_dict:           self.columns = raw_dict["columns"]
         if "firstgid" in raw_dict:          self.first_gid = raw_dict["firstgid"]
@@ -36,21 +35,21 @@ class Tileset:
                                 self.tile_width, self.tile_height)
         return None
 
-
 class Map:
     def __init__(self, fname):
         # Data about the map (will be filled in by parse_file, generally)
-        self.fname = fname  # The filename we're based on
-        self.map_height = None  # height of the map in tiles
-        self.map_width = None  # width of the map in tiles
-        self.tile_width = None  # width of each tile in pixels (of the map grid)
-        self.tile_height = None  # height of each tile in pixels (of the map grid)
-        self.nextLayerID = None  # The next layer id -- this value - 1 is the number of layers total
-        self.nextObjectID = None  # The next object id -- this value - 1 is the number of objects total
+        self.fname = fname                      # The filename we're based on
+        self.map_height = None                  # height of the map in tiles
+        self.map_width = None                   # width of the map in tiles
+        self.tile_width = None                  # width of each tile in pixels (of the map grid)
+        self.tile_height = None                 # height of each tile in pixels (of the map grid)
+        self.nextLayerID = None                 # The next layer id -- this value - 1 is the number of layers total
+        self.nextObjectID = None                # The next object id -- this value - 1 is the number of objects total
         self.tile_sets = []
-        self.tile_layers = []  # stores all the tile layers in the map
-        self.pickups = []  # a list of 2d points from the object layers of the map.  As the player
-        #   collects these, the contents will change
+        self.tile_layers = []                   # stores all the tile layers in the map (in rows)
+        self.pickups = []                       # a list of 2d points from the object layers of the map.  As the player
+                                                #   collects these, the contents will change
+        self.floor_points = []                  # Begin- and start positions of each platform.
 
         # Get some information about where the map file is located
         map_dir = os.path.dirname(fname)
@@ -60,7 +59,7 @@ class Map:
 
         # Create a few additional attributes / data from the newly processed map_data
         self.rendered_img = self.render_to_image()
-        self.world_width = self.map_width * self.tile_width  # Width of the map, in pixels
+        self.world_width = self.map_width * self.tile_width     # Width of the map, in pixels
         self.world_height = self.map_height * self.tile_height  # Height of the map, in pixels
 
     def parse_file(self, fname, directory):
@@ -82,6 +81,7 @@ class Map:
             if "type" in raw_data:                      self.data_type = raw_data["type"]
             if "version" in raw_data:                   self.map_version = raw_data["version"]
             if "tiledversion" in raw_data:              self.tiled_version = raw_data["tiledversion"]
+
 
             if "layers" in raw_data:
                 for layer in raw_data["layers"]:
@@ -106,29 +106,47 @@ class Map:
                 if "x" in obj and "y" in obj:
                     self.pickups.append((obj["x"], obj["y"]))
 
+    def collider_on_platform(self, space, layer):
+        y = 0
+
+        for row in layer:
+            x = 0
+            last_placed_index = 0
+
+            for tile_index in range(len(row)):  # for every tile in this row
+                if tile_index <= last_placed_index and tile_index != 0:
+                    continue
+
+                tile_code = row[tile_index]
+                if tile_code != 0:  # if there is a tile drawn on this row
+                    start_x = tile_index * self.tile_width
+                    end_x = start_x + self.tile_width
+
+                    next_tile_index = tile_index + 1
+                    while next_tile_index < len(row) and row[
+                        next_tile_index] != 0:  # if there is ground on the next tile
+                        end_x += self.tile_width
+                        last_placed_index = next_tile_index
+                        next_tile_index += 1
+
+                    seg_up = pymunk.Segment(space.static_body, (start_x, y), (end_x, y), 0.0)
+                    seg_up.elasticity = 0.95
+                    seg_up.friction = 0.9
+                    seg_bot = pymunk.Segment(space.static_body, (start_x, y + self.tile_height),
+                                             (end_x, y + self.tile_height), 0.0)
+                    seg_bot.elasticity = 0.95
+                    seg_bot.friction = 0.9
+
+                    self.floor_points.append([[start_x, end_x, y], [start_x, end_x, y + self.tile_height]])
+                    space.add(seg_bot)
+                    space.add(seg_up)
+
+                x += self.tile_width
+            y += self.tile_height
+
     def draw_colliders(self, space):
-        # for every 16x16 ground tile in layers[0].groundlayer
-        # if the data
-        for layer in self.tile_layers:
-            y = 0
-            row_num = 0
-            for row in layer:
-                x = 0
-                col_num = 0
-                for code in row:
-                    if code != 0:  # if there is a tile drawn on this row
-                        result = self.get_tile_data(code)  # get tile data of every individual tile
-
-                        if result is not None:  # there's a tile
-                            seg = pymunk.Segment(space.static_body, (x, y), (x + self.tile_width, y), 0.0)
-                            seg.elasticity = 0.95
-                            seg.friction = 0.9
-                            space.add(seg)
-                    x += self.tile_width
-                    col_num += 1
-
-                y += self.tile_height
-                row_num += 1
+        self.collider_on_platform(space, self.tile_layers[0])
+        self.collider_on_platform(space, self.tile_layers[1])
 
     def __str__(self):
         s = "Tilesets:\n"

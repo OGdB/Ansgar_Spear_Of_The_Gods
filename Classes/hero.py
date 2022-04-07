@@ -1,12 +1,13 @@
 import pygame
-import Classes.enemy
+import pymunk
+import Classes.health
 
 
 class Spear:
     def __init__(self, player_x, player_y, direction, spear_list, e_one, e_two):
         self.player_x = player_x
         self.player_y = player_y
-        self.position = [player_x, player_y]
+        self.position = [self.player_x, self.player_y]
         self.direction = direction
         self.length = 32
         self.height = 16
@@ -15,11 +16,8 @@ class Spear:
         self.speed = 275
         self.enemy_one = e_one
         self.enemy_two = e_two
-
-    def make_spear(self):
-        new_spear = [self.position[0], self.position[1], self.direction, self.length, self.height, self.lifetime,
-                     self.speed]
-        self.spear_list.append(new_spear)
+        self.spear_img = pygame.image.load("image\\temp_spear.png")
+        self.rotated_spear = pygame.transform.rotate(self.spear_img, 180)
 
     def update(self, dt):
         all_keys = pygame.key.get_pressed()
@@ -30,115 +28,123 @@ class Spear:
                 s[0] -= s[6] * dt
             else:
                 s[0] += s[6] * dt
-            if s[0] <= 0:
-                s[6] = 0
-            if s[0] >= 480 - s[3]:
-                s[6] = 0
+
             if s[5] <= 0:
                 self.spear_list.remove(s)
 
-            hit_check = self.enemy_one.enemy_hit_check(s[0], s[1], s[1]+s[4], 100)
+            hit_check = self.enemy_one.enemy_hit_check(s[0], s[1], s[1] + s[4], 50)
             if hit_check:
                 self.spear_list.remove(s)
-            hit_check = self.enemy_two.enemy_hit_check(s[0], s[1], s[1]+s[4], 100)
+            hit_check = self.enemy_two.enemy_hit_check(s[0], s[1], s[1] + s[4], 50)
             if hit_check:
                 self.spear_list.remove(s)
 
         if all_keys[pygame.K_a] or all_keys[pygame.K_LEFT]:
             self.direction = "left"
-            if all_keys[pygame.K_LSHIFT]:
-                self.position[0] -= 250 * dt  # this will let Ansgar run
-            else:
-                self.position[0] -= 150 * dt
 
         if all_keys[pygame.K_d] or all_keys[pygame.K_RIGHT]:
             self.direction = "right"
-            if all_keys[pygame.K_LSHIFT]:
-                self.position[0] += 250 * dt
-            else:
-                self.position[0] += 150 * dt
 
     def draw(self, surf):
         for new_spear in self.spear_list:
-            pygame.draw.rect(surf, (100, 100, 100), (new_spear[0], new_spear[1], new_spear[3], new_spear[4]))
+            if new_spear[7] == "right":
+                surf.blit(self.spear_img, (new_spear[0], new_spear[1]))
+                pygame.draw.rect(surf, (100, 100, 100), (new_spear[0], new_spear[1], new_spear[3], new_spear[4]), 1)
+            else:
+                surf.blit(self.rotated_spear, (new_spear[0], new_spear[1]))
 
 
 class Ansgar:
-    def __init__(self, player_x, player_y, e_one, e_two):
-        self.position = [player_x, player_y]
+    def __init__(self, pos, space, e_one, e_two):
+        self.body = pymunk.Body(1, 100, body_type=pymunk.Body.DYNAMIC)
+        self.body.position = pos
+        self.body.angle = 0
+        self.body.mass = 5
+        self.dim_radius = 15
+        poly_dims = [(-self.dim_radius, -self.dim_radius), (self.dim_radius, -self.dim_radius),
+                     (self.dim_radius, self.dim_radius), (-self.dim_radius, self.dim_radius)]
+        self.rect = pygame.Rect(
+            self.body.position.x - self.dim_radius, self.body.position.y - self.dim_radius,
+            self.dim_radius * 2, self.dim_radius * 2)
+        self.shape = pymunk.Poly(self.body, poly_dims)
+        self.shape.friction = 0.25
+        space.add(self.body, self.shape)
+        self.length = 32
+        self.height = 16
+        self.lifetime = 100
+        self.speed = 275
         self.direction = "right"
-        spear_list = []
-        self.ansgar_accel = 0
-        self.ansgar_v_speed = 0
-        self.ansgar_max_speed = 2000
-        self.ansgar_d_speed = 0
-        self.jump = False
-        self.last_accel = self.ansgar_accel
-        self.s = Spear(self.position[0], self.position[1], self.direction, spear_list, e_one, e_two)
+        self.spear_list = []
+        self.health = Classes.health.Health()
+        self.e_one = e_one
+        self.e_two = e_two
+
+        self.s = Spear(self.body.position.x, self.body.position.y, self.direction, self.spear_list, e_one, e_two)
+
+    def make_spear(self):
+        # this should make it to where ansgar looks like he's throwing the spear
+        new_spear = [self.body.position[0], self.body.position[1] - 15, self.direction, self.length, self.height,
+                     self.lifetime,
+                     self.speed, self.direction]
+        self.spear_list.append(new_spear)
 
     def draw(self, surf):
-        pygame.draw.rect(surf, (255, 255, 0), (self.position[0], self.position[1], 32, 32))
+        self.body.angle = 0
+        # position of drawing vertices is body position + dimensions.
+        # got to do something regarding rotations as well (on collision)
+
+        top_left = (self.body.position.x - self.dim_radius, self.body.position.y - self.dim_radius)
+        top_right = (self.body.position.x + self.dim_radius, self.body.position.y - self.dim_radius)
+        bottom_left = (self.body.position.x - self.dim_radius, self.body.position.y + self.dim_radius)
+        bottom_right = (self.body.position.x + self.dim_radius, self.body.position.y + self.dim_radius)
+
+        pygame.draw.polygon(surf, (255, 255, 0), [top_left, top_right, bottom_right, bottom_left])
+
+        health_bar = self.health.cur_health / self.health.max_health
+        health_bar_w = health_bar * self.dim_radius * 2
+        pygame.draw.rect(surf, (255, 0, 0),
+                         (self.body.position.x - self.dim_radius + 1, self.body.position.y - self.dim_radius - 7,
+                          health_bar_w, 5))
+        pygame.draw.rect(surf, (255, 0, 255),
+                         self.rect, 1)
+
         self.s.draw(surf)
 
     def update(self, dt, evt, keys):
+        self.rect = pygame.Rect(
+            self.body.position.x - self.dim_radius, self.body.position.y - self.dim_radius,
+            self.dim_radius * 2, self.dim_radius * 2)
+        dmg = self.e_one.enemy_attack_check(self.rect)
+        dmg = self.e_two.enemy_attack_check(self.rect)
+        if dmg > 0:
+            self.health.take_damage(dmg)
 
-        self.last_accel = self.ansgar_accel
-        all_keys = keys
+        if evt.type == pygame.KEYDOWN and evt.key == pygame.K_w:
+            self.body.apply_impulse_at_local_point((0, -700), (0, 8))
 
-        if all_keys[pygame.K_w] or all_keys[pygame.K_UP]:
 
-            if self.jump == False:
-
-                self.ansgar_v_speed += 10 * dt
-                if self.ansgar_v_speed >= 20 or self.position[1] <= 250:
-                    self.jump = True
-                    self.ansgar_v_speed *= -1
-
-            self.ansgar_accel += self.ansgar_v_speed
-            self.position[1] -= self.ansgar_accel * dt
-            self.s.position[1] -= self.ansgar_accel * dt
-            if self.ansgar_accel > self.ansgar_max_speed:
-                self.ansgar_accel = -self.ansgar_max_speed
-                self.s.position[1] = -self.ansgar_max_speed
-            if self.position[1] >= 290:
-                self.position[1] = 290
-                self.s.position[1] = 290
-                self.jump = False
-        else:
-            self.ansgar_d_speed = 100000 * dt
-            self.ansgar_accel = 0
-            self.ansgar_v_speed = 0
-
-            # Decelerate
-
-            if self.position[1] < 290:
-                self.position[1] += self.ansgar_d_speed * dt
-                self.s.position[1] += self.ansgar_d_speed * dt
-                if self.position[1] >= 290:
-                    self.position[1] = 290
-                    self.s.position[1] = 290
-                    self.jump = False
-
-        if all_keys[pygame.K_a] or all_keys[pygame.K_LEFT]:
-            if all_keys[pygame.K_LSHIFT]:
+        if keys[pygame.K_a] or keys[pygame.K_LEFT]:
+            if keys[pygame.K_LSHIFT]:
                 # this will let Ansgar run
-                self.position[0] -= 250 * dt
+
+                self.body.force = (-800, 0)
             else:
-                self.position[0] -= 150 * dt
+                self.body.force = (-1000, 0)
+        if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+            if keys[pygame.K_LSHIFT]:
+                # this will let Ansgar run
+                self.body.force = (800, 0)
+            else:
+                self.body.force = (1000, 0)
+
+
+
+        if keys[pygame.K_a] or keys[pygame.K_LEFT]:
             self.direction = "left"
-        if all_keys[pygame.K_d] or all_keys[pygame.K_RIGHT]:
-            if all_keys[pygame.K_LSHIFT]:
-                # this will let Ansgar run
-                self.position[0] += 250 * dt
-            else:
-                self.position[0] += 150 * dt
+        if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
             self.direction = "right"
-        if self.position[0] <= 0:
-            self.position[0] = 0
-        if self.position[0] >= 480 - 32:
-            self.position[0] = 480 - 32
 
         if evt.type == pygame.KEYDOWN:
             if evt.key == pygame.K_SPACE:
-                self.s.make_spear()
+                self.make_spear()
         self.s.update(dt)

@@ -1,9 +1,15 @@
 import pygame
 import application
+import main_menu
 
 pygame.init()
 
-screen_w = 480
-screen_h = 320
+screen_w = 1920
+screen_h =1080
+
+start = main_menu.Start_screen(screen_w,screen_h)
+start.run()
 App = application.Application(screen_w, screen_h)
-App.run()
+if start.done == True:
+    App.clock.tick()
+    App.run()
