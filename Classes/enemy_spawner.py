@@ -138,7 +138,7 @@ class Enemy_Spawner:
             for arrow in arrow_list:
                 temp_rect = (arrow[0], arrow[1], arrow[2], arrow[2])
                 if hero_r.colliderect(temp_rect):
-                    #arrow_list.remove(arrow)
+                    arrow_list.remove(arrow)
                     return 10
             return 0
 
