@@ -20,7 +20,8 @@ class Application:
         self.win = pygame.display.set_mode((0,0), pygame.FULLSCREEN)  # The main window
         self.done = False  # Should we bail out of the game loop?
         self.clock = pygame.time.Clock()  # The pygame clock object used for delta-time
-
+        self.background = pygame.image.load("image\\Background.png")
+        self.background = pygame.transform.scale(self.background, (screen_w, screen_h))
         self.space = pymunk.Space()  # Create a physics space
         self.space.gravity = (0, 250)  # Set its gravity
 
@@ -30,15 +31,9 @@ class Application:
         self.total_time = 0  # Total time the game's been running (used for player/coin color modulation)
         self.ball_list = []
         self.ground_colliders = self.cur_map.draw_colliders(self.space)
-        self.enemy_group_list = [
-            Classes.enemy.EnemyGroups(336, (240 - 16), 3, 16, 672, 1),
-            Classes.enemy.EnemyGroups(128, (480 - 16), 3, 16, 464, 1),
-            Classes.enemy.EnemyGroups(848, (672 - 16), 3, 16, 1040, 1),
-            Classes.enemy.EnemyGroups(0, (128 - 16), 2, 16, 80, 2),
-            Classes.enemy.EnemyGroups(528, (448 - 16), 2, 16, 624, 2),
-            Classes.enemy.EnemyGroups(1184, (480 - 16), 2, 16, 1456, 2),
-                                ]
-        self.ansgar = Classes.hero.Ansgar((240, 100), self.space, self.enemy_group_list)
+        self.enemy_group_one = Classes.enemy.EnemyGroups(0, self.cur_map.floor_points[0][0][2] + 16, 2, 16, 2)
+        self.enemy_group_two = Classes.enemy.EnemyGroups(0, self.cur_map.floor_points[10][0][2] - 16, 3, 16, 1)
+        self.ansgar = Classes.hero.Ansgar((240, 100), self.space, self.enemy_group_one, self.enemy_group_two)
 
     def run(self):
         while not self.done:
@@ -53,8 +48,14 @@ class Application:
     def handle_input(self, dt):
         # Process the event (make sure this is only once in your game loop!)
         evt = pygame.event.poll()
-        for i in range(len(self.enemy_group_list)):
-            self.enemy_group_list[i].update(dt, self.ansgar.body.position.x, self.ansgar.body.position.y)
+        self.enemy_group_one.update(
+            dt, self.cur_map.floor_points[2][0][0], self.cur_map.floor_points[2][0][1],
+            self.ansgar.body.position.x, self.ansgar.body.position.y
+            )  # Moves the enemy's with in the given range
+        self.enemy_group_two.update(
+            dt, self.cur_map.floor_points[10][0][0], self.cur_map.floor_points[10][0][1],
+            self.ansgar.body.position.x, self.ansgar.body.position.y
+            )
 
         # event-handling
         mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -78,15 +79,13 @@ class Application:
         self.ansgar.update(dt, evt, all_keys)
 
     def render(self, surf):
-        # Clean up whatever is drawn and redraw
-        surf.fill((0, 0, 0))
-
         # Drawing
-        # Draw the whole map
+        surf.fill((0,0,0))
+        surf.blit(self.background, (0,0))
         surf.blit(self.cur_map.rendered_img, (0, 0), (0, 0, self.win_w, self.win_h))
 
-        for i in range(len(self.enemy_group_list)):
-            self.enemy_group_list[i].draw(self.win)
+        self.enemy_group_one.draw(surf)
+        self.enemy_group_two.draw(surf)
 
         for body in self.ball_list:
             pygame.draw.circle(surf, (255, 0, 0), body.position, 10)
@@ -110,7 +109,7 @@ class Application:
             mouse_x, mouse_y = pygame.mouse.get_pos()
             x = math.floor(mouse_x / self.cur_map.tile_width % self.cur_map.map_width)
             y = math.floor(mouse_y / self.cur_map.tile_height % self.cur_map.map_height)
-            mouse_pos_text = f"[{x * self.cur_map.tile_width}, {y * self.cur_map.tile_height}]"
+            mouse_pos_text = f"[{x}, {y}]"
 
             # Velocity
             player_vel_text = f"[{math.floor(self.ansgar.body.velocity.x)}, {math.floor(self.ansgar.body.velocity.y)}]"
@@ -119,7 +118,7 @@ class Application:
             font = pygame.font.Font('freesansbold.ttf', 32)
             mouse_text_render = font.render(mouse_pos_text, True, white)
             vel_text_render = font.render(player_vel_text, True, white)
-            surf.blit(mouse_text_render, (1300, 10))
+            surf.blit(mouse_text_render, (1400, 10))
             surf.blit(vel_text_render, (1400, 50))
             pygame.draw.circle(surf, (0, 255, 0), [x * 16, y * 16], 4)
             pygame.draw.rect(surf, (255, 255, 0), pygame.Rect(x * 16, y * 16, 16, 16), True)

@@ -189,8 +189,8 @@ class Map:
         return result
 
     def render_to_image(self):
-        surf = pygame.Surface((self.map_width * self.tile_width, self.map_height * self.tile_height))
-
+        surf = pygame.Surface((self.map_width * self.tile_width, self.map_height * self.tile_height)).convert_alpha()
+        surf.fill((0,0,0,0))
         for layer in self.tile_layers:
             y = 0
             row_num = 0
