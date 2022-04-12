@@ -11,7 +11,6 @@ import Classes.spritesheet as SpriteSheet
 # Set to true to see a bunch of debug stuff.
 debug = False
 
-
 class Application:
     def __init__(self, screen_w, screen_h, port_w, port_h):
         pygame.init()
@@ -25,11 +24,12 @@ class Application:
 
         self.background = pygame.image.load("image\\Background.png")
         self.background = pygame.transform.scale(self.background, (screen_w, screen_h))
+
         self.space = pymunk.Space()  # Create a physics space
         self.space.gravity = (0, 250)  # Set its gravity
+
         self.cur_map = Classes.map_data.Map("maps\\Map.json")  # The initial map to load
         self.total_time = 0  # Total time the game's been running (used for player/coin color modulation)
-        self.ball_list = []
         self.ground_colliders = self.cur_map.draw_colliders(self.space)
         self.enemy_group_list = [
             Classes.enemy.EnemyGroups(336, (240 - 16), 3, 16, 672, 1, self.camera_pos),
@@ -42,16 +42,15 @@ class Application:
         self.ansgar = Classes.hero.Ansgar((240, 100), self.space, self.enemy_group_list,self.camera_pos)
 
         self.anim_timer = 0
+        self.anim_frame = 0
+        self.anim_cooldown = 0.2
         char_spr_sheet_img = pygame.image.load("image\\Ansgar_Spritesheet.png").convert_alpha()
         char_spr_sheet = SpriteSheet.SpriteSheet(char_spr_sheet_img, self.cur_map.tile_width, self.cur_map.tile_height, 4)
         self.idle_right = SpriteSheet.SpriteSheet.load_animation(char_spr_sheet, 0, 3)
         self.walk_right = SpriteSheet.SpriteSheet.load_animation(char_spr_sheet, 4, 3)
         self.idle_left = SpriteSheet.SpriteSheet.load_animation(char_spr_sheet, 8, 3)
-        self.walk_left = SpriteSheet.SpriteSheet.load_animation(char_spr_sheet, 13, 3)
-        self.cur_anim = self.walk_right
-
-
-        self.anim_frame = 0
+        self.walk_left = SpriteSheet.SpriteSheet.load_animation(char_spr_sheet, 12, 3)
+        self.cur_anim = self.idle_right
 
     def run(self):
         while not self.done:
@@ -97,8 +96,9 @@ class Application:
             self.camera_pos.y = self.cur_map.world_height - self.win.get_height()
 
     def render(self, surf, dt):
+        # Animation loop
         self.anim_timer += dt
-        if self.anim_timer >= 0.2:
+        if self.anim_timer >= self.anim_cooldown:
             self.anim_timer = 0
             self.anim_frame = (self.anim_frame + 1) % len(self.cur_anim)
         cur_sprite = self.cur_anim[self.anim_frame]
@@ -107,16 +107,13 @@ class Application:
         # Drawing
         surf.fill((0, 0, 0))
         surf.blit(self.background, (0, 0))
-        # surf.blit(self.cur_map.rendered_img, (0, 0), (0, 0, self.win_w, self.win_h))
+
         surf.blit(self.cur_map.rendered_img, (0, 0),
                   (self.camera_pos.x, self.camera_pos.y, self.win.get_width(), self.win.get_height()))
         surf.blit(cur_sprite, (10, 10))
 
         for i in range(len(self.enemy_group_list)):
             self.enemy_group_list[i].draw(self.win)
-
-        for body in self.ball_list:
-            pygame.draw.circle(surf, (255, 0, 0), body.position, 10)
 
         # Debug drawing
         if debug:
