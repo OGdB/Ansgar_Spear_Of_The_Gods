@@ -3,6 +3,15 @@ import Classes.enemy_spawner
 import Classes.health
 
 
+def draw_all_arrows(arrow_list, surf):
+    for cur_box in arrow_list:
+        x = cur_box[0]
+        y = cur_box[1]
+        size = cur_box[2]
+        color = cur_box[3]
+        pygame.draw.rect(surf, color, (x, y, size, size))
+
+
 class EnemyGroups:
 
     def __init__(self, x, y, num, size, l_b, enemy_type):
@@ -36,6 +45,8 @@ class EnemyGroups:
             if self.enemy_list[j].dead:
                 self.enemy_list.remove(self.enemy_list[j])
             j += 1
+        for a in self.arrow_list:
+            a[0] += a[4] * dt
 
     def enemy_hit_check(self, spear_x, spear_y_top, spear_y_bot, dmg):
         """ Checks to see if the enemy has been hit. """
@@ -61,3 +72,4 @@ class EnemyGroups:
         """ Draw's the enemy's. Calls the draw in the enemy_spawner class. """
         for cur_enemy in self.enemy_list:
             cur_enemy.draw(win, self.arrow_list, self.image)
+        draw_all_arrows(self.arrow_list, win)
