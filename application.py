@@ -2,7 +2,7 @@ import math
 
 import pygame
 import pymunk
-import map_data
+import Classes.map_data
 import Classes.enemy
 import Classes.hero
 import Classes.health
@@ -28,7 +28,7 @@ class Application:
 
         self.font = pygame.font.SysFont("Courier New", 16)  # The font to use for rendering stats
 
-        self.cur_map = map_data.Map("maps\\Map.json")  # The initial map to load
+        self.cur_map = Classes.map_data.Map("maps\\Map.json")  # The initial map to load
         self.total_time = 0  # Total time the game's been running (used for player/coin color modulation)
         self.ball_list = []
         self.ground_colliders = self.cur_map.draw_colliders(self.space)
