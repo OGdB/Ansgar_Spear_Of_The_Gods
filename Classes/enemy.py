@@ -28,12 +28,12 @@ class EnemyGroups:
         self.l_border = l_b
         if self.type == 1:
             self.image = pygame.image.load("image\\Bear.png")
-            self.animated_image = Classes.spritesheet.SpriteSheet("image\\Bear_Spritesheet.png")
-            # self.animated_image_list = self.animated_image.load_animation(0, 4)
+            animated_image = Classes.spritesheet.SpriteSheet(self.image, 32, 16, 3)
+            self.normal_bear = animated_image.load_animation(0, 4)
         elif self.type == 2:
             self.image = pygame.image.load("image\\Fire_Bear.png")
-            self.animated_image = Classes.spritesheet.SpriteSheet("image\\Fire_Bear_Spritesheet.png")
-            # self.animated_image_list = self.animated_image.load_animation(0, 4)
+            animated_image = Classes.spritesheet.SpriteSheet(self.image, 32, 16, 3)
+            self.fire_bear = animated_image.load_animation(0, 4)
 
         i = 0
         while i < self.num:
