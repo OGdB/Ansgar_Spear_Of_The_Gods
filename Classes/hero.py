@@ -1,6 +1,9 @@
 import pygame
 import pymunk
+import Classes.map_data
 import Classes.health
+
+
 
 
 class Spear:
@@ -73,6 +76,10 @@ class Ansgar:
         self.spear_list = []
         self.health = Classes.health.Health()
         self.e_list = enemy_list
+        self.map = Classes.map_data.Map("maps\\Map.json")
+        self.points = self.map.floor_points
+        self.grounded = False
+        self.handler = space.add_default_collision_handler()
 
         self.s = Spear(self.body.position.x, self.body.position.y, self.direction, self.spear_list, self.e_list)
 
@@ -105,6 +112,20 @@ class Ansgar:
 
         self.s.draw(surf)
 
+
+    def coll_begin(self,arbiter,space,data):
+        self.grounded = True
+        return True
+    def coll_pre(self,arbiter,space,data):
+
+        return True
+    def coll_post(self,arbiter,space,data):
+
+        return True
+    def separate(self,arbiter,space,data):
+        self.grounded = False
+
+
     def update(self, dt, evt, keys):
         self.rect = pygame.Rect(
             self.body.position.x - self.dim_radius, self.body.position.y - self.dim_radius,
@@ -115,7 +136,9 @@ class Ansgar:
                 self.health.take_damage(dmg)
 
         if evt.type == pygame.KEYDOWN and evt.key == pygame.K_w:
-                self.body.apply_impulse_at_local_point((0, -700), (0, 8))
+                if self.grounded == True:
+                    self.grounded = False
+                    self.body.apply_impulse_at_local_point((0, -700), (0, 8))
 
         if keys[pygame.K_a] or keys[pygame.K_LEFT]:
             if keys[pygame.K_LSHIFT]:
@@ -137,6 +160,13 @@ class Ansgar:
         if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
             self.direction = "right"
 
-        if evt.type == pygame.KEYUP and evt.key == pygame.K_SPACE:
+        if evt.type == pygame.KEYDOWN and evt.key == pygame.K_SPACE:
                 self.make_spear()
         self.s.update(dt)
+
+        self.handler.begin = self.coll_begin
+        self.handler.pre_solve = self.coll_pre
+        self.handler.post_solve = self.coll_post
+        self.handler.separate = self.separate
+        if self.handler.begin == True:
+            self.grounded = True
