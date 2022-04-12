@@ -16,7 +16,7 @@ class Application:
         pygame.init()
         self.half_w = screen_w // 2  # half-window width in pixels
         self.half_h = screen_h // 2  # half-window height in pixels
-        self.win = pygame.display.set_mode((port_w, port_h), pygame.FULLSCREEN)  # The main window
+        self.win = pygame.display.set_mode((int(port_w), int(port_h)), pygame.FULLSCREEN)  # The main window
         self.half_port_w = port_w / 2  # half-window width in pixels
         self.half_port_h = port_h / 2  # half-window height in pixels
         self.camera_pos = pygame.Vector2(0, 0)  # The position (in world-space) of the camera.  Will be updated in update
@@ -40,7 +40,8 @@ class Application:
             Classes.enemy.EnemyGroups(528, (448 - 16), 2, 16, 624, 2),
             Classes.enemy.EnemyGroups(1184, (480 - 16), 2, 16, 1456, 2),
         ]
-        self.ansgar = Classes.hero.Ansgar((240, 100), self.space, self.enemy_group_list)
+        self.ansgar = Classes.hero.Ansgar((240, 100), self.space, self.enemy_group_list,self.camera_pos)
+
 
     def run(self):
         while not self.done:

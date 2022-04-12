@@ -49,12 +49,12 @@ class Spear:
         for new_spear in self.spear_list:
             if new_spear[7] == "right":
                 surf.blit(self.spear_img, (new_spear[0], new_spear[1]))
-                #pygame.draw.rect(surf, (100, 100, 100), (new_spear[0], new_spear[1], new_spear[3], new_spear[4]), 1)
+
             else:
                 surf.blit(self.rotated_spear, (new_spear[0], new_spear[1]))
 
 class Ansgar:
-    def __init__(self, pos, space, enemy_list):
+    def __init__(self, pos, space, enemy_list,cam_pos):
         self.body = pymunk.Body(1, 100, body_type=pymunk.Body.DYNAMIC)
         self.body.position = pos
         self.body.angle = 0
@@ -80,12 +80,14 @@ class Ansgar:
         self.points = self.map.floor_points
         self.grounded = False
         self.handler = space.add_default_collision_handler()
+        self.cam_pos = cam_pos
+
 
         self.s = Spear(self.body.position.x, self.body.position.y, self.direction, self.spear_list, self.e_list)
 
     def make_spear(self):
         # this should make it to where ansgar looks like he's throwing the spear
-        new_spear = [self.body.position[0], self.body.position[1] - 15, self.direction, self.length, self.height,
+        new_spear = [self.body.position[0] - self.cam_pos[0], (self.body.position[1] - 15) - self.cam_pos[1] , self.direction, self.length, self.height,
                      self.lifetime,
                      self.speed, self.direction]
         self.spear_list.append(new_spear)
@@ -105,7 +107,7 @@ class Ansgar:
         health_bar = self.health.cur_health / self.health.max_health
         health_bar_w = health_bar * self.dim_radius * 2
         pygame.draw.rect(surf, (255, 0, 0),
-                         (self.body.position.x - self.dim_radius + 1, self.body.position.y - self.dim_radius - 7,
+                         ((self.body.position.x - self.dim_radius + 1) - self.cam_pos[0], (self.body.position.y - self.dim_radius - 7) - self.cam_pos[1],
                           health_bar_w, 5))
         # pygame.draw.rect(surf, (255, 0, 255),
         #                 self.rect, 1)
