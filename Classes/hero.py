@@ -5,7 +5,7 @@ import Classes.health
 
 
 class Spear:
-    def __init__(self, player_x, player_y, direction, spear_list, e_list):
+    def __init__(self, player_x, player_y, direction, spear_list, e_list,cam_pos):
         self.player_x = player_x
         self.player_y = player_y
         self.position = [self.player_x, self.player_y]
@@ -18,6 +18,7 @@ class Spear:
         self.e_list = e_list
         self.spear_img = pygame.image.load("image\\Spear.png")
         self.rotated_spear = pygame.transform.rotate(self.spear_img, 180)
+        self.cam_pos = cam_pos
 
     def update(self, dt):
         all_keys = pygame.key.get_pressed()
@@ -46,9 +47,9 @@ class Spear:
     def draw(self, surf):
         for new_spear in self.spear_list:
             if new_spear[7] == "right":
-                surf.blit(self.spear_img, (new_spear[0], new_spear[1]))
+                surf.blit(self.spear_img, (new_spear[0] - self.cam_pos[0], new_spear[1] - self.cam_pos[1]))
             else:
-                surf.blit(self.rotated_spear, (new_spear[0], new_spear[1]))
+                surf.blit(self.rotated_spear, (new_spear[0] - self.cam_pos[0], new_spear[1] - self.cam_pos[1]))
 
 
 class Ansgar:
@@ -81,11 +82,11 @@ class Ansgar:
         self.cam_pos = cam_pos
 
 
-        self.s = Spear(self.body.position.x, self.body.position.y, self.direction, self.spear_list, self.e_list)
+        self.s = Spear(self.body.position.x, self.body.position.y, self.direction, self.spear_list, self.e_list,self.cam_pos)
 
     def make_spear(self):
         # this should make it to where ansgar looks like he's throwing the spear
-        new_spear = [self.body.position[0] - self.cam_pos[0], (self.body.position[1] - 15) - self.cam_pos[1] , self.direction, self.length, self.height,
+        new_spear = [self.body.position[0], (self.body.position[1] - 15), self.direction, self.length, self.height,
                      self.lifetime,
                      self.speed, self.direction]
         self.spear_list.append(new_spear)
