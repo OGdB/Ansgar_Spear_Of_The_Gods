@@ -3,15 +3,6 @@ import pygame.draw
 import Classes
 
 
-def draw_all_arrows(arrow_list, surf):
-    for cur_box in arrow_list:
-        x = cur_box[0]
-        y = cur_box[1]
-        size = cur_box[2]
-        color = cur_box[3]
-        pygame.draw.rect(surf, color, (x, y, size, size))
-
-
 def spawn_new_arrow(arrow_list, enemy_x, enemy_y, enemy_length, speed):
     size = 5
     x = enemy_x + enemy_length
@@ -87,8 +78,6 @@ class Enemy_Spawner:
                         self.cooldown = 0
                     else:
                         self.cooldown += 1
-            for a in arrow_list:
-                a[0] += a[4] * dt
 
         if self.x < left_x_border:
             # We just went off the left-edge
@@ -137,7 +126,6 @@ class Enemy_Spawner:
             for arrow in arrow_list:
                 temp_rect = (arrow[0], arrow[1], arrow[2], arrow[2])
                 if hero_r.colliderect(temp_rect):
-                    arrow_list.remove(arrow)
                     return 10
             return 0
 
@@ -152,5 +140,3 @@ class Enemy_Spawner:
         pygame.draw.rect(surf, (255, 0, 0), (self.x - 2, self.y - 7, health_bar_w, 5))
         pygame.draw.rect(surf, (255, 0, 255),
                          self.rect, 1)
-        if self.type == "range":
-            draw_all_arrows(arrow_list, surf)
