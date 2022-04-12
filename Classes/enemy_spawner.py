@@ -129,14 +129,12 @@ class Enemy_Spawner:
                     return 10
             return 0
 
-    def draw(self, surf, arrow_list, img):
+    def draw(self, surf, img, cam_pos):
         if self.flipped:
             flipped_img = pygame.transform.flip(img, True, False)
-            surf.blit(flipped_img, (self.x, self.y))
+            surf.blit(flipped_img, (self.x - cam_pos[0], self.y - cam_pos[1]))
         else:
-            surf.blit(img, (self.x, self.y))
+            surf.blit(img, (self.x - cam_pos[0], self.y - cam_pos[1]))
         health_bar = self.health.cur_health / self.health.max_health
         health_bar_w = health_bar * 20
-        pygame.draw.rect(surf, (255, 0, 0), (self.x - 2, self.y - 7, health_bar_w, 5))
-        pygame.draw.rect(surf, (255, 0, 255),
-                         self.rect, 1)
+        pygame.draw.rect(surf, (255, 0, 0), ((self.x - 2) - cam_pos[0], (self.y - 7) - cam_pos[1], health_bar_w, 5))

@@ -1,23 +1,25 @@
 import pygame.image
 import Classes.enemy_spawner
 import Classes.health
+import Classes.spritesheet
 
 
 def draw_all_arrows(arrow_list, surf):
     for cur_box in arrow_list:
         x = cur_box[0]
-        y = cur_box[1]
+        y = cur_box[1] - 10
         size = cur_box[2]
         color = cur_box[3]
-        pygame.draw.rect(surf, color, (x, y, size, size))
+        surf.blit(pygame.image.load("image\\Fireball.png"), (x, y))
 
 
 class EnemyGroups:
 
-    def __init__(self, x, y, num, size, l_b, enemy_type):
+    def __init__(self, x, y, num, size, l_b, enemy_type, cam_pos):
         """ Creates the group of enemy's based on the information provided. THe starting x and y, how many in this
             group, then how much the enemy's have. """
         self.position = [x, y]
+        self.cam_pos = cam_pos
         self.enemy_list = []
         self.arrow_list = []
         self.num = num
@@ -26,8 +28,13 @@ class EnemyGroups:
         self.l_border = l_b
         if self.type == 1:
             self.image = pygame.image.load("image\\Bear.png")
+            self.animated_image = Classes.spritesheet.SpriteSheet("image\\Bear_Spritesheet.png")
+            # self.animated_image_list = self.animated_image.load_animation(0, 4)
         elif self.type == 2:
             self.image = pygame.image.load("image\\Fire_Bear.png")
+            self.animated_image = Classes.spritesheet.SpriteSheet("image\\Fire_Bear_Spritesheet.png")
+            # self.animated_image_list = self.animated_image.load_animation(0, 4)
+
         i = 0
         while i < self.num:
             new_x = self.position[0]
@@ -41,7 +48,8 @@ class EnemyGroups:
         j = 0
         while j < len(self.enemy_list):
 
-            self.enemy_list[j].update(dt, self.position[0], self.l_border, hero_x, hero_y, self.arrow_list, False)
+            self.enemy_list[j].update(dt, self.position[0], self.l_border,
+                                      hero_x, hero_y, self.arrow_list, False)
             if self.enemy_list[j].dead:
                 self.enemy_list.remove(self.enemy_list[j])
             j += 1
@@ -71,5 +79,5 @@ class EnemyGroups:
     def draw(self, win):
         """ Draw's the enemy's. Calls the draw in the enemy_spawner class. """
         for cur_enemy in self.enemy_list:
-            cur_enemy.draw(win, self.arrow_list, self.image)
+            cur_enemy.draw(win, self.image, self.cam_pos)
         draw_all_arrows(self.arrow_list, win)

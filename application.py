@@ -33,12 +33,12 @@ class Application:
         self.ball_list = []
         self.ground_colliders = self.cur_map.draw_colliders(self.space)
         self.enemy_group_list = [
-            Classes.enemy.EnemyGroups(336, (240 - 16), 3, 16, 672, 1),
-            Classes.enemy.EnemyGroups(128, (480 - 16), 3, 16, 464, 1),
-            Classes.enemy.EnemyGroups(848, (672 - 16), 3, 16, 1040, 1),
-            Classes.enemy.EnemyGroups(0, (128 - 16), 2, 16, 80, 2),
-            Classes.enemy.EnemyGroups(528, (448 - 16), 2, 16, 624, 2),
-            Classes.enemy.EnemyGroups(1184, (480 - 16), 2, 16, 1456, 2),
+            Classes.enemy.EnemyGroups(336, (240 - 16), 3, 16, 672, 1, self.camera_pos),
+            Classes.enemy.EnemyGroups(128, (480 - 16), 3, 16, 464, 1, self.camera_pos),
+            Classes.enemy.EnemyGroups(848, (672 - 16), 3, 16, 1040, 1, self.camera_pos),
+            Classes.enemy.EnemyGroups(0, (128 - 16), 2, 16, 80, 2, self.camera_pos),
+            Classes.enemy.EnemyGroups(528, (448 - 16), 2, 16, 624, 2, self.camera_pos),
+            Classes.enemy.EnemyGroups(1184, (480 - 16), 2, 16, 1456, 2, self.camera_pos),
         ]
         self.ansgar = Classes.hero.Ansgar((240, 100), self.space, self.enemy_group_list,self.camera_pos)
 
