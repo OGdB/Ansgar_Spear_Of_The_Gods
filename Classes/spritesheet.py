@@ -19,13 +19,13 @@ class SpriteSheet:
         sprite.blit(self.sheet, (0, 0), (x, y, tile_width, tile_height))
         return sprite
 
-    def load_animation(self, start_frame, amount_of_frames):
+    def load_animation(self, start_frame, amount_of_frames, tile_width, tile_height):
         """return an animation from a sprite sheet starting at start_frame for specified amount of frames"""
         animation = []
         current_frame = start_frame
 
         for x in range(amount_of_frames):
-            animation.append(self.get_sprite(current_frame, 64, 64, (0, 0, 0)))
+            animation.append(self.get_sprite(current_frame, tile_width, tile_height, (0, 0, 0)))
             current_frame += 1
         return animation
 
