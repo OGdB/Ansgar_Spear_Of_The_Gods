@@ -114,10 +114,10 @@ class Ansgar:
 
 
     def coll_begin(self,arbiter,space,data):
-        self.grounded = True
+
         return True
     def coll_pre(self,arbiter,space,data):
-
+        self.grounded = True
         return True
     def coll_post(self,arbiter,space,data):
 
