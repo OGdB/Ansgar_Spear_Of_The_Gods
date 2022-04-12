@@ -40,7 +40,8 @@ class Application:
             Classes.enemy.EnemyGroups(528, (448 - 16), 2, 16, 624, 2, self.camera_pos),
             Classes.enemy.EnemyGroups(1184, (480 - 16), 2, 16, 1456, 2, self.camera_pos),
         ]
-        self.ansgar = Classes.hero.Ansgar((240, 100), self.space, self.enemy_group_list)
+        self.ansgar = Classes.hero.Ansgar((240, 100), self.space, self.enemy_group_list,self.camera_pos)
+
 
     def run(self):
         while not self.done:
