@@ -4,8 +4,6 @@ import Classes.map_data
 import Classes.health
 
 
-
-
 class Spear:
     def __init__(self, player_x, player_y, direction, spear_list, e_list):
         self.player_x = player_x
@@ -49,9 +47,10 @@ class Spear:
         for new_spear in self.spear_list:
             if new_spear[7] == "right":
                 surf.blit(self.spear_img, (new_spear[0], new_spear[1]))
-                #pygame.draw.rect(surf, (100, 100, 100), (new_spear[0], new_spear[1], new_spear[3], new_spear[4]), 1)
+                # pygame.draw.rect(surf, (100, 100, 100), (new_spear[0], new_spear[1], new_spear[3], new_spear[4]), 1)
             else:
                 surf.blit(self.rotated_spear, (new_spear[0], new_spear[1]))
+
 
 class Ansgar:
     def __init__(self, pos, space, enemy_list):
@@ -112,19 +111,20 @@ class Ansgar:
 
         self.s.draw(surf)
 
-
-    def coll_begin(self,arbiter,space,data):
+    def coll_begin(self, arbiter, space, data):
         self.grounded = True
         return True
-    def coll_pre(self,arbiter,space,data):
+
+    def coll_pre(self, arbiter, space, data):
 
         return True
-    def coll_post(self,arbiter,space,data):
+
+    def coll_post(self, arbiter, space, data):
 
         return True
-    def separate(self,arbiter,space,data):
+
+    def separate(self, arbiter, space, data):
         self.grounded = False
-
 
     def update(self, dt, evt, keys):
         self.rect = pygame.Rect(
@@ -136,9 +136,9 @@ class Ansgar:
                 self.health.take_damage(dmg)
 
         if evt.type == pygame.KEYDOWN and evt.key == pygame.K_w:
-                if self.grounded == True:
-                    self.grounded = False
-                    self.body.apply_impulse_at_local_point((0, -700), (0, 8))
+            if self.grounded == True:
+                self.grounded = False
+                self.body.apply_impulse_at_local_point((0, -700), (0, 8))
 
         if keys[pygame.K_a] or keys[pygame.K_LEFT]:
             if keys[pygame.K_LSHIFT]:
@@ -153,15 +153,13 @@ class Ansgar:
             else:
                 self.body.force = (1000, 0)
 
-
-
         if keys[pygame.K_a] or keys[pygame.K_LEFT]:
             self.direction = "left"
         if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
             self.direction = "right"
 
         if evt.type == pygame.KEYDOWN and evt.key == pygame.K_SPACE:
-                self.make_spear()
+            self.make_spear()
         self.s.update(dt)
 
         self.handler.begin = self.coll_begin

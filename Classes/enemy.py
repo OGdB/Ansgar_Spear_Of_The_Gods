@@ -1,15 +1,16 @@
 import pygame.image
 import Classes.enemy_spawner
 import Classes.health
+import Classes.spritesheet
 
 
 def draw_all_arrows(arrow_list, surf):
     for cur_box in arrow_list:
         x = cur_box[0]
-        y = cur_box[1]
+        y = cur_box[1] - 10
         size = cur_box[2]
         color = cur_box[3]
-        pygame.draw.rect(surf, color, (x, y, size, size))
+        surf.blit(pygame.image.load("image\\Fireball.png"), (x, y))
 
 
 class EnemyGroups:
@@ -26,8 +27,13 @@ class EnemyGroups:
         self.l_border = l_b
         if self.type == 1:
             self.image = pygame.image.load("image\\Bear.png")
+            self.animated_image = Classes.spritesheet.SpriteSheet("image\\Bear_Spritesheet.png")
+            self.animated_image_list = self.animated_image.load_animation(0, 4)
         elif self.type == 2:
             self.image = pygame.image.load("image\\Fire_Bear.png")
+            self.animated_image = Classes.spritesheet.SpriteSheet("image\\Fire_Bear_Spritesheet.png")
+            self.animated_image_list = self.animated_image.load_animation(0, 4)
+
         i = 0
         while i < self.num:
             new_x = self.position[0]
@@ -71,5 +77,5 @@ class EnemyGroups:
     def draw(self, win):
         """ Draw's the enemy's. Calls the draw in the enemy_spawner class. """
         for cur_enemy in self.enemy_list:
-            cur_enemy.draw(win, self.arrow_list, self.image)
+            cur_enemy.draw(win, self.image)
         draw_all_arrows(self.arrow_list, win)
