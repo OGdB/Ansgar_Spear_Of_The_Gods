@@ -89,15 +89,15 @@ class Ansgar:
                      self.speed, self.direction]
         self.spear_list.append(new_spear)
 
-    def draw(self, surf):
+    def draw(self, surf, cam_pos):
         self.body.angle = 0
         # position of drawing vertices is body position + dimensions.
         # got to do something regarding rotations as well (on collision)
 
-        top_left = (self.body.position.x - self.dim_radius, self.body.position.y - self.dim_radius)
-        top_right = (self.body.position.x + self.dim_radius, self.body.position.y - self.dim_radius)
-        bottom_left = (self.body.position.x - self.dim_radius, self.body.position.y + self.dim_radius)
-        bottom_right = (self.body.position.x + self.dim_radius, self.body.position.y + self.dim_radius)
+        top_left = (self.body.position.x - self.dim_radius - cam_pos[0], self.body.position.y - self.dim_radius - cam_pos[1])
+        top_right = (self.body.position.x + self.dim_radius - cam_pos[0], self.body.position.y - self.dim_radius - cam_pos[1])
+        bottom_left = (self.body.position.x - self.dim_radius - cam_pos[0], self.body.position.y + self.dim_radius - cam_pos[1])
+        bottom_right = (self.body.position.x + self.dim_radius - cam_pos[0], self.body.position.y + self.dim_radius - cam_pos[1])
 
         pygame.draw.polygon(surf, (255, 255, 0), [top_left, top_right, bottom_right, bottom_left])
 
@@ -115,8 +115,8 @@ class Ansgar:
         self.grounded = True
         return True
 
-    def coll_pre(self, arbiter, space, data):
-
+    def coll_pre(self,arbiter,space,data):
+        self.grounded = True
         return True
 
     def coll_post(self, arbiter, space, data):
