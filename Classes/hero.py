@@ -117,10 +117,10 @@ class Ansgar:
         self.grounded = True
         return True
     def coll_pre(self,arbiter,space,data):
-        self.grounded = True
+
         return True
     def coll_post(self,arbiter,space,data):
-        self.grounded = True
+
         return True
     def separate(self,arbiter,space,data):
         self.grounded = False
