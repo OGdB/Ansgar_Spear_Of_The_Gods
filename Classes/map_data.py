@@ -48,7 +48,7 @@ class Map:
         self.tile_sets = []
         self.tile_layers = []                   # stores all the tile layers in the map (in rows)
         self.pickups = []                       # a list of 2d points from the object layers of the map.  As the player
-                                                #   collects these, the contents will change
+        self.num = 3                                      #   collects these, the contents will change
         self.floor_points = []                  # Begin- and start positions of each platform.
 
         # Get some information about where the map file is located

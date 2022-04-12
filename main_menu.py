@@ -23,10 +23,10 @@ class Start_screen():
         self.App = application.Application(screen_w, screen_h)
         self.credits = False
         self.crdfont = pygame.font.SysFont("Courier New", 50)  # The font to use for rendering stats
-        self.credits1 = self.crdfont.render("Oeds de Boer", False, (0, 255, 255))
-        self.credits2 = self.crdfont.render("Stan van den Akker", False, (0, 255, 255))
-        self.credits3 = self.crdfont.render("Ethan Knowles", False, (0, 255, 255))
-        self.credits4 = self.crdfont.render("Tyler Howard", False, (0, 255, 255))
+        self.credits1 = self.crdfont.render("Oeds de Boer", False, (255, 255, 0))
+        self.credits2 = self.crdfont.render("Stan van den Akker", False, (255, 255, 0))
+        self.credits3 = self.crdfont.render("Ethan Knowles", False, (255, 255, 0))
+        self.credits4 = self.crdfont.render("Tyler Howard", False, (255, 255, 0))
 
     def run(self):
         while not self.done:
