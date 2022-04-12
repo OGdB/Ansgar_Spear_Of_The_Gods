@@ -15,10 +15,11 @@ def draw_all_arrows(arrow_list, surf):
 
 class EnemyGroups:
 
-    def __init__(self, x, y, num, size, l_b, enemy_type):
+    def __init__(self, x, y, num, size, l_b, enemy_type, cam_pos):
         """ Creates the group of enemy's based on the information provided. THe starting x and y, how many in this
             group, then how much the enemy's have. """
         self.position = [x, y]
+        self.cam_pos = cam_pos
         self.enemy_list = []
         self.arrow_list = []
         self.num = num
@@ -28,11 +29,11 @@ class EnemyGroups:
         if self.type == 1:
             self.image = pygame.image.load("image\\Bear.png")
             self.animated_image = Classes.spritesheet.SpriteSheet("image\\Bear_Spritesheet.png")
-            self.animated_image_list = self.animated_image.load_animation(0, 4)
+            # self.animated_image_list = self.animated_image.load_animation(0, 4)
         elif self.type == 2:
             self.image = pygame.image.load("image\\Fire_Bear.png")
             self.animated_image = Classes.spritesheet.SpriteSheet("image\\Fire_Bear_Spritesheet.png")
-            self.animated_image_list = self.animated_image.load_animation(0, 4)
+            # self.animated_image_list = self.animated_image.load_animation(0, 4)
 
         i = 0
         while i < self.num:
@@ -47,7 +48,8 @@ class EnemyGroups:
         j = 0
         while j < len(self.enemy_list):
 
-            self.enemy_list[j].update(dt, self.position[0], self.l_border, hero_x, hero_y, self.arrow_list, False)
+            self.enemy_list[j].update(dt, self.position[0], self.l_border,
+                                      hero_x, hero_y, self.arrow_list, False)
             if self.enemy_list[j].dead:
                 self.enemy_list.remove(self.enemy_list[j])
             j += 1
@@ -77,5 +79,5 @@ class EnemyGroups:
     def draw(self, win):
         """ Draw's the enemy's. Calls the draw in the enemy_spawner class. """
         for cur_enemy in self.enemy_list:
-            cur_enemy.draw(win, self.image)
+            cur_enemy.draw(win, self.image, self.cam_pos)
         draw_all_arrows(self.arrow_list, win)
