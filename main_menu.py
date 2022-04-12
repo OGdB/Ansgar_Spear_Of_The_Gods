@@ -1,5 +1,4 @@
 import pygame
-import application
 import Classes.hero
 import pymunk
 pygame.init()

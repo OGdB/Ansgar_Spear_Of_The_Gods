@@ -1,6 +1,7 @@
 import math
 import pygame
 
+
 class SpriteSheet:
     """Deals with getting portions of spritesheets"""
     def __init__(self, image, tile_width, tile_height, columns):

@@ -4,10 +4,8 @@ import Classes.map_data
 import Classes.health
 
 
-
-
 class Spear:
-    def __init__(self, player_x, player_y, direction, spear_list, e_list):
+    def __init__(self, player_x, player_y, direction, spear_list, e_list,cam_pos):
         self.player_x = player_x
         self.player_y = player_y
         self.position = [self.player_x, self.player_y]
@@ -20,6 +18,7 @@ class Spear:
         self.e_list = e_list
         self.spear_img = pygame.image.load("image\\Spear.png")
         self.rotated_spear = pygame.transform.rotate(self.spear_img, 180)
+        self.cam_pos = cam_pos
 
     def update(self, dt):
         all_keys = pygame.key.get_pressed()
@@ -48,13 +47,13 @@ class Spear:
     def draw(self, surf):
         for new_spear in self.spear_list:
             if new_spear[7] == "right":
-                surf.blit(self.spear_img, (new_spear[0], new_spear[1]))
-                #pygame.draw.rect(surf, (100, 100, 100), (new_spear[0], new_spear[1], new_spear[3], new_spear[4]), 1)
+                surf.blit(self.spear_img, (new_spear[0] - self.cam_pos[0], new_spear[1] - self.cam_pos[1]))
             else:
-                surf.blit(self.rotated_spear, (new_spear[0], new_spear[1]))
+                surf.blit(self.rotated_spear, (new_spear[0] - self.cam_pos[0], new_spear[1] - self.cam_pos[1]))
+
 
 class Ansgar:
-    def __init__(self, pos, space, enemy_list):
+    def __init__(self, pos, space, enemy_list,cam_pos):
         self.body = pymunk.Body(1, 100, body_type=pymunk.Body.DYNAMIC)
         self.body.position = pos
         self.body.angle = 0
@@ -80,12 +79,14 @@ class Ansgar:
         self.points = self.map.floor_points
         self.grounded = False
         self.handler = space.add_default_collision_handler()
+        self.cam_pos = cam_pos
 
-        self.s = Spear(self.body.position.x, self.body.position.y, self.direction, self.spear_list, self.e_list)
+
+        self.s = Spear(self.body.position.x, self.body.position.y, self.direction, self.spear_list, self.e_list,self.cam_pos)
 
     def make_spear(self):
         # this should make it to where ansgar looks like he's throwing the spear
-        new_spear = [self.body.position[0], self.body.position[1] - 15, self.direction, self.length, self.height,
+        new_spear = [self.body.position[0], (self.body.position[1] - 15), self.direction, self.length, self.height,
                      self.lifetime,
                      self.speed, self.direction]
         self.spear_list.append(new_spear)
@@ -105,26 +106,27 @@ class Ansgar:
         health_bar = self.health.cur_health / self.health.max_health
         health_bar_w = health_bar * self.dim_radius * 2
         pygame.draw.rect(surf, (255, 0, 0),
-                         (self.body.position.x - self.dim_radius + 1, self.body.position.y - self.dim_radius - 7,
+                         ((self.body.position.x - self.dim_radius + 1) - self.cam_pos[0], (self.body.position.y - self.dim_radius - 7) - self.cam_pos[1],
                           health_bar_w, 5))
         # pygame.draw.rect(surf, (255, 0, 255),
         #                 self.rect, 1)
 
         self.s.draw(surf)
 
-
-    def coll_begin(self,arbiter,space,data):
-
+    def coll_begin(self, arbiter, space, data):
+        self.grounded = True
         return True
+
     def coll_pre(self,arbiter,space,data):
         self.grounded = True
         return True
-    def coll_post(self,arbiter,space,data):
+
+    def coll_post(self, arbiter, space, data):
 
         return True
-    def separate(self,arbiter,space,data):
-        self.grounded = False
 
+    def separate(self, arbiter, space, data):
+        self.grounded = False
 
     def update(self, dt, evt, keys):
         self.rect = pygame.Rect(
@@ -136,9 +138,9 @@ class Ansgar:
                 self.health.take_damage(dmg)
 
         if evt.type == pygame.KEYDOWN and evt.key == pygame.K_w:
-                if self.grounded == True:
-                    self.grounded = False
-                    self.body.apply_impulse_at_local_point((0, -700), (0, 8))
+            if self.grounded == True:
+                self.grounded = False
+                self.body.apply_impulse_at_local_point((0, -700), (0, 8))
 
         if keys[pygame.K_a] or keys[pygame.K_LEFT]:
             if keys[pygame.K_LSHIFT]:
@@ -153,15 +155,13 @@ class Ansgar:
             else:
                 self.body.force = (1000, 0)
 
-
-
         if keys[pygame.K_a] or keys[pygame.K_LEFT]:
             self.direction = "left"
         if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
             self.direction = "right"
 
         if evt.type == pygame.KEYDOWN and evt.key == pygame.K_SPACE:
-                self.make_spear()
+            self.make_spear()
         self.s.update(dt)
 
         self.handler.begin = self.coll_begin
