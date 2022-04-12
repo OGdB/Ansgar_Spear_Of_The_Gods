@@ -4,10 +4,10 @@ import Classes.health
 import Classes.spritesheet
 
 
-def draw_all_arrows(arrow_list, surf):
+def draw_all_arrows(arrow_list, surf, cam_pos):
     for cur_box in arrow_list:
-        x = cur_box[0]
-        y = cur_box[1] - 10
+        x = cur_box[0] - cam_pos[0]
+        y = (cur_box[1] - 10) - cam_pos[1]
         size = cur_box[2]
         color = cur_box[3]
         surf.blit(pygame.image.load("image\\Fireball.png"), (x, y))
@@ -80,4 +80,4 @@ class EnemyGroups:
         """ Draw's the enemy's. Calls the draw in the enemy_spawner class. """
         for cur_enemy in self.enemy_list:
             cur_enemy.draw(win, self.image, self.cam_pos)
-        draw_all_arrows(self.arrow_list, win)
+        draw_all_arrows(self.arrow_list, win, self.cam_pos)
