@@ -6,8 +6,12 @@ pygame.init()
 # pygame.mixer.music.load('rock.mp3')
 # pygame.mixer.music.play(-1)
 
-screen_w = 1920
-screen_h = 1080
 clock = pygame.time.Clock()
-App = application.Application(screen_w, screen_h)
+
+map_size_w = 1920
+map_size_h = 1080
+camera_port_w = 1920/3
+camera_port_h = 1080/3
+
+App = application.Application(map_size_w, map_size_h, camera_port_w, camera_port_h)
 App.run()

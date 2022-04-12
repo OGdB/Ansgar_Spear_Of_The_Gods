@@ -20,7 +20,6 @@ class Start_screen():
         self.cw = self.credits_surf.get_width()
         self.start_img = pygame.image.load("image\\Main_Background.png")
         self.scaled_img = pygame.transform.scale(self.start_img, (screen_w, screen_h))
-        self.App = application.Application(screen_w, screen_h)
         self.credits = False
         self.crdfont = pygame.font.SysFont("Courier New", 50)  # The font to use for rendering stats
         self.credits1 = self.crdfont.render("Oeds de Boer", False, (255, 255, 0))
