@@ -62,13 +62,7 @@ class Application:
         # event-handling
         mouse_x, mouse_y = pygame.mouse.get_pos()
         all_keys = pygame.key.get_pressed()
-        if evt.type == pygame.MOUSEBUTTONDOWN and evt.button == 1:
-            body = pymunk.Body()  # Create a Body
-            body.position = (mouse_x, mouse_y)  # Set the position of the body
-            body_shape = pymunk.Circle(body, 10)
-            body_shape.mass = 10
-            self.space.add(body, body_shape)
-            self.ball_list.append(body)
+        
 
         if evt.type == pygame.QUIT:
             self.done = True
