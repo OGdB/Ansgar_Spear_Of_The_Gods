@@ -6,7 +6,6 @@ import Classes.map_data
 import Classes.enemy
 import Classes.hero
 import Classes.health
-import Classes.spritesheet as SpriteSheet
 
 # Set to true to see a bunch of debug stuff.
 debug = False
@@ -39,18 +38,7 @@ class Application:
             Classes.enemy.EnemyGroups(528, (448 - 16), 2, 16, 624, 2, self.camera_pos),
             Classes.enemy.EnemyGroups(1184, (480 - 16), 2, 16, 1456, 2, self.camera_pos),
         ]
-        self.ansgar = Classes.hero.Ansgar((240, 100), self.space, self.enemy_group_list,self.camera_pos)
-
-        self.anim_timer = 0
-        self.anim_frame = 0
-        self.anim_cooldown = 0.2
-        char_spr_sheet_img = pygame.image.load("image\\Ansgar_Spritesheet.png").convert_alpha()
-        char_spr_sheet = SpriteSheet.SpriteSheet(char_spr_sheet_img, self.cur_map.tile_width, self.cur_map.tile_height, 4)
-        self.idle_right = SpriteSheet.SpriteSheet.load_animation(char_spr_sheet, 0, 3)
-        self.walk_right = SpriteSheet.SpriteSheet.load_animation(char_spr_sheet, 4, 3)
-        self.idle_left = SpriteSheet.SpriteSheet.load_animation(char_spr_sheet, 8, 3)
-        self.walk_left = SpriteSheet.SpriteSheet.load_animation(char_spr_sheet, 12, 3)
-        self.cur_anim = self.idle_right
+        self.ansgar = Classes.hero.Ansgar((240, 100), self.space, self.enemy_group_list, self.camera_pos)
 
     def run(self):
         while not self.done:
@@ -96,21 +84,12 @@ class Application:
             self.camera_pos.y = self.cur_map.world_height - self.win.get_height()
 
     def render(self, surf, dt):
-        # Animation loop
-        self.anim_timer += dt
-        if self.anim_timer >= self.anim_cooldown:
-            self.anim_timer = 0
-            self.anim_frame = (self.anim_frame + 1) % len(self.cur_anim)
-        cur_sprite = self.cur_anim[self.anim_frame]
-        cur_sprite.set_colorkey((0, 0, 0))
-
         # Drawing
         surf.fill((0, 0, 0))
         surf.blit(self.background, (0, 0))
 
         surf.blit(self.cur_map.rendered_img, (0, 0),
                   (self.camera_pos.x, self.camera_pos.y, self.win.get_width(), self.win.get_height()))
-        surf.blit(cur_sprite, (10, 10))
 
         for i in range(len(self.enemy_group_list)):
             self.enemy_group_list[i].draw(self.win)
@@ -152,8 +131,6 @@ class Application:
             pygame.draw.circle(surf, (0, 255, 0), [x * 16, y * 16], 4)
             pygame.draw.rect(surf, (255, 255, 0), pygame.Rect(x * 16, y * 16, 16, 16), True)
 
-            pygame.draw.circle(surf, (255, 0, 0), self.ansgar.body.position, 5)
-
-        self.ansgar.draw(surf, self.camera_pos)
+        self.ansgar.draw(surf, self.camera_pos, dt)
 
         pygame.display.flip()
