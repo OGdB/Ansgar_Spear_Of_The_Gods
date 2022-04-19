@@ -2,7 +2,7 @@ import pygame
 import pymunk
 import Classes.map_data
 import Classes.health
-
+import Classes.spritesheet as SpriteSheet
 
 class Spear:
     def __init__(self, player_x, player_y, direction, spear_list, e_list,cam_pos):
@@ -80,9 +80,18 @@ class Ansgar:
         self.grounded = False
         self.handler = space.add_default_collision_handler()
         self.cam_pos = cam_pos
-
-
         self.s = Spear(self.body.position.x, self.body.position.y, self.direction, self.spear_list, self.e_list,self.cam_pos)
+        # Animation attributes
+        self.anim_timer = 0
+        self.anim_frame = 0
+        char_spr_sheet_img = pygame.image.load("image\\Ansgar_Spritesheet.png").convert_alpha()
+        char_spr_sheet = SpriteSheet.SpriteSheet(char_spr_sheet_img, 32, 32, 4)
+        self.idle_right = SpriteSheet.SpriteSheet.load_animation(char_spr_sheet, 0, 3)
+        self.walk_right = SpriteSheet.SpriteSheet.load_animation(char_spr_sheet, 4, 3)
+        self.idle_left = SpriteSheet.SpriteSheet.load_animation(char_spr_sheet, 8, 3)
+        self.walk_left = SpriteSheet.SpriteSheet.load_animation(char_spr_sheet, 12, 3)
+        self.cur_anim = self.idle_right
+        self.anim_cooldown = 0.2
 
     def make_spear(self):
         # this should make it to where ansgar looks like he's throwing the spear
@@ -91,25 +100,26 @@ class Ansgar:
                      self.speed, self.direction]
         self.spear_list.append(new_spear)
 
-    def draw(self, surf, cam_pos):
+    def draw(self, surf, cam_pos, dt):
+        # Ansgar Animation loop
+        self.anim_timer += dt
+        if self.anim_timer >= self.anim_cooldown:
+            self.anim_timer = 0
+            self.anim_frame = (self.anim_frame + 1) % len(self.cur_anim)
+        cur_sprite = self.cur_anim[self.anim_frame]
+        cur_sprite.set_colorkey((0, 0, 0))
+
         self.body.angle = 0
         # position of drawing vertices is body position + dimensions.
         # got to do something regarding rotations as well (on collision)
 
-        top_left = (self.body.position.x - self.dim_radius - cam_pos[0], self.body.position.y - self.dim_radius - cam_pos[1])
-        top_right = (self.body.position.x + self.dim_radius - cam_pos[0], self.body.position.y - self.dim_radius - cam_pos[1])
-        bottom_left = (self.body.position.x - self.dim_radius - cam_pos[0], self.body.position.y + self.dim_radius - cam_pos[1])
-        bottom_right = (self.body.position.x + self.dim_radius - cam_pos[0], self.body.position.y + self.dim_radius - cam_pos[1])
-
-        pygame.draw.polygon(surf, (255, 255, 0), [top_left, top_right, bottom_right, bottom_left])
+        surf.blit(cur_sprite, (self.body.position.x - self.dim_radius - cam_pos[0], self.body.position.y - self.dim_radius - cam_pos[1]))
 
         health_bar = self.health.cur_health / self.health.max_health
         health_bar_w = health_bar * self.dim_radius * 2
         pygame.draw.rect(surf, (255, 0, 0),
                          ((self.body.position.x - self.dim_radius + 1) - self.cam_pos[0], (self.body.position.y - self.dim_radius - 7) - self.cam_pos[1],
                           health_bar_w, 5))
-        # pygame.draw.rect(surf, (255, 0, 255),
-        #                 self.rect, 1)
 
         self.s.draw(surf)
 
@@ -142,27 +152,33 @@ class Ansgar:
                 self.grounded = False
                 self.body.apply_impulse_at_local_point((0, -700), (0, 8))
 
-        if keys[pygame.K_a] or keys[pygame.K_LEFT]:
+        if (keys[pygame.K_a] or keys[pygame.K_LEFT]) and not keys[pygame.K_d] and not keys[pygame.K_RIGHT]:
+            self.direction = "left"
+            self.cur_anim = self.walk_left
             if keys[pygame.K_LSHIFT]:
                 # this will let Ansgar run
                 self.body.force = (-800, 0)
             else:
                 self.body.force = (-1000, 0)
-        if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+
+        if (keys[pygame.K_d] or keys[pygame.K_RIGHT]) and not keys[pygame.K_a] and not keys[pygame.K_LEFT]:
+            self.direction = "right"
+            self.cur_anim = self.walk_right
             if keys[pygame.K_LSHIFT]:
                 # this will let Ansgar run
                 self.body.force = (800, 0)
             else:
                 self.body.force = (1000, 0)
 
-        if keys[pygame.K_a] or keys[pygame.K_LEFT]:
-            self.direction = "left"
-        if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
-            self.direction = "right"
-
         if evt.type == pygame.KEYDOWN and evt.key == pygame.K_SPACE:
             self.make_spear()
         self.s.update(dt)
+
+        if evt.type == pygame.KEYUP:
+            if (evt.key == pygame.K_a or evt.key == pygame.K_LEFT) and self.direction == "left":
+                self.cur_anim = self.idle_left
+            if (evt.key == pygame.K_d or evt.key == pygame.K_RIGHT) and self.direction == "right":
+                self.cur_anim = self.idle_right
 
         self.handler.begin = self.coll_begin
         self.handler.pre_solve = self.coll_pre
