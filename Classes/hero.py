@@ -5,7 +5,7 @@ import Classes.health
 import Classes.spritesheet as SpriteSheet
 
 class Spear:
-    def __init__(self, player_x, player_y, direction, spear_list, e_list,cam_pos):
+    def __init__(self, player_x, player_y, direction, spear_list, e_list, cam_pos):
         self.player_x = player_x
         self.player_y = player_y
         self.position = [self.player_x, self.player_y]
@@ -53,7 +53,7 @@ class Spear:
 
 
 class Ansgar:
-    def __init__(self, pos, space, enemy_list,cam_pos):
+    def __init__(self, pos, space, enemy_list, cam_pos):
         self.body = pymunk.Body(1, 100, body_type=pymunk.Body.DYNAMIC)
         self.body.position = pos
         self.body.angle = 0
@@ -80,7 +80,7 @@ class Ansgar:
         self.grounded = False
         self.handler = space.add_default_collision_handler()
         self.cam_pos = cam_pos
-        self.s = Spear(self.body.position.x, self.body.position.y, self.direction, self.spear_list, self.e_list,self.cam_pos)
+        self.s = Spear(self.body.position.x, self.body.position.y, self.direction, self.spear_list, self.e_list, self.cam_pos)
         # Animation attributes
         self.anim_timer = 0
         self.anim_frame = 0
@@ -123,7 +123,7 @@ class Ansgar:
 
         self.s.draw(surf)
 
-    def coll_begin(self, arbiter, space, data):
+    def coll_begin(self, arbiter, space, dddddddddddata):
         self.grounded = True
         return True
 
@@ -180,9 +180,20 @@ class Ansgar:
             if (evt.key == pygame.K_d or evt.key == pygame.K_RIGHT) and self.direction == "right":
                 self.cur_anim = self.idle_right
 
+        self.limit_velocity(self.body)
+
         self.handler.begin = self.coll_begin
         self.handler.pre_solve = self.coll_pre
         self.handler.post_solve = self.coll_post
         self.handler.separate = self.separate
         if self.handler.begin == True:
             self.grounded = True
+
+    def limit_velocity(self, body):
+        vel_limit = 150
+
+        if abs(body.velocity.x) > vel_limit:
+            import math
+            dir_sign = math.copysign(1, body.velocity.x)
+            limited_vel = (dir_sign * 150, body.velocity.y)
+            body.velocity = limited_vel
