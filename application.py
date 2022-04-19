@@ -132,7 +132,7 @@ class Application:
             cam_pos_render = font.render(cam_pos_text, True, white)
             vel_text_render = font.render(player_vel_text, True, white)
             surf.blit(mouse_text_render, (1400, 10))
-            surf.blit(vel_text_render, (1400, 50))
+            surf.blit(vel_text_render, (20, 90))
             surf.blit(cam_pos_render, (20, 50))
             pygame.draw.circle(surf, (0, 255, 0), [x * 16, y * 16], 4)
             pygame.draw.rect(surf, (255, 255, 0), pygame.Rect(x * 16, y * 16, 16, 16), True)
