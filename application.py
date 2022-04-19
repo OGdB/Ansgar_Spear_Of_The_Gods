@@ -6,6 +6,8 @@ import Classes.map_data
 import Classes.enemy
 import Classes.hero
 import Classes.health
+import Death_screen
+
 
 # Set to true to see a bunch of debug stuff.
 debug = False
@@ -24,6 +26,7 @@ class Application:
         self.background = pygame.image.load("image\\Background.png")
         self.background = pygame.transform.scale(self.background, (screen_w, screen_h))
 
+
         self.space = pymunk.Space()  # Create a physics space
         self.space.gravity = (0, 250)  # Set its gravity
 
@@ -39,6 +42,11 @@ class Application:
             Classes.enemy.EnemyGroups(1184, (480 - 16), 2, 16, 1456, 2, self.camera_pos),
         ]
         self.ansgar = Classes.hero.Ansgar((240, 100), self.space, self.enemy_group_list,self.camera_pos)
+
+
+        self.player_health = self.ansgar.health_bar
+
+
         pygame.mixer.music.load('rock.mp3')
         pygame.mixer.music.play(-1)
 
@@ -52,10 +60,11 @@ class Application:
             self.camera_position()
             self.handle_input(delta_time)
             self.render(self.win, delta_time)
+            self.player_health = self.ansgar.health_bar
 
 
         # Shut down pygame after we're done with our game loop (because the program is likely to shut down shortly after)
-        pygame.quit()
+
 
     def handle_input(self, dt):
         # Process the event (make sure this is only once in your game loop!)
@@ -75,6 +84,10 @@ class Application:
                 global debug
                 debug = not debug
         self.ansgar.update(dt, evt, all_keys)
+        if self.player_health == 0:
+            self.done = True
+
+
 
     def camera_position(self):
         self.camera_pos.x = self.ansgar.body.position.x - self.half_port_w  # camera x pos at top-left of width
