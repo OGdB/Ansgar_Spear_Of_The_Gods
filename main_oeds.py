@@ -3,8 +3,8 @@ import application
 
 pygame.init()
 
-# pygame.mixer.music.load('rock.mp3')
-# pygame.mixer.music.play(-1)
+pygame.mixer.music.load('rock.mp3')
+pygame.mixer.music.play(-1)
 
 clock = pygame.time.Clock()
 
