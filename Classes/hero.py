@@ -110,8 +110,6 @@ class Ansgar:
         cur_sprite.set_colorkey((0, 0, 0))
 
         self.body.angle = 0
-        # position of drawing vertices is body position + dimensions.
-        # got to do something regarding rotations as well (on collision)
 
         surf.blit(cur_sprite, (self.body.position.x - self.dim_radius - cam_pos[0], self.body.position.y - self.dim_radius - cam_pos[1]))
 
@@ -123,7 +121,7 @@ class Ansgar:
 
         self.s.draw(surf)
 
-    def coll_begin(self, arbiter, space, dddddddddddata):
+    def coll_begin(self, arbiter, space, data):
         self.grounded = True
         return True
 

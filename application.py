@@ -8,7 +8,7 @@ import Classes.hero
 import Classes.health
 
 # Set to true to see a bunch of debug stuff.
-debug = False
+debug = True
 
 class Application:
     def __init__(self, screen_w, screen_h, port_w, port_h):
@@ -113,8 +113,8 @@ class Application:
             # Debug text telling you which tile-row and column is hovered over with the mouse
             # MousePos
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            x = math.floor(mouse_x / self.cur_map.tile_width % self.cur_map.map_width)
-            y = math.floor(mouse_y / self.cur_map.tile_height % self.cur_map.map_height)
+            x = math.floor(mouse_x / self.cur_map.tile_width % self.cur_map.map_width) * 16
+            y = math.floor(mouse_y / self.cur_map.tile_height % self.cur_map.map_height) * 16
             mouse_pos_text = f"[{x}, {y}]"
 
             # Velocity
@@ -128,8 +128,8 @@ class Application:
             surf.blit(mouse_text_render, (1400, 10))
             surf.blit(vel_text_render, (20, 90))
             surf.blit(cam_pos_render, (20, 50))
-            pygame.draw.circle(surf, (0, 255, 0), [x * 16, y * 16], 4)
-            pygame.draw.rect(surf, (255, 255, 0), pygame.Rect(x * 16, y * 16, 16, 16), True)
+            pygame.draw.circle(surf, (0, 255, 0), [x, y], 4)
+            pygame.draw.rect(surf, (255, 255, 0), pygame.Rect(x, y, 16, 16), True)
 
         self.ansgar.draw(surf, self.camera_pos, dt)
 
