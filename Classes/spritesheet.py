@@ -12,14 +12,14 @@ class SpriteSheet:
 
     def get_x(self, frame):
         frame = (frame % self.columns)  # get the remainder of frame / columns as a tile
-        return frame * 16
+        return frame * self.tile_width
 
     def get_sprite(self, frame):
         """return a specific sprite from sprite sheet"""
         sprite = pygame.Surface((self.tile_width, self.tile_height)).convert_alpha()
         sprite.set_colorkey((0, 0, 0))
         x = self.get_x(frame)
-        y = math.floor(frame/self.columns) * 16
+        y = math.floor(frame/self.columns) * self.tile_height
         sprite.blit(self.sheet, (0, 0), (x, y, self.tile_width, self.tile_height))
         return sprite
 
