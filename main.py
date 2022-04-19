@@ -9,6 +9,7 @@ map_size_h = 1080
 camera_port_w = 1920/4
 camera_port_h = 1080/4
 
+
 start = main_menu.Start_screen(map_size_w, map_size_h)
 start.run()
 
