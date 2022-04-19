@@ -41,6 +41,8 @@ class Application:
             Classes.enemy.EnemyGroups(1184, (480 - 16), 2, 16, 1456, 2, self.camera_pos),
         ]
         self.ansgar = Classes.hero.Ansgar((240, 100), self.space, self.enemy_group_list,self.camera_pos)
+        pygame.mixer.music.load('rock.mp3')
+        pygame.mixer.music.play(-1)
 
 
     def run(self):
@@ -50,6 +52,7 @@ class Application:
             self.camera_position()
             self.handle_input(delta_time)
             self.render(self.win)
+
 
         # Shut down pygame after we're done with our game loop (because the program is likely to shut down shortly after)
         pygame.quit()

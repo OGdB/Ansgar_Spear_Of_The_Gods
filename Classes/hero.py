@@ -103,8 +103,8 @@ class Ansgar:
 
         pygame.draw.polygon(surf, (255, 255, 0), [top_left, top_right, bottom_right, bottom_left])
 
-        health_bar = self.health.cur_health / self.health.max_health
-        health_bar_w = health_bar * self.dim_radius * 2
+        self.health_bar = self.health.cur_health / self.health.max_health
+        health_bar_w = self.health_bar * self.dim_radius * 2
         pygame.draw.rect(surf, (255, 0, 0),
                          ((self.body.position.x - self.dim_radius + 1) - self.cam_pos[0], (self.body.position.y - self.dim_radius - 7) - self.cam_pos[1],
                           health_bar_w, 5))
@@ -145,6 +145,7 @@ class Ansgar:
         if keys[pygame.K_a] or keys[pygame.K_LEFT]:
             if keys[pygame.K_LSHIFT]:
                 # this will let Ansgar run
+                print(self.health_bar)
                 self.body.force = (-800, 0)
             else:
                 self.body.force = (-1000, 0)
