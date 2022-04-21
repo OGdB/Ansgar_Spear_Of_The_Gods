@@ -1,4 +1,5 @@
 import math
+import sys
 
 import pygame
 import pymunk
@@ -6,6 +7,8 @@ import Classes.map_data
 import Classes.enemy
 import Classes.hero
 import Classes.health
+import Death_screen
+
 
 # Set to true to see a bunch of debug stuff.
 debug = True
@@ -24,6 +27,7 @@ class Application:
         self.background = pygame.image.load("image\\Background.png")
         self.background = pygame.transform.scale(self.background, (screen_w, screen_h))
 
+
         self.space = pymunk.Space()  # Create a physics space
         self.space.gravity = (0, 250)  # Set its gravity
 
@@ -39,11 +43,16 @@ class Application:
             Classes.enemy.EnemyGroups(1184, (480 - 16), 2, 16, 1456, 2, self.camera_pos),
         ]
         self.ansgar = Classes.hero.Ansgar((240, 100), self.space, self.enemy_group_list,self.camera_pos)
+
+
+        self.player_health = self.ansgar.health_bar
+
+
         pygame.mixer.music.load('rock.mp3')
         pygame.mixer.music.play(-1)
 
 
-        self.ansgar = Classes.hero.Ansgar((240, 100), self.space, self.enemy_group_list, self.camera_pos)
+
 
     def run(self):
         while not self.done:
@@ -52,10 +61,12 @@ class Application:
             self.camera_position()
             self.handle_input(delta_time)
             self.render(self.win, delta_time)
+            self.player_health = self.ansgar.health_bar
+
 
 
         # Shut down pygame after we're done with our game loop (because the program is likely to shut down shortly after)
-        pygame.quit()
+
 
     def handle_input(self, dt):
         # Process the event (make sure this is only once in your game loop!)
@@ -67,14 +78,23 @@ class Application:
         all_keys = pygame.key.get_pressed()
 
         if evt.type == pygame.QUIT:
-            self.done = True
+            pygame.quit()
+            sys.exit()
         elif evt.type == pygame.KEYDOWN:
             if evt.key == pygame.K_ESCAPE:
-                self.done = True
+                pygame.quit()
+                sys.exit()
             if evt.key == pygame.K_F11:
                 global debug
                 debug = not debug
+
         self.ansgar.update(dt, evt, all_keys)
+        if self.player_health == 0:
+            self.done = True
+
+
+
+
 
     def camera_position(self):
         self.camera_pos.x = self.ansgar.body.position.x - self.half_port_w  # camera x pos at top-left of width
@@ -102,16 +122,26 @@ class Application:
 
         # Debug drawing
         if debug:
-            for platform_coordinates in self.cur_map.floor_points:
-                for vertice_pairs in platform_coordinates:
-                    pygame.draw.line(surf, (255, 255, 0), (vertice_pairs[0] - self.camera_pos.x, vertice_pairs[2] - self.camera_pos.y),
-                                     (vertice_pairs[1] - self.camera_pos.x, vertice_pairs[2] - self.camera_pos.y))
+            for platform_points in self.cur_map.floor_points:
+                pygame.draw.line(surf, (255, 255, 0),
+                                 (platform_points[0] - self.camera_pos.x, platform_points[2] - self.camera_pos.y),
+                                 (platform_points[1] - self.camera_pos.x, platform_points[2] - self.camera_pos.y))
+                pygame.draw.line(surf, (255, 255, 0),
+                                 (platform_points[0] - self.camera_pos.x, platform_points[2] - self.camera_pos.y + 16),
+                                 (platform_points[1] - self.camera_pos.x, platform_points[2] - self.camera_pos.y + 16))
+                # sides
+                pygame.draw.line(surf, (255, 255, 0),
+                                 (platform_points[0] - self.camera_pos.x, platform_points[2] - self.camera_pos.y),
+                                 (platform_points[0] - self.camera_pos.x, platform_points[2] - self.camera_pos.y + 16))
+                pygame.draw.line(surf, (255, 255, 0),
+                                 (platform_points[1] - self.camera_pos.x, platform_points[2] - self.camera_pos.y),
+                                 (platform_points[1] - self.camera_pos.x, platform_points[2] - self.camera_pos.y + 16))
 
             # Draw red dot on start_x of colliders
-            for platform_coordinates in self.cur_map.floor_points:
-                start_x = platform_coordinates[0][0] - self.camera_pos.x
-                end_x = platform_coordinates[0][1] - self.camera_pos.x
-                y = platform_coordinates[0][2] - self.camera_pos.y
+            for platform_points in self.cur_map.floor_points:
+                start_x = platform_points[0] - self.camera_pos.x
+                end_x = platform_points[1] - self.camera_pos.x
+                y = platform_points[2] - self.camera_pos.y
                 pygame.draw.circle(surf, (255, 0, 0), [start_x, y], 3)
                 pygame.draw.circle(surf, (255, 255, 0), [end_x, y], 3)
             cam_pos_text = f"[{math.floor(self.camera_pos[0])}, {math.floor(self.camera_pos[1])}]"
@@ -119,8 +149,8 @@ class Application:
             # Debug text telling you which tile-row and column is hovered over with the mouse
             # MousePos
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            x = math.floor(mouse_x / self.cur_map.tile_width % self.cur_map.map_width) * 16
-            y = math.floor(mouse_y / self.cur_map.tile_height % self.cur_map.map_height) * 16
+            x = math.floor((mouse_x + self.camera_pos[0]) / self.cur_map.tile_width % self.cur_map.map_width) * 16
+            y = math.floor((mouse_y + self.camera_pos[1]) / self.cur_map.tile_height % self.cur_map.map_height) * 16
             mouse_pos_text = f"[{x}, {y}]"
 
             # Velocity
@@ -131,11 +161,11 @@ class Application:
             mouse_text_render = font.render(mouse_pos_text, True, white)
             cam_pos_render = font.render(cam_pos_text, True, white)
             vel_text_render = font.render(player_vel_text, True, white)
-            surf.blit(mouse_text_render, (1400, 10))
+            surf.blit(mouse_text_render, (400, 10))
             surf.blit(vel_text_render, (20, 90))
             surf.blit(cam_pos_render, (20, 50))
-            pygame.draw.circle(surf, (0, 255, 0), [x, y], 4)
-            pygame.draw.rect(surf, (255, 255, 0), pygame.Rect(x, y, 16, 16), True)
+            pygame.draw.rect(surf, (255, 255, 0), pygame.Rect(x - self.camera_pos[0], y - self.camera_pos[1], 16, 16), True)
+            pygame.draw.circle(surf, (0, 255, 0), [x - self.camera_pos[0], y - self.camera_pos[1]], 4)
 
         self.ansgar.draw(surf, self.camera_pos, dt)
 

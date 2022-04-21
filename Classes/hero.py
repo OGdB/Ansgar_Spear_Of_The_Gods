@@ -92,6 +92,7 @@ class Ansgar:
         self.walk_left = SpriteSheet.SpriteSheet.load_animation(char_spr_sheet, 12, 3)
         self.cur_anim = self.idle_right
         self.anim_cooldown = 0.2
+        self.health_bar = self.health.cur_health / self.health.max_health
 
     def make_spear(self):
         # this should make it to where ansgar looks like he's throwing the spear
@@ -122,28 +123,35 @@ class Ansgar:
         self.s.draw(surf)
 
     def coll_begin(self, arbiter, space, data):
+
         self.grounded = True
         return True
 
     def coll_pre(self,arbiter,space,data):
+
         self.grounded = True
         return True
 
     def coll_post(self, arbiter, space, data):
 
+
         return True
 
     def separate(self, arbiter, space, data):
+
         self.grounded = False
 
     def update(self, dt, evt, keys):
         self.rect = pygame.Rect(
             self.body.position.x - self.dim_radius, self.body.position.y - self.dim_radius,
             self.dim_radius * 2, self.dim_radius * 2)
+
         for i in range(len(self.e_list)):
             dmg = self.e_list[i].enemy_attack_check(self.rect)
             if dmg > 0:
+
                 self.health.take_damage(dmg)
+
 
         if evt.type == pygame.KEYDOWN and evt.key == pygame.K_w:
             if self.grounded == True:
@@ -155,7 +163,7 @@ class Ansgar:
             self.cur_anim = self.walk_left
             if keys[pygame.K_LSHIFT]:
                 # this will let Ansgar run
-                print(self.health_bar)
+
                 self.body.force = (-800, 0)
             else:
                 self.body.force = (-1000, 0)
