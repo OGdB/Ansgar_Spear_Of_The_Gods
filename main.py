@@ -15,14 +15,22 @@ start = main_menu.Start_screen(map_size_w, map_size_h)
 start.run()
 
 App = application.Application(map_size_w, map_size_h, camera_port_w, camera_port_h)
-if start.done == True and start.playing == True:
-    App.clock.tick()
-    App.run()
-death = Death_screen.Retry_screen(map_size_w,map_size_h)
-if App.player_health == 0:
-    death.run()
-if death.cont == True and death.done == True:
-    App.done = False
-    death.done = False
-    App.clock.tick()
-    App.run()
+done = False
+while not done:
+    if start.done == True and start.playing == True:
+        App.clock.tick()
+        App.run()
+    death = Death_screen.Retry_screen(map_size_w,map_size_h)
+    print(App.player_health)
+    if App.player_health == 0:
+
+        death.run()
+        death.done = False
+    if death.cont == True and death.done == True:
+        App.player_health = 100
+        App.done = False
+        death.done = False
+        death.cont = False
+
+        App.clock.tick()
+        App.run()
