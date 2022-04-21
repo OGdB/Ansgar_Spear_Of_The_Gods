@@ -144,7 +144,7 @@ class Ansgar:
         self.rect = pygame.Rect(
             self.body.position.x - self.dim_radius, self.body.position.y - self.dim_radius,
             self.dim_radius * 2, self.dim_radius * 2)
-        print(self.grounded)
+
         for i in range(len(self.e_list)):
             dmg, force, direction = self.e_list[i].enemy_attack_check(self.rect)
             if dmg > 0:
