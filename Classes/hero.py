@@ -6,9 +6,7 @@ import Classes.spritesheet as SpriteSheet
 
 class Spear:
     def __init__(self, player_x, player_y, direction, spear_list, e_list, cam_pos):
-        self.player_x = player_x
-        self.player_y = player_y
-        self.position = [self.player_x, self.player_y]
+        self.position = [player_x, player_y]
         self.direction = direction
         self.length = 32
         self.height = 16
@@ -19,16 +17,18 @@ class Spear:
         self.spear_img = pygame.image.load("image\\Spear.png")
         self.rotated_spear = pygame.transform.rotate(self.spear_img, 180)
         self.cam_pos = cam_pos
+        self.walled = False
 
     def update(self, dt):
         all_keys = pygame.key.get_pressed()
         for s in self.spear_list:
             s[5] -= dt * 10
 
-            if s[2] == "left":
-                s[0] -= s[6] * dt
-            else:
-                s[0] += s[6] * dt
+            if not self.walled:
+                if s[2] == "left":
+                    s[0] -= s[6] * dt
+                else:
+                    s[0] += s[6] * dt
 
             if s[5] <= 0:
                 self.spear_list.remove(s)
