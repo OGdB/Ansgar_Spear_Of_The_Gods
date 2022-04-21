@@ -52,7 +52,7 @@ class Application:
         pygame.mixer.music.play(-1)
 
 
-        self.ansgar = Classes.hero.Ansgar((240, 100), self.space, self.enemy_group_list, self.camera_pos)
+
 
     def run(self):
         while not self.done:
