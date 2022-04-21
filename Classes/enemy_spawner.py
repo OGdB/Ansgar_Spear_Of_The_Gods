@@ -1,6 +1,7 @@
 import random
 import pygame.draw
 import Classes
+import Classes.spritesheet
 
 
 def spawn_new_arrow(arrow_list, enemy_x, enemy_y, enemy_length, speed):
@@ -14,14 +15,14 @@ def spawn_new_arrow(arrow_list, enemy_x, enemy_y, enemy_length, speed):
 
 
 class Enemy_Spawner:
-    dim = 0
 
-    def __init__(self, starting_x, starting_y, type):
+    def __init__(self, starting_x, starting_y, dim, type):
         self.Red = random.randint(0, 255)
         self.Blue = random.randint(0, 255)
         self.Green = random.randint(0, 255)
         self.x = starting_x
         self.y = starting_y
+        self.dim = dim
         # self.vertical_speed = random.randint(0, 100)  # pixels / second
         self.color = (self.Red, self.Blue,
                       self.Green)
@@ -29,14 +30,39 @@ class Enemy_Spawner:
         self.rect = pygame.Rect(self.x, self.y, self.dim, self.dim)
         self.dead = False
         self.flipped = True
+        self.sfactor = 1.2
+        self.anim_timer = 0
+        self.anim_frame = 0
+        self.anim_cooldown = 0.2
+
         if type == 1:  # A Melee enemy
+            bear_animation_sheet = pygame.image.load("image\\Bear_Spritesheet.png")
+            bear_animation = Classes.spritesheet.SpriteSheet(bear_animation_sheet, 32, 16, 2)
+            self.walk_right = bear_animation.load_animation(0, 2)
+            self.walk_left = bear_animation.load_animation(2, 2)
             self.horizontal_speed = random.randint(50, 100)  # pixels / second
             self.type = "melee"
         elif type == 2:  # A shooting enemy
+            fire_bear_animation_sheet = pygame.image.load("image\\Fire_Bear_Spritesheet.png")
+            fire_bear_animation = Classes.spritesheet.SpriteSheet(fire_bear_animation_sheet, 32, 16, 2)
+            self.walk_right = fire_bear_animation.load_animation(0, 2)
+            self.walk_left = fire_bear_animation.load_animation(2, 2)
             self.horizontal_speed = random.randint(10, 50)  # pixels / second
             self.type = "range"
             self.cooldown = 0
             self.shoot = 30
+        elif type == 3:
+            tank_bear_animation_sheet = pygame.image.load("image\\BearArmor_Spritesheet.png")
+            new_w = int(tank_bear_animation_sheet.get_width() * self.sfactor)
+            new_h = int(tank_bear_animation_sheet.get_height() * self.sfactor)
+            new_tank_bear = pygame.transform.scale(tank_bear_animation_sheet, (new_w, new_h))
+            tank_bear_animation = Classes.spritesheet.SpriteSheet(new_tank_bear, 32 * self.sfactor, 16 * self.sfactor, 2)
+            self.walk_right = tank_bear_animation.load_animation(0, 2)
+            self.walk_left = tank_bear_animation.load_animation(2, 2)
+            self.horizontal_speed = random.randint(5, 10)  # pixels / second
+            self.original_speed = self.horizontal_speed
+            self.chase_speed = 50
+            self.type = "tank"
 
     def update(self, dt, left_x_border, right_x_border, hero_x, hero_y, arrow_list, screen_h):
         # self.vertical_speed += 100 * dt
@@ -79,25 +105,28 @@ class Enemy_Spawner:
                     else:
                         self.cooldown += 1
 
-        if self.x < left_x_border:
-            # We just went off the left-edge
-            self.x = left_x_border
-            self.horizontal_speed *= -1
-            self.flipped = not self.flipped
-        if self.x > right_x_border - Enemy_Spawner.dim:
-            # We just went off the right-edge
-            self.x = right_x_border - Enemy_Spawner.dim
-            self.horizontal_speed *= -1
-            self.flipped = not self.flipped
+        if self.type == "tank":
+            distance_x = abs(hero_x - self.x)
+            distance_y = abs(hero_y - self.y) + 5
+            if distance_x <= 60 and distance_y <= 36:
+                if self.x > hero_x:
+                    self.horizontal_speed = -(abs(self.chase_speed))
+                elif self.x < hero_x:
+                    self.horizontal_speed = abs(self.chase_speed)
+            else:
+                if self.horizontal_speed < 0:
+                    self.horizontal_speed = -(abs(self.original_speed))
+                else:
+                    self.horizontal_speed = abs(self.original_speed)
 
         if self.x < left_x_border:
             # We just went off the left-edge
             self.x = left_x_border
             self.horizontal_speed *= -1
             self.flipped = not self.flipped
-        if self.x > right_x_border - Enemy_Spawner.dim:
+        elif self.x > right_x_border - self.dim:
             # We just went off the right-edge
-            self.x = right_x_border - Enemy_Spawner.dim
+            self.x = right_x_border - self.dim
             self.horizontal_speed *= -1
             self.flipped = not self.flipped
 
@@ -119,22 +148,39 @@ class Enemy_Spawner:
     def enemy_attack_check(self, hero_r, arrow_list):
         if self.type == "melee":
             if hero_r.colliderect(self.rect):
-                return 5
+                return 5, 100, self.flipped
             else:
-                return 0
-        if self.type == "range":
+                return 0, 0, 0
+        elif self.type == "range":
             for arrow in arrow_list:
                 temp_rect = (arrow[0], arrow[1], arrow[2], arrow[2])
                 if hero_r.colliderect(temp_rect):
-                    return 10
-            return 0
+                    return 10, 5, self.flipped
+            return 0, 0, 0
+        elif self.type == "tank":
+            if hero_r.colliderect(self.rect):
+                return 50, 200, self.flipped
+            else:
+                return 0, 0, 0
 
-    def draw(self, surf, img, cam_pos):
+    def draw(self, surf, dt, cam_pos):
+        self.anim_timer += dt
         if self.flipped:
-            flipped_img = pygame.transform.flip(img, True, False)
-            surf.blit(flipped_img, (self.x - cam_pos[0], self.y - cam_pos[1]))
+            if self.anim_timer >= self.anim_cooldown:
+                self.anim_timer = 0
+                self.anim_frame = (self.anim_frame + 1) % len(self.walk_left)
+            cur_sprite = self.walk_left[self.anim_frame]
+            cur_sprite.set_colorkey((0, 0, 0))
+            surf.blit(cur_sprite, (self.x - cam_pos[0], self.y - cam_pos[1]))
         else:
-            surf.blit(img, (self.x - cam_pos[0], self.y - cam_pos[1]))
+            if self.anim_timer >= self.anim_cooldown:
+                self.anim_timer = 0
+                self.anim_frame = (self.anim_frame + 1) % len(self.walk_right)
+            cur_sprite = self.walk_right[self.anim_frame]
+            cur_sprite.set_colorkey((0, 0, 0))
+            surf.blit(cur_sprite, (self.x - cam_pos[0], self.y - cam_pos[1]))
+
         health_bar = self.health.cur_health / self.health.max_health
         health_bar_w = health_bar * 20
         pygame.draw.rect(surf, (255, 0, 0), ((self.x - 2) - cam_pos[0], (self.y - 7) - cam_pos[1], health_bar_w, 5))
+        #pygame.draw.rect(surf, (255, 0, 255), self.rect, 1)

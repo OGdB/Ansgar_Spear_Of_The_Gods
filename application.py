@@ -35,19 +35,26 @@ class Application:
         self.total_time = 0  # Total time the game's been running (used for player/coin color modulation)
         self.ground_colliders = self.cur_map.draw_colliders(self.space)
         self.enemy_group_list = [
-            Classes.enemy.EnemyGroups(336, (240 - 16), 3, 16, 672, 1, self.camera_pos),
-            Classes.enemy.EnemyGroups(128, (480 - 16), 3, 16, 464, 1, self.camera_pos),
-            Classes.enemy.EnemyGroups(848, (672 - 16), 3, 16, 1040, 1, self.camera_pos),
-            Classes.enemy.EnemyGroups(0, (128 - 16), 2, 16, 80, 2, self.camera_pos),
-            Classes.enemy.EnemyGroups(528, (448 - 16), 2, 16, 624, 2, self.camera_pos),
-            Classes.enemy.EnemyGroups(1184, (480 - 16), 2, 16, 1456, 2, self.camera_pos),
+            # Melee Bears
+            # Classes.enemy.EnemyGroups(x, y, amount of bears, size, right border, type, camera_pos),
+            Classes.enemy.EnemyGroups(336, 240, 3, 16, 672, 1, self.camera_pos),
+            Classes.enemy.EnemyGroups(128, 480, 3, 16, 464, 1, self.camera_pos),
+            Classes.enemy.EnemyGroups(848, 672, 3, 16, 1040, 1, self.camera_pos),
+            Classes.enemy.EnemyGroups(192, 704, 3, 16, 272, 1, self.camera_pos),
+            Classes.enemy.EnemyGroups(416, 848, 3, 16, 576, 1, self.camera_pos),
+            Classes.enemy.EnemyGroups(927, 272, 3, 16, 1024, 1, self.camera_pos),
+            Classes.enemy.EnemyGroups(1440, 192, 3, 16, 1552, 1, self.camera_pos),
+            # Range Bears
+            Classes.enemy.EnemyGroups(0, 128, 2, 16, 80, 2, self.camera_pos),
+            Classes.enemy.EnemyGroups(528, 448, 2, 16, 624, 2, self.camera_pos),
+            Classes.enemy.EnemyGroups(1184, 480, 2, 16, 1456, 2, self.camera_pos),
+            # Tank Bears
+            Classes.enemy.EnemyGroups(832, 896, 1, 24, 1072, 3, self.camera_pos),
+            Classes.enemy.EnemyGroups(1216, 753, 1, 24, 1360, 3, self.camera_pos),
+
         ]
         self.ansgar = Classes.hero.Ansgar((240, 100), self.space, self.enemy_group_list,self.camera_pos)
-
-
         self.player_health = self.ansgar.health_bar
-
-
         pygame.mixer.music.load('rock.mp3')
         pygame.mixer.music.play(-1)
 
@@ -118,7 +125,7 @@ class Application:
                   (self.camera_pos.x, self.camera_pos.y, self.win.get_width(), self.win.get_height()))
 
         for i in range(len(self.enemy_group_list)):
-            self.enemy_group_list[i].draw(self.win)
+            self.enemy_group_list[i].draw(self.win, dt)
 
         # Debug drawing
         if debug:
