@@ -86,10 +86,10 @@ class Ansgar:
         self.anim_frame = 0
         char_spr_sheet_img = pygame.image.load("image\\Ansgar_Spritesheet.png").convert_alpha()
         char_spr_sheet = SpriteSheet.SpriteSheet(char_spr_sheet_img, 32, 32, 4)
-        self.idle_right = SpriteSheet.SpriteSheet.load_animation(char_spr_sheet, 0, 3)
-        self.walk_right = SpriteSheet.SpriteSheet.load_animation(char_spr_sheet, 4, 3)
-        self.idle_left = SpriteSheet.SpriteSheet.load_animation(char_spr_sheet, 8, 3)
-        self.walk_left = SpriteSheet.SpriteSheet.load_animation(char_spr_sheet, 12, 3)
+        self.idle_right = char_spr_sheet.load_animation(0, 4)
+        self.walk_right = char_spr_sheet.load_animation(4, 4)
+        self.idle_left = char_spr_sheet.load_animation(8, 4)
+        self.walk_left = char_spr_sheet.load_animation(12, 4)
         self.cur_anim = self.idle_right
         self.anim_cooldown = 0.2
         self.health_bar = self.health.cur_health / self.health.max_health
