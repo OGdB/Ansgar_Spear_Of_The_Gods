@@ -2,8 +2,7 @@ import sys
 
 import pygame
 
-import Classes.hero
-import pymunk
+
 pygame.font.init()
 import application
 
