@@ -1,7 +1,8 @@
+import sys
+
 import pygame
 
-import Classes.hero
-import pymunk
+
 pygame.font.init()
 import application
 
@@ -50,6 +51,7 @@ class Retry_screen():
 
         if self.half_w/2 <= mouse_x <= self.half_w/2 + 70 and self.half_h + self.half_h/2 <= mouse_y <= self.half_h + self.half_h/2 + 35:
             if evt.type == pygame.MOUSEBUTTONDOWN and evt.button == 1:
+
                 self.App.done = False
                 self.App.clock.tick()
                 self.App.run()
@@ -57,7 +59,8 @@ class Retry_screen():
                 self.done = True
         if  self.half_w + self.half_w/2 <= mouse_x <= self.half_w + self.half_w/2 + 70 and self.half_h + self.half_h/2 <= mouse_y <= self.half_h + self.half_h/2 + 35:
             if evt.type == pygame.MOUSEBUTTONDOWN and evt.button == 1:
-                self.done = True
+                pygame.quit()
+                sys.exit()
 
 
 

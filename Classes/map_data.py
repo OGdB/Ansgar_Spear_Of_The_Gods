@@ -49,7 +49,7 @@ class Map:
         self.tile_layers = []                   # stores all the tile layers in the map (in rows)
         self.pickups = []                       # a list of 2d points from the object layers of the map.  As the player
         self.num = 3                                      #   collects these, the contents will change
-        self.floor_points = []                  # Begin- and start positions of each platform.
+        self.floor_points = []                  # Begin- and end positions of each platform.
 
         # Get some information about where the map file is located
         map_dir = os.path.dirname(fname)
@@ -137,9 +137,15 @@ class Map:
                     seg_bot.elasticity = 0.95
                     seg_bot.friction = 0.9
 
-                    self.floor_points.append([[start_x, end_x, y], [start_x, end_x, y + self.tile_height]])
+                    seg_left = pymunk.Segment(space.static_body, (start_x, y), (start_x, y + self.tile_height - 1), 0.0)
+                    seg_right = pymunk.Segment(space.static_body, (end_x, y), (end_x, y + self.tile_height - 1), 0.0)
+
+                    self.floor_points.append([start_x, end_x, y])
+
                     space.add(seg_bot)
                     space.add(seg_up)
+                    space.add(seg_left)
+                    space.add(seg_right)
 
                 x += self.tile_width
             y += self.tile_height

@@ -129,7 +129,7 @@ class Ansgar:
 
     def coll_pre(self,arbiter,space,data):
 
-
+        self.grounded = True
         return True
 
     def coll_post(self, arbiter, space, data):
@@ -145,11 +145,13 @@ class Ansgar:
         self.rect = pygame.Rect(
             self.body.position.x - self.dim_radius, self.body.position.y - self.dim_radius,
             self.dim_radius * 2, self.dim_radius * 2)
+        print(self.grounded)
         for i in range(len(self.e_list)):
             dmg = self.e_list[i].enemy_attack_check(self.rect)
             if dmg > 0:
 
                 self.health.take_damage(dmg)
+
 
         if evt.type == pygame.KEYDOWN and evt.key == pygame.K_w:
             if self.grounded == True:
