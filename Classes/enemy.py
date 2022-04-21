@@ -17,7 +17,7 @@ class EnemyGroups:
     def __init__(self, x, y, num, size, r_b, enemy_type, cam_pos):
         """ Creates the group of enemy's based on the information provided. THe starting x and y, how many in this
             group, then how much the enemy's have. """
-        self.position = [x, (y - size)]
+        self.position = [x, y]
         self.cam_pos = cam_pos
         self.enemy_list = []
         self.arrow_list = []

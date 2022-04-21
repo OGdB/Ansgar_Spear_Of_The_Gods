@@ -20,17 +20,14 @@ class Enemy_Spawner:
         self.Red = random.randint(0, 255)
         self.Blue = random.randint(0, 255)
         self.Green = random.randint(0, 255)
-        self.x = starting_x
-        self.y = starting_y
-        self.dim = dim
         # self.vertical_speed = random.randint(0, 100)  # pixels / second
         self.color = (self.Red, self.Blue,
                       self.Green)
         self.health = Classes.health.Health()
-        self.rect = pygame.Rect(self.x, self.y, self.dim, self.dim)
+        self.rect = 0
+        #self.rect = pygame.Rect(self.x, self.y, self.sfactor * self.dim, self.sfactor * self.dim)
         self.dead = False
         self.flipped = True
-        self.sfactor = 1.2
         self.anim_timer = 0
         self.anim_frame = 0
         self.anim_cooldown = 0.2
@@ -41,6 +38,10 @@ class Enemy_Spawner:
             self.walk_right = bear_animation.load_animation(0, 2)
             self.walk_left = bear_animation.load_animation(2, 2)
             self.horizontal_speed = random.randint(50, 100)  # pixels / second
+            self.sfactor = 1
+            self.dim = self.sfactor * dim
+            self.x = starting_x - self.dim
+            self.y = starting_y - self.dim
             self.type = "melee"
         elif type == 2:  # A shooting enemy
             fire_bear_animation_sheet = pygame.image.load("image\\Fire_Bear_Spritesheet.png")
@@ -48,10 +49,15 @@ class Enemy_Spawner:
             self.walk_right = fire_bear_animation.load_animation(0, 2)
             self.walk_left = fire_bear_animation.load_animation(2, 2)
             self.horizontal_speed = random.randint(10, 50)  # pixels / second
+            self.sfactor = 1
+            self.dim = self.sfactor * dim
+            self.x = starting_x - self.dim
+            self.y = starting_y - self.dim
             self.type = "range"
             self.cooldown = 0
             self.shoot = 30
         elif type == 3:
+            self.sfactor = 3
             tank_bear_animation_sheet = pygame.image.load("image\\BearArmor_Spritesheet.png")
             new_w = int(tank_bear_animation_sheet.get_width() * self.sfactor)
             new_h = int(tank_bear_animation_sheet.get_height() * self.sfactor)
@@ -61,6 +67,9 @@ class Enemy_Spawner:
             self.walk_left = tank_bear_animation.load_animation(2, 2)
             self.horizontal_speed = random.randint(5, 10)  # pixels / second
             self.original_speed = self.horizontal_speed
+            self.dim = self.sfactor * dim
+            self.x = starting_x - self.dim
+            self.y = starting_y - self.dim
             self.chase_speed = 50
             self.type = "tank"
 
@@ -69,7 +78,7 @@ class Enemy_Spawner:
         # self.horizontal_speed += 100 * dt
 
         self.x += self.horizontal_speed * dt
-        self.rect = pygame.Rect(self.x, self.y, self.dim, self.dim)
+        self.rect = pygame.Rect(self.x, self.y, self.dim * 2, self.dim)
         # self.y += self.vertical_speed * dt
 
         # Move towards the hero
@@ -124,9 +133,9 @@ class Enemy_Spawner:
             self.x = left_x_border
             self.horizontal_speed *= -1
             self.flipped = not self.flipped
-        elif self.x > right_x_border - self.dim:
+        elif self.x > right_x_border - self.dim * 2:
             # We just went off the right-edge
-            self.x = right_x_border - self.dim
+            self.x = right_x_border - self.dim * 2
             self.horizontal_speed *= -1
             self.flipped = not self.flipped
 
@@ -183,4 +192,4 @@ class Enemy_Spawner:
         health_bar = self.health.cur_health / self.health.max_health
         health_bar_w = health_bar * 20
         pygame.draw.rect(surf, (255, 0, 0), ((self.x - 2) - cam_pos[0], (self.y - 7) - cam_pos[1], health_bar_w, 5))
-        #pygame.draw.rect(surf, (255, 0, 255), self.rect, 1)
+        pygame.draw.rect(surf, (255, 0, 255), self.rect, 1)

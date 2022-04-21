@@ -49,8 +49,8 @@ class Application:
             Classes.enemy.EnemyGroups(528, 448, 2, 16, 624, 2, self.camera_pos),
             Classes.enemy.EnemyGroups(1184, 480, 2, 16, 1456, 2, self.camera_pos),
             # Tank Bears
-            Classes.enemy.EnemyGroups(832, 896, 1, 24, 1072, 3, self.camera_pos),
-            Classes.enemy.EnemyGroups(1216, 753, 1, 24, 1360, 3, self.camera_pos),
+            Classes.enemy.EnemyGroups(832, 896, 1, 16, 1072, 3, self.camera_pos),
+            Classes.enemy.EnemyGroups(1216, 753, 1, 16, 1360, 3, self.camera_pos),
 
         ]
         self.ansgar = Classes.hero.Ansgar((240, 100), self.space, self.enemy_group_list,self.camera_pos)
