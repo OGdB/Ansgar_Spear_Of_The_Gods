@@ -1,4 +1,5 @@
 import math
+import sys
 
 import pygame
 import pymunk
@@ -63,6 +64,7 @@ class Application:
             self.player_health = self.ansgar.health_bar
 
 
+
         # Shut down pygame after we're done with our game loop (because the program is likely to shut down shortly after)
 
 
@@ -76,10 +78,12 @@ class Application:
         all_keys = pygame.key.get_pressed()
 
         if evt.type == pygame.QUIT:
-            self.done = True
+            pygame.quit()
+            sys.exit()
         elif evt.type == pygame.KEYDOWN:
             if evt.key == pygame.K_ESCAPE:
-                self.done = True
+                pygame.quit()
+                sys.exit()
             if evt.key == pygame.K_F11:
                 global debug
                 debug = not debug
