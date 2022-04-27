@@ -22,7 +22,6 @@ class Spear:
         self.shape = pymunk.Poly(self.body, dimensions)
         self.body.position = (player_pos.x, player_pos.y - 8)
         self.shape.collision_type = 1
-
         handler.begin = self.spear_platform_coll
 
         if direction == "left":
@@ -97,9 +96,6 @@ class Ansgar:
         self.cur_anim = self.idle_right
         self.anim_cooldown = 0.2
         self.health_bar = self.health.cur_health / self.health.max_health
-
-        if self.handler.begin == True:
-            self.grounded = True
 
         self.spear_wildcard_col_handler = space.add_wildcard_collision_handler(1)
         self.spear_wildcard_col_handler.begin = self.spear_any_coll

@@ -4,6 +4,8 @@ import pymunk
 import os
 
 class Tileset:
+    Collision_Type = 0
+
     def __init__(self, raw_dict, directory):
         self.columns = None                     # The number of columns in the sprite-sheet
         self.first_gid = None                   # The id number of the first tile (top-left).  Each tile after this
@@ -132,23 +134,23 @@ class Map:
                     seg_up = pymunk.Segment(space.static_body, (start_x, y), (end_x, y), 0.0)
                     seg_up.elasticity = 0.95
                     seg_up.friction = 0.9
-                    seg_up.collision_type = 0
+                    seg_up.collision_type = Tileset.Collision_Type
 
                     seg_bot = pymunk.Segment(space.static_body, (start_x, y + self.tile_height),
                                              (end_x, y + self.tile_height), 0.0)
                     seg_bot.elasticity = 0.95
                     seg_bot.friction = 0.9
-                    seg_bot.collision_type = 0
+                    seg_bot.collision_type = Tileset.Collision_Type
 
                     seg_left = pymunk.Segment(space.static_body, (start_x, y), (start_x, y + self.tile_height - 1), 0.0)
                     seg_left.elasticity = 0.95
                     seg_left.friction = 0.9
-                    seg_left.collision_type = 0
+                    seg_left.collision_type = Tileset.Collision_Type
 
                     seg_right = pymunk.Segment(space.static_body, (end_x, y), (end_x, y + self.tile_height - 1), 0.0)
                     seg_right.elasticity = 0.95
                     seg_right.friction = 0.9
-                    seg_right.collision_type = 0
+                    seg_right.collision_type = Tileset.Collision_Type
 
                     self.floor_points.append([start_x, end_x, y])
 
