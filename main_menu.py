@@ -1,3 +1,5 @@
+import sys
+
 import pygame
 
 import pymunk
@@ -40,10 +42,12 @@ class Start_screen():
 
         # event-handling
         if evt.type == pygame.QUIT:
-            self.done = True
+            pygame.quit()
+            sys.exit()
         elif evt.type == pygame.KEYDOWN:
             if evt.key == pygame.K_ESCAPE:
-                self.done = True
+                pygame.quit()
+                sys.exit()
 
         mouse_x, mouse_y = pygame.mouse.get_pos()
         all_keys = pygame.key.get_pressed()
