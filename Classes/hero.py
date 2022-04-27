@@ -7,7 +7,6 @@ import Classes.spritesheet as SpriteSheet
 
 class Spear:
     def __init__(self, player_pos, direction, spc, handler):
-        self.walled = False  # hit a wall
         length = 32
         self.height = 16
         self.lifetime = 100
@@ -34,14 +33,11 @@ class Spear:
         spc.add(self.body, self.shape)
 
     def spear_platform_coll(self, arbiter, space, data):
-        self.walled = True
+        self.body.velocity = (0, 0)
         self.shape.collision_type = 10 # Make different collision type so that the player can now collide with the spear
         return True
 
     def update(self, dt, enemies_list, spear_list, space):
-        if self.walled:
-            self.body.velocity = (0, 0)
-
         self.lifetime -= dt * 10  # lifetime deterioration
         for i in range(len(enemies_list)):  # hit detection with enemies
             hit_check = enemies_list[i].enemy_hit_check(self.body.position.x, self.body.position.y,
@@ -87,7 +83,6 @@ class Ansgar:
         self.points = self.map.floor_points
         self.grounded = False
         self.handler = space.add_collision_handler(0, 2)  # Collision between ground collision type (0, and Ansgar (2)
-        self.handler = space.add_collision_handler(0, 10)  # Collision between ground collision type (0, and Ansgar (2)
 
         self.cam_pos = cam_pos
         # Animation attributes
@@ -103,9 +98,6 @@ class Ansgar:
         self.anim_cooldown = 0.2
         self.health_bar = self.health.cur_health / self.health.max_health
 
-        self.handler.begin = self.coll_begin
-        self.handler.pre_solve = self.coll_pre
-        self.handler.separate = self.separate
         if self.handler.begin == True:
             self.grounded = True
 
@@ -213,6 +205,10 @@ class Ansgar:
                 self.cur_anim = self.idle_right
 
         self.limit_velocity(self.body)
+
+        self.handler.begin = self.coll_begin
+        self.handler.pre_solve = self.coll_pre
+        self.handler.separate = self.separate
 
     def limit_velocity(self, body):
         vel_limit = 150
