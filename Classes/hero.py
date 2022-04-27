@@ -127,8 +127,7 @@ class Ansgar:
         self.grounded = True
         return True
 
-    def coll_pre(self,arbiter,space,data):
-
+    def coll_pre(self, arbiter, space, data):
         self.grounded = True
         return True
 
@@ -147,13 +146,21 @@ class Ansgar:
             self.dim_radius * 2, self.dim_radius * 2)
 
         for i in range(len(self.e_list)):
-            dmg = self.e_list[i].enemy_attack_check(self.rect)
+            dmg, force, direction = self.e_list[i].enemy_attack_check(self.rect)
             if dmg > 0:
 
                 self.health.take_damage(dmg)
+            if force > 0:
+                if direction:
+                    # Should send player to the right
+                    self.body.apply_impulse_at_local_point((force, 0), (0, 0))
+                else:
+                    # Should send the player to the left
+                    self.body.apply_impulse_at_local_point((-force, 0), (0, 0))
 
 
         if evt.type == pygame.KEYDOWN and evt.key == pygame.K_w:
+
             if self.grounded == True:
                 self.grounded = False
                 self.body.apply_impulse_at_local_point((0, -700), (0, 8))
