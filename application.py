@@ -58,17 +58,15 @@ class Application:
         pygame.mixer.music.load('rock.mp3')
         pygame.mixer.music.set_volume(0.25)
         pygame.mixer.music.play(-1)
-
-
-
+        self.paused = False
 
     def run(self):
         while not self.done:
-            delta_time = self.clock.tick(60) / 1000
-            self.space.step(delta_time)
+            self.delta_time = self.clock.tick(60) / 1000
+            self.space.step(self.delta_time)
             self.camera_position()
-            self.handle_input(delta_time)
-            self.render(self.win, delta_time)
+            self.handle_input(self.delta_time)
+            self.render(self.win, self.delta_time)
             self.player_health = self.ansgar.health_bar
 
 
@@ -79,8 +77,9 @@ class Application:
     def handle_input(self, dt):
         # Process the event (make sure this is only once in your game loop!)
         evt = pygame.event.poll()
-        for i in range(len(self.enemy_group_list)):
-            self.enemy_group_list[i].update(dt, self.ansgar.body.position.x, self.ansgar.body.position.y)
+        if self.paused == False:
+            for i in range(len(self.enemy_group_list)):
+                self.enemy_group_list[i].update(dt, self.ansgar.body.position.x, self.ansgar.body.position.y)
 
         # event-handling
         all_keys = pygame.key.get_pressed()
@@ -95,8 +94,17 @@ class Application:
             if evt.key == pygame.K_F11:
                 global debug
                 debug = not debug
-
-        self.ansgar.update(dt, evt, all_keys)
+        if evt.type == pygame.KEYDOWN:
+            if evt.key == pygame.K_p:
+                if self.paused == False:
+                    self.paused = True
+                else:
+                    self.paused = False
+        if self.paused == False:
+            self.ansgar.update(dt, evt, all_keys)
+        else:
+            self.delta_time = 0
+            
         if self.player_health == 0:
             self.done = True
 

@@ -7,8 +7,8 @@ pygame.init()
 
 map_size_w = 1920
 map_size_h = 1080
-camera_port_w = 3920
-camera_port_h = 2080
+camera_port_w = 1920/3
+camera_port_h = 1080/3
 
 
 start = main_menu.Start_screen(map_size_w, map_size_h)
@@ -21,7 +21,6 @@ while not done:
         App.clock.tick()
         App.run()
     death = Death_screen.Retry_screen(map_size_w,map_size_h)
-    print(App.player_health)
     if App.player_health == 0:
 
         death.run()
