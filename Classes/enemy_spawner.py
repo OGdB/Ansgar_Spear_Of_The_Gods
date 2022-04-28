@@ -57,7 +57,7 @@ class Enemy_Spawner:
             self.cooldown = 0
             self.shoot = 30
         elif type == 3:
-            self.sfactor = 3
+            self.sfactor = 1
             tank_bear_animation_sheet = pygame.image.load("image\\BearArmor_Spritesheet.png")
             new_w = int(tank_bear_animation_sheet.get_width() * self.sfactor)
             new_h = int(tank_bear_animation_sheet.get_height() * self.sfactor)
@@ -79,6 +79,7 @@ class Enemy_Spawner:
 
         self.x += self.horizontal_speed * dt
         self.rect = pygame.Rect(self.x, self.y, self.dim * 2, self.dim)
+        self.sfactor = self.sfactor
         # self.y += self.vertical_speed * dt
 
         # Move towards the hero
@@ -115,6 +116,9 @@ class Enemy_Spawner:
                         self.cooldown += 1
 
         if self.type == "tank":
+            self.sfactor += 1
+            if self.sfactor >= 5:
+                self.sfactor = 5
             distance_x = abs(hero_x - self.x)
             distance_y = abs(hero_y - self.y) + 5
             if distance_x <= 60 and distance_y <= 36:
