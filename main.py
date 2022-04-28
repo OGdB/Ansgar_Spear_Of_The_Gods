@@ -21,7 +21,6 @@ while not done:
         App.clock.tick()
         App.run()
     death = Death_screen.Retry_screen(map_size_w,map_size_h)
-    print(App.player_health)
     if App.player_health == 0:
 
         death.run()
