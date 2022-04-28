@@ -166,8 +166,6 @@ class Ansgar:
 
         if evt.type == pygame.KEYDOWN:
             if evt.key == pygame.K_w or evt.key == pygame.K_UP:
-        if evt.type == pygame.KEYDOWN and evt.key == pygame.K_w:
-
                 if self.grounded == True:
                     self.grounded = False
                     self.body.apply_impulse_at_local_point((0, -700), (0, 8))

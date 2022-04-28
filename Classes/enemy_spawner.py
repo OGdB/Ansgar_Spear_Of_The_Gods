@@ -39,6 +39,7 @@ class Enemy_Spawner:
             self.walk_left = bear_animation.load_animation(2, 2)
             self.horizontal_speed = random.randint(50, 100)  # pixels / second
             self.sfactor = 1
+            self.damage = .5
             self.dim = self.sfactor * dim
             self.x = starting_x - self.dim
             self.y = starting_y - self.dim
@@ -50,6 +51,7 @@ class Enemy_Spawner:
             self.walk_left = fire_bear_animation.load_animation(2, 2)
             self.horizontal_speed = random.randint(10, 50)  # pixels / second
             self.sfactor = 1
+            self.damage = 1
             self.dim = self.sfactor * dim
             self.x = starting_x - self.dim
             self.y = starting_y - self.dim
@@ -68,6 +70,7 @@ class Enemy_Spawner:
             self.horizontal_speed = random.randint(5, 10)  # pixels / second
             self.original_speed = self.horizontal_speed
             self.dim = self.sfactor * dim
+            self.damage = 10
             self.x = starting_x - self.dim
             self.y = starting_y - self.dim
             self.chase_speed = 50
@@ -79,6 +82,7 @@ class Enemy_Spawner:
 
         self.x += self.horizontal_speed * dt
         self.rect = pygame.Rect(self.x, self.y, self.dim * 2, self.dim)
+        self.sfactor = self.sfactor
         # self.y += self.vertical_speed * dt
 
         # Move towards the hero
@@ -115,6 +119,9 @@ class Enemy_Spawner:
                         self.cooldown += 1
 
         if self.type == "tank":
+            self.sfactor += .5
+            if self.sfactor >= 4:
+                self.sfactor = 4
             distance_x = abs(hero_x - self.x)
             distance_y = abs(hero_y - self.y) + 5
             if distance_x <= 60 and distance_y <= 36:
@@ -150,25 +157,28 @@ class Enemy_Spawner:
 
     def enemy_hit_check(self, s_x, s_y_t, s_y_b):
         if self.x <= s_x <= self.x + self.dim and s_y_t <= self.y <= s_y_b:
-            return True
+            if self.type == "tank":
+                return True, (self.health.cur_health/self.sfactor)
+            else:
+                return True, 0
         else:
-            return False
+            return False, 0
 
     def enemy_attack_check(self, hero_r, arrow_list):
         if self.type == "melee":
             if hero_r.colliderect(self.rect):
-                return 5, 100, self.flipped
+                return self.damage, 100, self.flipped
             else:
                 return 0, 0, 0
         elif self.type == "range":
             for arrow in arrow_list:
                 temp_rect = (arrow[0], arrow[1], arrow[2], arrow[2])
                 if hero_r.colliderect(temp_rect):
-                    return 10, 5, self.flipped
+                    return self.damage, 5, self.flipped
             return 0, 0, 0
         elif self.type == "tank":
             if hero_r.colliderect(self.rect):
-                return 50, 200, self.flipped
+                return self.damage, 200, self.flipped
             else:
                 return 0, 0, 0
 
