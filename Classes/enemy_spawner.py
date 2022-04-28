@@ -59,7 +59,7 @@ class Enemy_Spawner:
             self.cooldown = 0
             self.shoot = 30
         elif type == 3:
-            self.sfactor = 3
+            self.sfactor = 1
             tank_bear_animation_sheet = pygame.image.load("image\\BearArmor_Spritesheet.png")
             new_w = int(tank_bear_animation_sheet.get_width() * self.sfactor)
             new_h = int(tank_bear_animation_sheet.get_height() * self.sfactor)
@@ -82,7 +82,6 @@ class Enemy_Spawner:
 
         self.x += self.horizontal_speed * dt
         self.rect = pygame.Rect(self.x, self.y, self.dim * 2, self.dim)
-        self.sfactor = self.sfactor
         # self.y += self.vertical_speed * dt
 
         # Move towards the hero
@@ -200,6 +199,5 @@ class Enemy_Spawner:
             surf.blit(cur_sprite, (self.x - cam_pos[0], self.y - cam_pos[1]))
 
         health_bar = self.health.cur_health / self.health.max_health
-        health_bar_w = health_bar * 20
+        health_bar_w = (health_bar * 20) * self.sfactor
         pygame.draw.rect(surf, (255, 0, 0), ((self.x - 2) - cam_pos[0], (self.y - 7) - cam_pos[1], health_bar_w, 5))
-        pygame.draw.rect(surf, (255, 0, 255), self.rect, 1)

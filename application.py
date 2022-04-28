@@ -59,9 +59,6 @@ class Application:
         pygame.mixer.music.play(-1)
         self.paused = False
 
-
-
-
     def run(self):
         while not self.done:
             self.delta_time = self.clock.tick(60) / 1000
