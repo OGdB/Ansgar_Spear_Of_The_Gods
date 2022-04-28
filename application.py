@@ -11,7 +11,7 @@ import Death_screen
 
 
 # Set to true to see a bunch of debug stuff.
-debug = True
+debug = False
 
 class Application:
     def __init__(self, screen_w, screen_h, port_w, port_h):
@@ -56,6 +56,7 @@ class Application:
         self.ansgar = Classes.hero.Ansgar((240, 100), self.space, self.enemy_group_list,self.camera_pos)
         self.player_health = self.ansgar.health_bar
         pygame.mixer.music.load('rock.mp3')
+        pygame.mixer.music.set_volume(0.25)
         pygame.mixer.music.play(-1)
 
 

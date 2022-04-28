@@ -39,6 +39,9 @@ class EnemyGroups:
             self.enemy_list.append(new_enemy)
             i += 1
 
+        self.bear_hurt_sound = pygame.mixer.Sound('bear_death.mp3')
+
+
     def update(self, dt, hero_x, hero_y):
         """ Move's the enemy's within the provided limits. Calls the update in the enemy_spawner class. """
         j = 0
@@ -60,6 +63,7 @@ class EnemyGroups:
             if hit:
                 dead = self.enemy_list[i].health.take_damage(dmg)
                 if dead:
+                    self.bear_hurt_sound.play()
                     self.enemy_list[i].dead = True
                     return True
             i += 1
