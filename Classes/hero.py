@@ -170,11 +170,17 @@ class Ansgar:
         
         if evt.type == pygame.KEYDOWN:
             if evt.key == pygame.K_w or evt.key == pygame.K_UP:
+<<<<<<< HEAD
                 if evt.type == pygame.KEYDOWN and evt.key == pygame.K_w:
 
                     if self.grounded == True:
                         self.grounded = False
                         self.body.apply_impulse_at_local_point((0, -700), (0, 8))
+=======
+                if self.grounded == True:
+                    self.grounded = False
+                    self.body.apply_impulse_at_local_point((0, -700), (0, 8))
+>>>>>>> main
 
         if (keys[pygame.K_a] or keys[pygame.K_LEFT]) and not keys[pygame.K_d] and not keys[pygame.K_RIGHT]:
             self.direction = "left"

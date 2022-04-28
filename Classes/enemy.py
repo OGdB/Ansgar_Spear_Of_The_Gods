@@ -7,8 +7,6 @@ def draw_all_arrows(arrow_list, surf, cam_pos):
     for cur_box in arrow_list:
         x = cur_box[0] - cam_pos[0]
         y = (cur_box[1] - 10) - cam_pos[1]
-        size = cur_box[2]
-        color = cur_box[3]
         surf.blit(pygame.image.load("image\\Fireball.png"), (x, y))
 
 
@@ -43,7 +41,6 @@ class EnemyGroups:
         """ Move's the enemy's within the provided limits. Calls the update in the enemy_spawner class. """
         j = 0
         while j < len(self.enemy_list):
-
             self.enemy_list[j].update(dt, self.position[0], self.r_border,
                                       hero_x, hero_y, self.arrow_list, False)
             if self.enemy_list[j].dead:
@@ -56,9 +53,12 @@ class EnemyGroups:
         """ Checks to see if the enemy has been hit. """
         i = 0
         while i < len(self.enemy_list):
-            hit = self.enemy_list[i].enemy_hit_check(spear_x, spear_y_top, spear_y_bot)
+            hit, tank = self.enemy_list[i].enemy_hit_check(spear_x, spear_y_top, spear_y_bot)
             if hit:
-                dead = self.enemy_list[i].health.take_damage(dmg)
+                if tank > 0:
+                    dead = self.enemy_list[i].health.take_damage(dmg/tank)
+                else:
+                    dead = self.enemy_list[i].health.take_damage(dmg)
                 if dead:
                     self.enemy_list[i].dead = True
                     return True

@@ -39,6 +39,7 @@ class Enemy_Spawner:
             self.walk_left = bear_animation.load_animation(2, 2)
             self.horizontal_speed = random.randint(50, 100)  # pixels / second
             self.sfactor = 1
+            self.damage = .5
             self.dim = self.sfactor * dim
             self.x = starting_x - self.dim
             self.y = starting_y - self.dim
@@ -50,6 +51,7 @@ class Enemy_Spawner:
             self.walk_left = fire_bear_animation.load_animation(2, 2)
             self.horizontal_speed = random.randint(10, 50)  # pixels / second
             self.sfactor = 1
+            self.damage = 1
             self.dim = self.sfactor * dim
             self.x = starting_x - self.dim
             self.y = starting_y - self.dim
@@ -57,7 +59,7 @@ class Enemy_Spawner:
             self.cooldown = 0
             self.shoot = 30
         elif type == 3:
-            self.sfactor = 3
+            self.sfactor = 1
             tank_bear_animation_sheet = pygame.image.load("image\\BearArmor_Spritesheet.png")
             new_w = int(tank_bear_animation_sheet.get_width() * self.sfactor)
             new_h = int(tank_bear_animation_sheet.get_height() * self.sfactor)
@@ -68,6 +70,7 @@ class Enemy_Spawner:
             self.horizontal_speed = random.randint(5, 10)  # pixels / second
             self.original_speed = self.horizontal_speed
             self.dim = self.sfactor * dim
+            self.damage = 10
             self.x = starting_x - self.dim
             self.y = starting_y - self.dim
             self.chase_speed = 50
@@ -115,6 +118,9 @@ class Enemy_Spawner:
                         self.cooldown += 1
 
         if self.type == "tank":
+            self.sfactor += .5
+            if self.sfactor >= 4:
+                self.sfactor = 4
             distance_x = abs(hero_x - self.x)
             distance_y = abs(hero_y - self.y) + 5
             if distance_x <= 60 and distance_y <= 36:
@@ -150,25 +156,28 @@ class Enemy_Spawner:
 
     def enemy_hit_check(self, s_x, s_y_t, s_y_b):
         if self.x <= s_x <= self.x + self.dim and s_y_t <= self.y <= s_y_b:
-            return True
+            if self.type == "tank":
+                return True, (self.health.cur_health/self.sfactor)
+            else:
+                return True, 0
         else:
-            return False
+            return False, 0
 
     def enemy_attack_check(self, hero_r, arrow_list):
         if self.type == "melee":
             if hero_r.colliderect(self.rect):
-                return 5, 100, self.flipped
+                return self.damage, 100, self.flipped
             else:
                 return 0, 0, 0
         elif self.type == "range":
             for arrow in arrow_list:
                 temp_rect = (arrow[0], arrow[1], arrow[2], arrow[2])
                 if hero_r.colliderect(temp_rect):
-                    return 10, 5, self.flipped
+                    return self.damage, 5, self.flipped
             return 0, 0, 0
         elif self.type == "tank":
             if hero_r.colliderect(self.rect):
-                return 50, 200, self.flipped
+                return self.damage, 200, self.flipped
             else:
                 return 0, 0, 0
 
@@ -190,6 +199,5 @@ class Enemy_Spawner:
             surf.blit(cur_sprite, (self.x - cam_pos[0], self.y - cam_pos[1]))
 
         health_bar = self.health.cur_health / self.health.max_health
-        health_bar_w = health_bar * 20
+        health_bar_w = (health_bar * 20) * self.sfactor
         pygame.draw.rect(surf, (255, 0, 0), ((self.x - 2) - cam_pos[0], (self.y - 7) - cam_pos[1], health_bar_w, 5))
-        pygame.draw.rect(surf, (255, 0, 255), self.rect, 1)
