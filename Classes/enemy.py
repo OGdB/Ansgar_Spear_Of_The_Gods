@@ -56,9 +56,12 @@ class EnemyGroups:
         """ Checks to see if the enemy has been hit. """
         i = 0
         while i < len(self.enemy_list):
-            hit = self.enemy_list[i].enemy_hit_check(spear_x, spear_y_top, spear_y_bot)
+            hit, tank = self.enemy_list[i].enemy_hit_check(spear_x, spear_y_top, spear_y_bot)
             if hit:
-                dead = self.enemy_list[i].health.take_damage(dmg)
+                if tank > 0:
+                    dead = self.enemy_list[i].health.take_damage(dmg - tank)
+                else:
+                    dead = self.enemy_list[i].health.take_damage(dmg)
                 if dead:
                     self.enemy_list[i].dead = True
                     return True
