@@ -106,7 +106,7 @@ class Application:
             self.ansgar.update(dt, evt, all_keys)
         else:
             self.delta_time = 0
-            
+
         if self.player_health == 0:
             self.done = True
 

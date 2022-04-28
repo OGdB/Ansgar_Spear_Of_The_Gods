@@ -12,6 +12,7 @@ class Spear:
         self.lifetime = 100
         speed = 275
 
+
         self.spear_img = pygame.image.load("image\\Spear.png")
         if direction == "left":
             self.spear_img = pygame.transform.rotate(self.spear_img, 180)
@@ -73,7 +74,8 @@ class Ansgar:
         self.length = 32
         self.height = 16
         self.lifetime = 100
-        self.speed = 275
+        self.speed = 800
+        self.run_speed = 1000
         self.direction = "right"
         self.spear_list = []
         self.health = Classes.health.Health()
@@ -100,6 +102,8 @@ class Ansgar:
         self.spear_wildcard_col_handler = space.add_wildcard_collision_handler(1)
         self.spear_wildcard_col_handler.begin = self.spear_any_coll
         self.spear_platform_col_handler = space.add_collision_handler(0, 1)
+
+
 
     def make_spear(self):
         # this should make it to where ansgar looks like he's throwing the spear
@@ -163,14 +167,14 @@ class Ansgar:
                     # Should send the player to the left
                     self.body.apply_impulse_at_local_point((-force, 0), (0, 0))
 
-
+        
         if evt.type == pygame.KEYDOWN:
             if evt.key == pygame.K_w or evt.key == pygame.K_UP:
-        if evt.type == pygame.KEYDOWN and evt.key == pygame.K_w:
+                if evt.type == pygame.KEYDOWN and evt.key == pygame.K_w:
 
-                if self.grounded == True:
-                    self.grounded = False
-                    self.body.apply_impulse_at_local_point((0, -700), (0, 8))
+                    if self.grounded == True:
+                        self.grounded = False
+                        self.body.apply_impulse_at_local_point((0, -700), (0, 8))
 
         if (keys[pygame.K_a] or keys[pygame.K_LEFT]) and not keys[pygame.K_d] and not keys[pygame.K_RIGHT]:
             self.direction = "left"
@@ -178,18 +182,18 @@ class Ansgar:
             if keys[pygame.K_LSHIFT]:
                 # this will let Ansgar run
 
-                self.body.force = (-800, 0)
+                self.body.force = (-self.run_speed, 0)
             else:
-                self.body.force = (-1000, 0)
+                self.body.force = (-self.speed, 0)
 
         if (keys[pygame.K_d] or keys[pygame.K_RIGHT]) and not keys[pygame.K_a] and not keys[pygame.K_LEFT]:
             self.direction = "right"
             self.cur_anim = self.walk_right
             if keys[pygame.K_LSHIFT]:
                 # this will let Ansgar run
-                self.body.force = (800, 0)
+                self.body.force = (self.run_speed, 0)
             else:
-                self.body.force = (1000, 0)
+                self.body.force = (self.speed, 0)
 
         if evt.type == pygame.KEYDOWN and evt.key == pygame.K_SPACE:
             self.make_spear()
