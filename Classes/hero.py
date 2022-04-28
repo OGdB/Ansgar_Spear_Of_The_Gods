@@ -84,7 +84,7 @@ class Ansgar:
         self.points = self.map.floor_points
         self.grounded = False
         self.handler = space.add_collision_handler(0, 2)  # Collision between ground collision type (0, and Ansgar (2)
-
+        self.counter = 0
         self.cam_pos = cam_pos
         # Animation attributes
         self.anim_timer = 0
@@ -107,9 +107,10 @@ class Ansgar:
 
     def make_spear(self):
         # this should make it to where ansgar looks like he's throwing the spear
-
-        spear = Spear(self.body.position, self.direction, self.space, self.spear_platform_col_handler)
-        self.spear_list.append(spear)
+        if self.counter <= 0:
+            self.counter = 1.5
+            spear = Spear(self.body.position, self.direction, self.space, self.spear_platform_col_handler)
+            self.spear_list.append(spear)
 
     def spear_any_coll(self, arbiter, space, data):
         return False  # Ignore collisions with anything but the platforms (in the next function).
@@ -151,6 +152,8 @@ class Ansgar:
         self.grounded = False
 
     def update(self, dt, evt, keys):
+        self.counter -= dt
+
         self.rect = pygame.Rect(
             self.body.position.x - self.dim_radius, self.body.position.y - self.dim_radius, self.dim_radius * 2,
             self.dim_radius * 2)
