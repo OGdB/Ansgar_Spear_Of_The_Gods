@@ -118,7 +118,7 @@ class Enemy_Spawner:
                         self.cooldown += 1
 
         if self.type == "tank":
-            self.sfactor += .5
+            self.sfactor += .005
             if self.sfactor >= 4:
                 self.sfactor = 4
             distance_x = abs(hero_x - self.x)
