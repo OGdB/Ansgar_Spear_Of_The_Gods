@@ -82,7 +82,8 @@ class Ansgar:
         self.points = self.map.floor_points
         self.grounded = False
         self.handler = space.add_collision_handler(0, 2)  # Collision between ground collision type (0, and Ansgar (2)
-
+        self.counter = 0
+        self.hurt_counter = 0
         self.cam_pos = cam_pos
         # Animation attributes
         self.anim_timer = 0
@@ -101,11 +102,17 @@ class Ansgar:
         self.spear_wildcard_col_handler.begin = self.spear_any_coll
         self.spear_platform_col_handler = space.add_collision_handler(0, 1)
 
+        #audio
+        self.throw_sound = pygame.mixer.Sound('throw.wav')
+        self.hurt_sound = pygame.mixer.Sound('hurt.flac')
+
     def make_spear(self):
         # this should make it to where ansgar looks like he's throwing the spear
-
-        spear = Spear(self.body.position, self.direction, self.space, self.spear_platform_col_handler)
-        self.spear_list.append(spear)
+        if self.counter <= 0:
+            self.counter = 1.5
+            self.throw_sound.play()
+            spear = Spear(self.body.position, self.direction, self.space, self.spear_platform_col_handler)
+            self.spear_list.append(spear)
 
     def spear_any_coll(self, arbiter, space, data):
         return False  # Ignore collisions with anything but the platforms (in the next function).
@@ -147,21 +154,27 @@ class Ansgar:
         self.grounded = False
 
     def update(self, dt, evt, keys):
+        self.counter -= dt
+        self.hurt_counter -= dt
+
         self.rect = pygame.Rect(
             self.body.position.x - self.dim_radius, self.body.position.y - self.dim_radius, self.dim_radius * 2,
             self.dim_radius * 2)
 
-        for i in range(len(self.e_list)):
-            dmg, force, direction = self.e_list[i].enemy_attack_check(self.rect)
-            if dmg > 0:
-                self.health.take_damage(dmg)
-            if force > 0:
-                if direction:
-                    # Should send player to the right
-                    self.body.apply_impulse_at_local_point((force, 0), (0, 0))
-                else:
-                    # Should send the player to the left
-                    self.body.apply_impulse_at_local_point((-force, 0), (0, 0))
+        if self.hurt_counter <= 0:
+            self.hurt_counter = 1.5
+            for i in range(len(self.e_list)):
+                dmg, force, direction = self.e_list[i].enemy_attack_check(self.rect)
+                if dmg > 0:
+                    self.hurt_sound.play()
+                    self.health.take_damage(dmg)
+                if force > 0:
+                    if direction:
+                        # Should send player to the right
+                        self.body.apply_impulse_at_local_point((force, 0), (0, 0))
+                    else:
+                        # Should send the player to the left
+                        self.body.apply_impulse_at_local_point((-force, 0), (0, 0))
 
 
         if evt.type == pygame.KEYDOWN:
