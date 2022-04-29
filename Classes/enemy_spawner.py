@@ -70,7 +70,7 @@ class Enemy_Spawner:
             self.horizontal_speed = random.randint(5, 10)  # pixels / second
             self.original_speed = self.horizontal_speed
             self.dim = self.sfactor * dim
-            self.damage = 5
+            self.damage = .9
             self.x = starting_x - self.dim
             self.y = starting_y - self.dim
             self.chase_speed = 50
@@ -118,6 +118,9 @@ class Enemy_Spawner:
                         self.cooldown += 1
 
         if self.type == "tank":
+            #self.sfactor += .1
+            #if self.sfactor >= 3:
+            #    self.sfactor = 3
             distance_x = abs(hero_x - self.x)
             distance_y = abs(hero_y - self.y) + 5
             if distance_x <= 60 and distance_y <= 36:
@@ -186,14 +189,14 @@ class Enemy_Spawner:
                 self.anim_frame = (self.anim_frame + 1) % len(self.walk_left)
             cur_sprite = self.walk_left[self.anim_frame]
             cur_sprite.set_colorkey((0, 0, 0))
-            surf.blit(cur_sprite, (self.x - cam_pos[0], self.y - cam_pos[1]))
+            surf.blit(cur_sprite, ((self.x) - cam_pos[0], (self.y) - cam_pos[1]))
         else:
             if self.anim_timer >= self.anim_cooldown:
                 self.anim_timer = 0
                 self.anim_frame = (self.anim_frame + 1) % len(self.walk_right)
             cur_sprite = self.walk_right[self.anim_frame]
             cur_sprite.set_colorkey((0, 0, 0))
-            surf.blit(cur_sprite, (self.x - cam_pos[0], self.y - cam_pos[1]))
+            surf.blit(cur_sprite, ((self.x) - cam_pos[0], (self.y) - cam_pos[1]))
 
         health_bar = self.health.cur_health / self.health.max_health
         health_bar_w = (health_bar * 20) * self.sfactor
