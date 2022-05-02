@@ -7,8 +7,8 @@ pygame.init()
 
 map_size_w = 1920
 map_size_h = 1080
-camera_port_w = 1920/3
-camera_port_h = 1080/3
+camera_port_w = 3920
+camera_port_h = 2080
 
 
 start = main_menu.Start_screen(map_size_w, map_size_h)

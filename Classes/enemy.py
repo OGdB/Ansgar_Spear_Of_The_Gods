@@ -59,7 +59,7 @@ class EnemyGroups:
             hit, tank = self.enemy_list[i].enemy_hit_check(spear_x, spear_y_top, spear_y_bot)
             if hit:
                 if tank > 0:
-                    dead = self.enemy_list[i].health.take_damage(dmg/tank)
+                    dead = self.enemy_list[i].health.take_damage(3)
                 else:
                     dead = self.enemy_list[i].health.take_damage(dmg)
                 if dead:

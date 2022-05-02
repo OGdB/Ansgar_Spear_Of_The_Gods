@@ -39,7 +39,7 @@ class Enemy_Spawner:
             self.walk_left = bear_animation.load_animation(2, 2)
             self.horizontal_speed = random.randint(50, 100)  # pixels / second
             self.sfactor = 1
-            self.damage = .5
+            self.damage = 20
             self.dim = self.sfactor * dim
             self.x = starting_x - self.dim
             self.y = starting_y - self.dim
@@ -51,7 +51,7 @@ class Enemy_Spawner:
             self.walk_left = fire_bear_animation.load_animation(2, 2)
             self.horizontal_speed = random.randint(10, 50)  # pixels / second
             self.sfactor = 1
-            self.damage = 1
+            self.damage = 20
             self.dim = self.sfactor * dim
             self.x = starting_x - self.dim
             self.y = starting_y - self.dim
@@ -59,7 +59,7 @@ class Enemy_Spawner:
             self.cooldown = 0
             self.shoot = 30
         elif type == 3:
-            self.sfactor = 1
+            self.sfactor = 3
             tank_bear_animation_sheet = pygame.image.load("image\\BearArmor_Spritesheet.png")
             new_w = int(tank_bear_animation_sheet.get_width() * self.sfactor)
             new_h = int(tank_bear_animation_sheet.get_height() * self.sfactor)
@@ -70,7 +70,7 @@ class Enemy_Spawner:
             self.horizontal_speed = random.randint(5, 10)  # pixels / second
             self.original_speed = self.horizontal_speed
             self.dim = self.sfactor * dim
-            self.damage = 10
+            self.damage = 25
             self.x = starting_x - self.dim
             self.y = starting_y - self.dim
             self.chase_speed = 50
@@ -118,9 +118,6 @@ class Enemy_Spawner:
                         self.cooldown += 1
 
         if self.type == "tank":
-            self.sfactor += .5
-            if self.sfactor >= 4:
-                self.sfactor = 4
             distance_x = abs(hero_x - self.x)
             distance_y = abs(hero_y - self.y) + 5
             if distance_x <= 60 and distance_y <= 36:
